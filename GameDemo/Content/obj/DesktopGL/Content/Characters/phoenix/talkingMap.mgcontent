@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>/Users/Jenny/Projects/GameDemo/GameDemo/Content/Characters/phoenix/talkingMap.xml</SourceFile>
+  <SourceTime>2020-09-06T01:38:30.9547892-04:00</SourceTime>
+  <DestFile>/Users/Jenny/Projects/GameDemo/GameDemo/Content/bin/DesktopGL/Content/Characters/phoenix/talkingMap.xnb</DestFile>
+  <DestTime>2020-09-06T01:45:09.1357189-04:00</DestTime>
+  <Importer>XmlImporter</Importer>
+  <ImporterTime>2020-08-10T16:17:54-04:00</ImporterTime>
+  <Processor>PassThroughProcessor</Processor>
+  <ProcessorTime>2020-08-10T16:17:54-04:00</ProcessorTime>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>

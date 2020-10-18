@@ -1,0 +1,83 @@
+
+#----------------------------- Global Properties ----------------------------#
+
+/outputDir:bin/$(Platform)
+/intermediateDir:obj/$(Platform)
+/platform:DesktopGL
+/config:
+/profile:Reach
+/compress:False
+
+#-------------------------------- References --------------------------------#
+
+
+#---------------------------------- Content ---------------------------------#
+
+#begin Audio/ost/Dick Gumshoe It's Detective Gumshoe Phoenix Wright Ace Attorney Music Extended HD.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/ost/Dick Gumshoe It's Detective Gumshoe Phoenix Wright Ace Attorney Music Extended HD.mp3;Audio/ost/gumshoe.mp3
+
+#begin Audio/sfx/sfx-blipmale.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/sfx/sfx-blipmale.wav
+
+#begin Characters/phoenix/sneezing.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Characters/phoenix/sneezing.png
+
+#begin Characters/phoenix/sneezingMap.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:Characters/phoenix/sneezingMap.xml
+
+#begin Characters/phoenix/talking.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Characters/phoenix/talking.png
+
+#begin Characters/phoenix/talkingMap.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:Characters/phoenix/talkingMap.xml
+
+#begin Fonts/Arial.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Arial.spritefont
+
+#begin Locations/phoenix/witnessempty.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Locations/phoenix/witnessempty.png
+
+#begin sample-story.txt
+/copy:sample-story.txt
+

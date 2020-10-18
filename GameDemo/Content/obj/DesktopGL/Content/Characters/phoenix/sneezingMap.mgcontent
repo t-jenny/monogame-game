@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>/Users/Jenny/Projects/GameDemo/GameDemo/Content/Characters/phoenix/sneezingMap.xml</SourceFile>
+  <SourceTime>2020-09-05T23:45:27.8971997-04:00</SourceTime>
+  <DestFile>/Users/Jenny/Projects/GameDemo/GameDemo/Content/bin/DesktopGL/Content/Characters/phoenix/sneezingMap.xnb</DestFile>
+  <DestTime>2020-09-05T23:45:28.8114836-04:00</DestTime>
+  <Importer>XmlImporter</Importer>
+  <ImporterTime>2020-08-10T16:17:54-04:00</ImporterTime>
+  <Processor>PassThroughProcessor</Processor>
+  <ProcessorTime>2020-08-10T16:17:54-04:00</ProcessorTime>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
