@@ -93,3 +93,4 @@
 /Users/Jenny/monogame-game/GameDemo/obj/Debug/netcoreapp3.1/GameDemo.genruntimeconfig.cache
 /Users/Jenny/monogame-game/GameDemo/bin/Debug/netcoreapp3.1/Content/Characters/redgeworth/standing.xnb
 /Users/Jenny/monogame-game/GameDemo/bin/Debug/netcoreapp3.1/Content/Characters/redgeworth/standingMap.xnb
+/Users/Jenny/monogame-game/GameDemo/bin/Debug/netcoreapp3.1/Content/Audio/sfx/smack.xnb

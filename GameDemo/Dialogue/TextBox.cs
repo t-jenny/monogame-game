@@ -35,7 +35,7 @@ namespace GameDemo.Dialogue
 
         public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
-            Vector2 TopLeftofDialogue = new Vector2(100, 600);
+            Vector2 TopLeftofDialogue = new Vector2(75, 600);
             Color TintColor = Color.White;
             String CurrentString = CurrentTextBoxAnimation.CurrentString;
 
@@ -45,13 +45,13 @@ namespace GameDemo.Dialogue
                 PreviousString = CurrentString;
             }
 
-            Texture2D Rect = new Texture2D(graphics.GraphicsDevice, 1175, 200);
+            Texture2D Rect = new Texture2D(graphics.GraphicsDevice, 1225, 200);
 
-            Color[] Data = new Color[1175 * 200];
+            Color[] Data = new Color[1225 * 200];
             for (int i = 0; i < Data.Length; ++i) Data[i] = Color.Black;
             Rect.SetData(Data);
 
-            Vector2 Coor = new Vector2(50, 550);
+            Vector2 Coor = new Vector2(25, 550);
             spriteBatch.Draw(Rect, Coor, Color.White);
             spriteBatch.DrawString(Arial, CurrentString, TopLeftofDialogue, TintColor);
         }

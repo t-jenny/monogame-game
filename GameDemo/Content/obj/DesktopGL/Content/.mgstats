@@ -1,5 +1,6 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
 "/Users/Jenny/monogame-game/GameDemo/Content/Audio/sfx/sfx-blipmale.wav","/Users/Jenny/monogame-game/GameDemo/Content/bin/DesktopGL/Content/Audio/sfx/sfx-blipmale.xnb","SoundEffectProcessor","SoundEffectContent",896,957,0.091337
+"/Users/Jenny/monogame-game/GameDemo/Content/Audio/sfx/smack.wav","/Users/Jenny/monogame-game/GameDemo/Content/bin/DesktopGL/Content/Audio/sfx/smack.xnb","SoundEffectProcessor","SoundEffectContent",7356,7417,0.63001
 "/Users/Jenny/monogame-game/GameDemo/Content/Characters/lphoenix/sneezing.png","/Users/Jenny/monogame-game/GameDemo/Content/bin/DesktopGL/Content/Characters/lphoenix/sneezing.xnb","TextureProcessor","Texture2DContent",612911,14768733,0.933978
 "/Users/Jenny/monogame-game/GameDemo/Content/Characters/lphoenix/sneezingMap.xml","/Users/Jenny/monogame-game/GameDemo/Content/bin/DesktopGL/Content/Characters/lphoenix/sneezingMap.xnb","PassThroughProcessor","Dictionary<string, Rectangle>",675,588,0.045321
 "/Users/Jenny/monogame-game/GameDemo/Content/Characters/lphoenix/talking.png","/Users/Jenny/monogame-game/GameDemo/Content/bin/DesktopGL/Content/Characters/lphoenix/talking.xnb","TextureProcessor","Texture2DContent",328619,9843289,0.310825
@@ -11,6 +12,6 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "/Users/Jenny/monogame-game/GameDemo/Content/Characters/redgeworth/stressed.png","/Users/Jenny/monogame-game/GameDemo/Content/bin/DesktopGL/Content/Characters/redgeworth/stressed.xnb","TextureProcessor","Texture2DContent",388268,4919125,0.16983
 "/Users/Jenny/monogame-game/GameDemo/Content/Characters/redgeworth/stressedMap.xml","/Users/Jenny/monogame-game/GameDemo/Content/bin/DesktopGL/Content/Characters/redgeworth/stressedMap.xnb","PassThroughProcessor","Dictionary<string, Rectangle>",372,460,0.005507
 "/Users/Jenny/monogame-game/GameDemo/Content/Fonts/Arial.spritefont","/Users/Jenny/monogame-game/GameDemo/Content/bin/DesktopGL/Content/Fonts/Arial.xnb","FontDescriptionProcessor","SpriteFontContent",2008,70690,0.171965
-"/Users/Jenny/monogame-game/GameDemo/Content/json-sample.txt","/Users/Jenny/monogame-game/GameDemo/Content/bin/DesktopGL/Content/json-sample.txt","CopyItem","File",2376,2376,0.00095
+"/Users/Jenny/monogame-game/GameDemo/Content/json-sample.txt","/Users/Jenny/monogame-game/GameDemo/Content/bin/DesktopGL/Content/json-sample.txt","CopyItem","File",2420,2420,0.001168
 "/Users/Jenny/monogame-game/GameDemo/Content/Locations/phoenix/witnessempty.png","/Users/Jenny/monogame-game/GameDemo/Content/bin/DesktopGL/Content/Locations/phoenix/witnessempty.xnb","TextureProcessor","Texture2DContent",11215,196693,0.007857
 "/Users/Jenny/monogame-game/GameDemo/Content/sample-story.txt","/Users/Jenny/monogame-game/GameDemo/Content/bin/DesktopGL/Content/sample-story.txt","CopyItem","File",644,644,0.00083

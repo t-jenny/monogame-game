@@ -23,8 +23,10 @@ namespace GameDemo.Events
         private ButtonState PreviousButtonState;
         private ITextObject CurrentTextObject;
         private CharacterAnimation PriorCharacterAnimation;
+        private CharacterAnimation DefaultAnimation;
 
         private Background Background;
+        private LineOfDialogue Dialogue;
 
         public EventManager(MainCharacter mainCharacter, EventDialogue eventDialogue, ContentManager content)
         {
@@ -83,12 +85,6 @@ namespace GameDemo.Events
                 CurrentTextObject = TxtReader.CurrentTxtObject();
             }
 
-            if (CurrentTextObject.GetType().Name.Equals("Background"))
-            {
-                Background = (Background)CurrentTextObject;
-                PriorCharacterAnimation = null;
-            }
-
             switch (CurrentTextObject.GetType().Name)
             {
                 case "Background":
@@ -98,13 +94,13 @@ namespace GameDemo.Events
                     break;
 
                 case "CharacterAnimation":
-                    CharacterAnimation CurrentAnimation = (CharacterAnimation)CurrentTextObject;
-                    PriorCharacterAnimation = CurrentAnimation;
+                    CharacterAnimation CurrentAnimation = (CharacterAnimation) CurrentTextObject;
+                    DefaultAnimation = CurrentAnimation;
                     NextTextObject();
                     break;
 
                 case "LineOfDialogue":
-                    LineOfDialogue Dialogue = (LineOfDialogue)CurrentTextObject;
+                    Dialogue = (LineOfDialogue)CurrentTextObject;
                     EndOfLine = Dialogue.Complete();
                     break;
 
@@ -113,9 +109,17 @@ namespace GameDemo.Events
                     break;
             }
 
+            if (CurrentTextObject.GetType().Name.Equals("LineOfDialogue"))
+            {
+                if (DefaultAnimation != null)
+                {
+                    Dialogue.SetSecondAnimation(DefaultAnimation, DESATURATION_PERCENT);
+                }
+            }
+
             if (PreviousButtonState == ButtonState.Pressed && Mouse.GetState().LeftButton == ButtonState.Released && EndOfLine)
             {
-                CharacterAnimation CurrentCharacter = CurrentCharacterAnimation();
+                CharacterAnimation CurrentCharacter = Dialogue.CharacterAnimation;
 
                 TxtReader.NextTxtObject();
                 EndOfLine = false;
@@ -127,6 +131,7 @@ namespace GameDemo.Events
                     && !NextCharacter.CharacterName.Equals(CurrentCharacter.CharacterName))
                 {
                     PriorCharacterAnimation = CurrentCharacter;
+                    DefaultAnimation = null;
                 }
             }
 
@@ -146,7 +151,7 @@ namespace GameDemo.Events
 
             if (CurrentTextObject.GetType().Name.Equals("LineOfDialogue"))
             {
-                LineOfDialogue Dialogue = (LineOfDialogue)CurrentTextObject;
+                LineOfDialogue Dialogue = (LineOfDialogue) CurrentTextObject;
                 Animation = Dialogue.CharacterAnimation;
             }
 
@@ -167,7 +172,10 @@ namespace GameDemo.Events
                 PriorCharacterAnimation.Draw(spriteBatch, graphics);
             }
 
-            CurrentTextObject.Draw(spriteBatch, graphics);
+            if (!CurrentTextObject.GetType().Name.Equals("CharacterAnimation"))
+            {
+                CurrentTextObject.Draw(spriteBatch, graphics);
+            }
         }
     }
 }

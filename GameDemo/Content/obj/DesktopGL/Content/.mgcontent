@@ -6,6 +6,7 @@
   <SourceFiles>
     <File>/Users/Jenny/monogame-game/GameDemo/Content/Audio/ost/gumshoe.mp3</File>
     <File>/Users/Jenny/monogame-game/GameDemo/Content/Audio/sfx/sfx-blipmale.wav</File>
+    <File>/Users/Jenny/monogame-game/GameDemo/Content/Audio/sfx/smack.wav</File>
     <File>/Users/Jenny/monogame-game/GameDemo/Content/Characters/lphoenix/sneezing.png</File>
     <File>/Users/Jenny/monogame-game/GameDemo/Content/Characters/lphoenix/sneezingMap.xml</File>
     <File>/Users/Jenny/monogame-game/GameDemo/Content/Characters/lphoenix/talking.png</File>
@@ -20,6 +21,7 @@
     <File>/Users/Jenny/monogame-game/GameDemo/Content/Locations/phoenix/witnessempty.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

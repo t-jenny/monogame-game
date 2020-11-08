@@ -25,6 +25,12 @@
 /processorParam:Quality=Best
 /build:Audio/sfx/sfx-blipmale.wav
 
+#begin Audio/sfx/smack.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/sfx/smack.wav
+
 #begin Characters/lphoenix/sneezing.png
 /importer:TextureImporter
 /processor:TextureProcessor

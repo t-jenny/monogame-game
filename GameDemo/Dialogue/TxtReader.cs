@@ -148,8 +148,10 @@ namespace GameDemo.Dialogue
                     default:
                         int CharacterIndex = CurrentString.IndexOf(CHARACTER);
                         int AnimationIndex = CurrentString.IndexOf(ANIMATION);
+                        int SoundIndex = CurrentString.IndexOf(AUDIO);
 
                         String Dialogue = CurrentString;
+                        String Sound = null;
 
                         if (CharacterIndex != -1)
                         {
@@ -157,10 +159,21 @@ namespace GameDemo.Dialogue
                             String CharacterName = CurrentString.Substring(CharacterIndex + 1, AnimationIndex - CharacterIndex - 2);
                             String Animation = CurrentString.Substring(AnimationIndex + 1);
 
-                            return new LineOfDialogue(Content, Dialogue, new CharacterAnimation(Content, CharacterName, Animation));
+                            if (SoundIndex != -1)
+                            {
+                                Animation = CurrentString.Substring(AnimationIndex + 1, SoundIndex - AnimationIndex - 2);
+                                Sound = CurrentString.Substring(SoundIndex + 1);
+                            }
+
+                            return new LineOfDialogue(Content, Dialogue, Sound, new CharacterAnimation(Content, CharacterName, Animation));
+
+                        } else if (SoundIndex != -1)
+                        {
+                            Dialogue = CurrentString.Substring(FIRST_INDEX, SoundIndex);
+                            Sound = CurrentString.Substring(SoundIndex + 1);
                         }
 
-                        return new LineOfDialogue(Content, Dialogue, null);
+                        return new LineOfDialogue(Content, Dialogue, Sound, null);
                 }
             }
 
