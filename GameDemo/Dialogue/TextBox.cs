@@ -9,53 +9,51 @@ namespace GameDemo.Dialogue
 {
     public class TextBox
     {
-        private SpriteFont arial;
-        private TextBoxAnimation textBoxAnimation;
-        public TextBoxAnimation currentTextBoxAnimation;
-        private SoundEffect soundEffect;
-        private String previousString;
+        private SpriteFont Arial;
+        private TextBoxAnimation TextBoxAnimation;
+        public TextBoxAnimation CurrentTextBoxAnimation;
+        private SoundEffect SoundEffect;
+        private String PreviousString;
 
         public TextBox(ContentManager content, String dialogue)
         {
-            textBoxAnimation = new TextBoxAnimation()
+            TextBoxAnimation = new TextBoxAnimation()
             {
-                charArray = dialogue.ToCharArray()
+                CharArray = dialogue.ToCharArray()
             };
-            arial = content.Load<SpriteFont>("Fonts/Arial");
-            textBoxAnimation.appearRate = TimeSpan.FromSeconds(.1);
-            soundEffect = content.Load<SoundEffect>("Audio/sfx/sfx-blipmale");
-            previousString = "";
+            Arial = content.Load<SpriteFont>("Fonts/Arial");
+            TextBoxAnimation.AppearRate = TimeSpan.FromSeconds(.1);
+            SoundEffect = content.Load<SoundEffect>("Audio/sfx/sfx-blipmale");
+            PreviousString = "";
         }
 
         public void Update(GameTime gameTime)
         {
-            currentTextBoxAnimation = textBoxAnimation;
-            currentTextBoxAnimation.Update(gameTime);
+            CurrentTextBoxAnimation = TextBoxAnimation;
+            CurrentTextBoxAnimation.Update(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
-            Vector2 topLeftofDialogue = new Vector2(200, 600);
-            Color tintColor = Color.White;
-            String currentString = currentTextBoxAnimation.currentString;
+            Vector2 TopLeftofDialogue = new Vector2(100, 600);
+            Color TintColor = Color.White;
+            String CurrentString = CurrentTextBoxAnimation.CurrentString;
 
-
-            if (!previousString.Equals(currentString) && !currentString.EndsWith(" "))
+            if (!PreviousString.Equals(CurrentString) && !CurrentString.EndsWith(" "))
             {
-                soundEffect.Play();
-                previousString = currentString;
+                SoundEffect.Play();
+                PreviousString = CurrentString;
             }
 
-            Texture2D rect = new Texture2D(graphics.GraphicsDevice, 1000, 200);
+            Texture2D Rect = new Texture2D(graphics.GraphicsDevice, 1175, 200);
 
-            Color[] data = new Color[1000 * 200];
-            for (int i = 0; i < data.Length; ++i) data[i] = Color.Black;
-            rect.SetData(data);
+            Color[] Data = new Color[1175 * 200];
+            for (int i = 0; i < Data.Length; ++i) Data[i] = Color.Black;
+            Rect.SetData(Data);
 
-            Vector2 coor = new Vector2(150, 550);
-            spriteBatch.Draw(rect, coor, Color.White);
-            spriteBatch.DrawString(arial, currentString, topLeftofDialogue, tintColor);
-
+            Vector2 Coor = new Vector2(50, 550);
+            spriteBatch.Draw(Rect, Coor, Color.White);
+            spriteBatch.DrawString(Arial, CurrentString, TopLeftofDialogue, TintColor);
         }
     }
 }

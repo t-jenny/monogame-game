@@ -8,23 +8,24 @@ namespace GameDemo.Animations
 {
     public class Animation
     {
-        List<AnimationFrame> frames = new List<AnimationFrame>();
-        public bool fastForward;
-        public TimeSpan timeIntoAnimation;
-        private ButtonState previousMouseState;
-        public bool isLooping { get; set; }
+        private ButtonState PreviousMouseState;
+        List<AnimationFrame> Frames = new List<AnimationFrame>();
+
+        public bool FastForward;
+        public TimeSpan TimeIntoAnimation;
+        public bool IsLooping;
 
         public TimeSpan Duration
         {
             get
             {
-                double totalSeconds = 0;
-                foreach (var frame in frames)
+                double TotalSeconds = 0;
+                foreach (var Frame in Frames)
                 {
-                    totalSeconds += frame.Duration.TotalSeconds;
+                    TotalSeconds += Frame.Duration.TotalSeconds;
                 }
 
-                return TimeSpan.FromSeconds(totalSeconds);
+                return TimeSpan.FromSeconds(TotalSeconds);
             }
         }
 
@@ -32,35 +33,35 @@ namespace GameDemo.Animations
         {
             get
             {
-                AnimationFrame currentFrame = null;
+                AnimationFrame CurrentFrame = null;
 
                 // See if we can find the frame
-                TimeSpan accumulatedTime = new TimeSpan();
-                foreach (var frame in frames)
+                TimeSpan AccumulatedTime = new TimeSpan();
+                foreach (var Frame in Frames)
                 {
-                    if (accumulatedTime + frame.Duration >= timeIntoAnimation)
+                    if (AccumulatedTime + Frame.Duration >= TimeIntoAnimation)
                     {
-                        currentFrame = frame;
+                        CurrentFrame = Frame;
                         break;
                     }
                     else
                     {
-                        accumulatedTime += frame.Duration;
+                        AccumulatedTime += Frame.Duration;
                     }
                 }
 
                 // If no frame was found, then try the last frame, 
                 // just in case timeIntoAnimation somehow exceeds Duration
-                if (timeIntoAnimation > this.Duration)
+                if (TimeIntoAnimation > this.Duration)
                 {
-                    currentFrame = frames.FirstOrDefault();
+                    CurrentFrame = Frames.FirstOrDefault();
                 }
 
                 // If we found a frame, return its rectangle, otherwise
                 // return an empty rectangle (one with no width or height)
-                if (currentFrame != null)
+                if (CurrentFrame != null)
                 {
-                    return currentFrame.SourceRectangle;
+                    return CurrentFrame.SourceRectangle;
                 }
                 else
                 {
@@ -71,48 +72,45 @@ namespace GameDemo.Animations
 
         public void AddFrame(Rectangle rectangle, TimeSpan duration)
         {
-            AnimationFrame newFrame = new AnimationFrame()
+            AnimationFrame NewFrame = new AnimationFrame()
             {
                 SourceRectangle = rectangle,
                 Duration = duration
             };
 
-            frames.Add(newFrame);
+            Frames.Add(NewFrame);
         }
 
         public void Update(GameTime gameTime)
         {
-            double secondsIntoAnimation =
-                timeIntoAnimation.TotalSeconds + gameTime.ElapsedGameTime.TotalSeconds;
+            double SecondsIntoAnimation = TimeIntoAnimation.TotalSeconds + gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
-                previousMouseState == ButtonState.Released &&
-                secondsIntoAnimation > 0.1)
+            if (Mouse.GetState().LeftButton == ButtonState.Released && PreviousMouseState == ButtonState.Pressed)
             {
-                fastForward = true;
+                FastForward = true;
             }
 
-            if (isLooping)
+            if (IsLooping)
             {
-                if (!fastForward)
+                if (!FastForward)
                 {
-                    double remainder = secondsIntoAnimation % Duration.TotalSeconds;
-                    timeIntoAnimation = TimeSpan.FromSeconds(remainder);
+                    double Remainder = SecondsIntoAnimation % Duration.TotalSeconds;
+                    TimeIntoAnimation = TimeSpan.FromSeconds(Remainder);
                 }
 
                 else
                 {
-                    double end = this.Duration.TotalSeconds + gameTime.ElapsedGameTime.TotalSeconds;
-                    timeIntoAnimation = TimeSpan.FromSeconds(end);
+                    double End = this.Duration.TotalSeconds + gameTime.ElapsedGameTime.TotalSeconds;
+                    TimeIntoAnimation = TimeSpan.FromSeconds(End);
                 }
             }
 
             else
             {
-                timeIntoAnimation = TimeSpan.FromSeconds(secondsIntoAnimation);
+                TimeIntoAnimation = TimeSpan.FromSeconds(SecondsIntoAnimation);
             }
 
-            previousMouseState = Mouse.GetState().LeftButton;
+            PreviousMouseState = Mouse.GetState().LeftButton;
         }
     }
 }

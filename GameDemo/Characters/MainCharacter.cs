@@ -5,10 +5,10 @@ namespace GameDemo.Characters
 {
     public class MainCharacter
     {
-        Dictionary<string, int> Stats { get; set; }
-        Dictionary<string, int> Relationships { get; set; }
-        HashSet<string> EventFlags { get; set; }
-        HashSet<string> Journal { get; set; }
-        HashSet<string> Inventory { get; set; }
+        public Dictionary<string, int> Stats { get; set; }
+        public Dictionary<string, int> Relationships { get; set; }
+        public HashSet<string> EventFlags { get; set; }
+        public HashSet<string> Journal { get; set; }
+        public HashSet<string> Inventory { get; set; }
     }
 }

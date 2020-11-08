@@ -6,27 +6,32 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GameDemo.Locations
 {
-    public class Background
+    public class Background : ITextObject
     {
-        static Texture2D background;
+        static Texture2D Image;
         const float LAYER_DEPTH = 0.0f;
         const float ORIGIN = 0.0f;
 
         public Background(ContentManager content, String location)
         {
-            if (background == null)
+            if (Image == null)
             {
-                background = content.Load<Texture2D>("Locations/phoenix/" + location);
+                Image = content.Load<Texture2D>("Locations/phoenix/" + location);
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Update(GameTime gameTime)
         {
-            Vector2 topLeftOfSprite = new Vector2(ORIGIN, ORIGIN);
-            Color tintColor = Color.White;
 
-            spriteBatch.Draw(background, topLeftOfSprite, null,
-                tintColor, 0.0f, Vector2.Zero, new Vector2(5), SpriteEffects.None, LAYER_DEPTH);
+        }
+
+        public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        {
+            Vector2 TopLeftOfSprite = new Vector2(ORIGIN, ORIGIN);
+            Color TintColor = Color.White;
+
+            spriteBatch.Draw(Image, TopLeftOfSprite, null,
+                TintColor, 0.0f, Vector2.Zero, new Vector2(5), SpriteEffects.None, LAYER_DEPTH);
         }
     }
 }

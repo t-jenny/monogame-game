@@ -13,11 +13,11 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Audio/ost/Dick Gumshoe It's Detective Gumshoe Phoenix Wright Ace Attorney Music Extended HD.mp3
+#begin Audio/ost/gumshoe.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
 /processorParam:Quality=Best
-/build:Audio/ost/Dick Gumshoe It's Detective Gumshoe Phoenix Wright Ace Attorney Music Extended HD.mp3;Audio/ost/gumshoe.mp3
+/build:Audio/ost/gumshoe.mp3
 
 #begin Audio/sfx/sfx-blipmale.wav
 /importer:WavImporter
@@ -25,7 +25,7 @@
 /processorParam:Quality=Best
 /build:Audio/sfx/sfx-blipmale.wav
 
-#begin Characters/phoenix/sneezing.png
+#begin Characters/lphoenix/sneezing.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -35,14 +35,14 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Characters/phoenix/sneezing.png
+/build:Characters/lphoenix/sneezing.png
 
-#begin Characters/phoenix/sneezingMap.xml
+#begin Characters/lphoenix/sneezingMap.xml
 /importer:XmlImporter
 /processor:PassThroughProcessor
-/build:Characters/phoenix/sneezingMap.xml
+/build:Characters/lphoenix/sneezingMap.xml
 
-#begin Characters/phoenix/talking.png
+#begin Characters/lphoenix/talking.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -52,12 +52,63 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Characters/phoenix/talking.png
+/build:Characters/lphoenix/talking.png
 
-#begin Characters/phoenix/talkingMap.xml
+#begin Characters/lphoenix/talkingMap.xml
 /importer:XmlImporter
 /processor:PassThroughProcessor
-/build:Characters/phoenix/talkingMap.xml
+/build:Characters/lphoenix/talkingMap.xml
+
+#begin Characters/redgeworth/disgusted.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Characters/redgeworth/disgusted.png
+
+#begin Characters/redgeworth/disgustedMap.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:Characters/redgeworth/disgustedMap.xml
+
+#begin Characters/redgeworth/standing.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Characters/redgeworth/standing.png
+
+#begin Characters/redgeworth/standingMap.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:Characters/redgeworth/standingMap.xml
+
+#begin Characters/redgeworth/stressed.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Characters/redgeworth/stressed.png
+
+#begin Characters/redgeworth/stressedMap.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:Characters/redgeworth/stressedMap.xml
 
 #begin Fonts/Arial.spritefont
 /importer:FontDescriptionImporter
@@ -65,6 +116,9 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Fonts/Arial.spritefont
+
+#begin json-sample.txt
+/copy:json-sample.txt
 
 #begin Locations/phoenix/witnessempty.png
 /importer:TextureImporter

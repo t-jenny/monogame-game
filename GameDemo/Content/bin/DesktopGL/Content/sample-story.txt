@@ -1,14 +1,22 @@
-﻿//witnessempty
+﻿*courtroom
+%sad
 Acchoo! @phoenix #sneezing
 Achhoo! @phoenix #sneezing
 Urgh sorry I'm not feeling well. @phoenix #talking
 At least last time I checked, I wasn't feeling feverish. @phoenix #talking
 Am I feverish? @phoenix #talking
+> choice_one /Give Phoenix a tissue./
+> choice_two /Tell him to go away./
+= choice_one
 Acchoo! @phoenix #sneezing
-Achhoo! @phoenix #sneezing
-Ew! Get away from me! @2edgeworth #disgusted
-I am not trying to get sick right now. @2edgeworth #talking
-Oh sorry! I didn't see you there. @1phoenix #talking
-Acchoo! Acchoo! @1phoenix #sneezing @2edgeworth #disgusted
-Sorry! I'll leave! @1phoenix #talking
-Good riddance! @edgeworth #talking
+Acchoo! @phoenix #sneezing
++flag: choice1
+= choice_two
+Acchoo! @phoenix #sneezing
+Acchoo! @phoenix #sneezing
+Thanks! That was really nice. @phoenix #talking
++flag: choice2
+Sorry. I guess I'll go now. @phoenix #talking
++notebook: /Phoenix is sick./
++stats: /intelligence 1/
++relationships: /blush 1/

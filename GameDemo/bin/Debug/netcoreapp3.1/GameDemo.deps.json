@@ -9,8 +9,7 @@
       "GameDemo/1.0.0": {
         "dependencies": {
           "MonoGame.Content.Builder.Task": "3.8.0.1641",
-          "MonoGame.Framework.DesktopGL": "3.8.0.1641",
-          "MonoGame.Framework.Content.Pipeline": "3.7.1.189"
+          "MonoGame.Framework.DesktopGL": "3.8.0.1641"
         },
         "runtime": {
           "GameDemo.dll": {}
@@ -66,62 +65,6 @@
             "fileVersion": "0.0.0.0"
           }
         }
-      },
-      "MonoGame.Framework.Content.Pipeline/3.7.1.189": {
-        "runtime": {
-          "MonoGame.Framework.Content.Pipeline.dll": {
-            "assemblyVersion": "3.7.1.189",
-            "fileVersion": "3.7.1.189"
-          }
-        }
-      },
-      "AssimpNet/3.3.1.0": {
-        "runtime": {
-          "AssimpNet.dll": {
-            "assemblyVersion": "3.3.1.0",
-            "fileVersion": "3.3.1.0"
-          }
-        }
-      },
-      "FreeImageNET/3.17.0.0": {
-        "runtime": {
-          "FreeImageNET.dll": {
-            "assemblyVersion": "3.17.0.0",
-            "fileVersion": "3.17.0.0"
-          }
-        }
-      },
-      "ATI.TextureConverter/1.0.5522.26319": {
-        "runtime": {
-          "ATI.TextureConverter.dll": {
-            "assemblyVersion": "1.0.5522.26319",
-            "fileVersion": "1.0.5522.26319"
-          }
-        }
-      },
-      "Nvidia.TextureTools/1.0.0.0": {
-        "runtime": {
-          "Nvidia.TextureTools.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
-          }
-        }
-      },
-      "PVRTexLibNET/1.0.0.0": {
-        "runtime": {
-          "PVRTexLibNET.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
-          }
-        }
-      },
-      "SharpFont/2.5.3.0": {
-        "runtime": {
-          "SharpFont.dll": {
-            "assemblyVersion": "2.5.3.0",
-            "fileVersion": "1.0.0.0"
-          }
-        }
       }
     }
   },
@@ -144,41 +87,6 @@
       "sha512": "sha512-rJQlrlHQbnOECYV6EcQ8GlGRQ2lzPTroXQcyyOZ0ki+BQRSJEN2zVBm9skqLiXya348aGAfTSSGTaSKjAy9NaA==",
       "path": "monogame.framework.desktopgl/3.8.0.1641",
       "hashPath": "monogame.framework.desktopgl.3.8.0.1641.nupkg.sha512"
-    },
-    "MonoGame.Framework.Content.Pipeline/3.7.1.189": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "AssimpNet/3.3.1.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "FreeImageNET/3.17.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "ATI.TextureConverter/1.0.5522.26319": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "Nvidia.TextureTools/1.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "PVRTexLibNET/1.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "SharpFont/2.5.3.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
     }
   }
 }

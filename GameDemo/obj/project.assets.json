@@ -179,11 +179,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/Jenny/Projects/GameDemo/GameDemo/GameDemo.csproj",
+      "projectUniqueName": "/Users/Jenny/monogame-game/GameDemo/GameDemo.csproj",
       "projectName": "GameDemo",
-      "projectPath": "/Users/Jenny/Projects/GameDemo/GameDemo/GameDemo.csproj",
+      "projectPath": "/Users/Jenny/monogame-game/GameDemo/GameDemo.csproj",
       "packagesPath": "/Users/Jenny/.nuget/packages/",
-      "outputPath": "/Users/Jenny/Projects/GameDemo/GameDemo/obj/",
+      "outputPath": "/Users/Jenny/monogame-game/GameDemo/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/Jenny/.config/NuGet/NuGet.Config"
@@ -232,7 +232,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/3.1.402/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/3.1.403/RuntimeIdentifierGraph.json"
       }
     }
   }

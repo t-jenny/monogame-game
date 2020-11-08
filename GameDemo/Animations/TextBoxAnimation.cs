@@ -1,36 +1,37 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 
 namespace GameDemo.Animations
 {
     public class TextBoxAnimation
     {
-        public char[] charArray { get; set; }
-        TimeSpan timeIntoAnimation;
-        ButtonState previousMouseState;
-        public bool fastForward;
-        public TimeSpan appearRate { get; set; }
+        TimeSpan TimeIntoAnimation;
+        ButtonState PreviousMouseState;
+
+        public bool FastForward { get; private set; }
+        public bool TextComplete { get; private set; }
+
+        public char[] CharArray { get; set; }
+        public TimeSpan AppearRate { get; set; }
 
         public TimeSpan Duration
         {
             get
             {
-                double totalSeconds = 0;
-                for (int i = 0; i < charArray.Length; i++)
+                double TotalSeconds = 0;
+                for (int i = 0; i < CharArray.Length; i++)
                 {
-                    totalSeconds += getAlteredRate(appearRate, i).TotalSeconds;
+                    TotalSeconds += GetAlteredRate(AppearRate, i).TotalSeconds;
                 }
 
-                return TimeSpan.FromSeconds(totalSeconds);
+                return TimeSpan.FromSeconds(TotalSeconds);
             }
         }
 
-        private TimeSpan getAlteredRate(TimeSpan rate, int i)
+        private TimeSpan GetAlteredRate(TimeSpan rate, int i)
         {
-            if (!Char.IsLetterOrDigit(charArray[i]) && !Char.IsLetterOrDigit(charArray[i - 1]))
+            if (!Char.IsLetterOrDigit(CharArray[i]) && !Char.IsLetterOrDigit(CharArray[i - 1]))
             {
                 return rate + rate;
             }
@@ -38,40 +39,41 @@ namespace GameDemo.Animations
             else return rate;
         }
 
-        public String currentString
+        public String CurrentString
         {
             get
             {
-                int currentCharIndex = 0;
+                int CurrentCharIndex = 0;
 
                 // See if we can find the frame
-                TimeSpan accumulatedTime = new TimeSpan();
-                for (int i = 0; i < charArray.Length; i++)
+                TimeSpan AccumulatedTime = new TimeSpan();
+                for (int i = 0; i < CharArray.Length; i++)
                 {
-                    if (accumulatedTime + getAlteredRate(appearRate, i) >= timeIntoAnimation)
+                    if (AccumulatedTime + GetAlteredRate(AppearRate, i) >= TimeIntoAnimation)
                     {
-                        currentCharIndex = i;
+                        CurrentCharIndex = i;
                         break;
                     }
                     else
                     {
-                        accumulatedTime += getAlteredRate(appearRate, i);
+                        AccumulatedTime += GetAlteredRate(AppearRate, i);
                     }
                 }
 
                 // in case timeIntoAnimation exceeds Duration
                 // return full string
 
-                if (timeIntoAnimation > this.Duration)
+                if (TimeIntoAnimation > this.Duration)
                 {
-                    currentCharIndex = charArray.Length - 1;
+                    TextComplete = true;
+                    CurrentCharIndex = CharArray.Length;
                 }
 
                 // If we found a frame, return its rectangle, otherwise
                 // return an empty rectangle (one with no width or height)
-                if (currentCharIndex != 0)
+                if (CurrentCharIndex != 0)
                 {
-                    return new string(charArray, 0, currentCharIndex);
+                    return new string(CharArray, 0, CurrentCharIndex);
                 }
                 else
                 {
@@ -82,28 +84,26 @@ namespace GameDemo.Animations
 
         public void Update(GameTime gameTime)
         {
-            double secondsIntoAnimation =
-                timeIntoAnimation.TotalSeconds + gameTime.ElapsedGameTime.TotalSeconds;
+            double SecondsIntoAnimation =
+                TimeIntoAnimation.TotalSeconds + gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
-                previousMouseState == ButtonState.Released &&
-                secondsIntoAnimation > appearRate.TotalSeconds)
+            if (Mouse.GetState().LeftButton == ButtonState.Released && PreviousMouseState == ButtonState.Pressed)
             {
-                fastForward = true;
+                FastForward = true;
             }
 
-            if (!fastForward)
+            if (!FastForward)
             {
-                timeIntoAnimation = TimeSpan.FromSeconds(secondsIntoAnimation);
+                TimeIntoAnimation = TimeSpan.FromSeconds(SecondsIntoAnimation);
             }
 
             else
             {
-                double end = this.Duration.TotalSeconds + gameTime.ElapsedGameTime.TotalSeconds;
-                timeIntoAnimation = TimeSpan.FromSeconds(end);
+                double End = this.Duration.TotalSeconds + gameTime.ElapsedGameTime.TotalSeconds;
+                TimeIntoAnimation = TimeSpan.FromSeconds(End);
             }
 
-            previousMouseState = Mouse.GetState().LeftButton;
+            PreviousMouseState = Mouse.GetState().LeftButton;
         }
     }
 }

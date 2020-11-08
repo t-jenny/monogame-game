@@ -1,0 +1,44 @@
+﻿<Properties StartupConfiguration="{229CB5D4-0E25-4FE3-B3D5-D73989F6B4DE}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="GameDemo/Events/EventManager.cs">
+    <Files>
+      <File FileName="GameDemo/Events/EventManager.cs" Line="94" Column="35" />
+      <File FileName="GameDemo/Dialogue/TxtReader.cs" Line="67" Column="35" />
+      <File FileName="GameDemo/Animations/CharacterAnimation.cs" Line="58" Column="1" />
+      <File FileName="GameDemo/Content/Characters/redgeworth/standingMap.xml" Line="3" Column="35" />
+      <File FileName="GameDemo/Dialogue/TextBox.cs" Line="41" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="GameDemo" expanded="True">
+            <Node name="GameDemo" expanded="True">
+              <Node name="Dependencies" expanded="True" />
+              <Node name="Animations" expanded="True" />
+              <Node name="Characters" expanded="True" />
+              <Node name="Content" expanded="True">
+                <Node name="Characters" expanded="True">
+                  <Node name="lphoenix" expanded="True" />
+                  <Node name="redgeworth" expanded="True" />
+                </Node>
+              </Node>
+              <Node name="Dialogue" expanded="True" />
+              <Node name="Effects" expanded="True" />
+              <Node name="Events" expanded="True">
+                <Node name="EventManager.cs" selected="True" />
+              </Node>
+              <Node name="Locations" expanded="True" />
+              <Node name="Managers" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.GameDemo PreferredExecutionTarget="MonoDevelop.Default" />
+</Properties>

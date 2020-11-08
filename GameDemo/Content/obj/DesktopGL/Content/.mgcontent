@@ -4,17 +4,29 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>/Users/Jenny/Projects/GameDemo/GameDemo/Content/Audio/ost/Dick Gumshoe It's Detective Gumshoe Phoenix Wright Ace Attorney Music Extended HD.mp3</File>
-    <File>/Users/Jenny/Projects/GameDemo/GameDemo/Content/Audio/sfx/sfx-blipmale.wav</File>
-    <File>/Users/Jenny/Projects/GameDemo/GameDemo/Content/Characters/phoenix/sneezing.png</File>
-    <File>/Users/Jenny/Projects/GameDemo/GameDemo/Content/Characters/phoenix/sneezingMap.xml</File>
-    <File>/Users/Jenny/Projects/GameDemo/GameDemo/Content/Characters/phoenix/talking.png</File>
-    <File>/Users/Jenny/Projects/GameDemo/GameDemo/Content/Characters/phoenix/talkingMap.xml</File>
-    <File>/Users/Jenny/Projects/GameDemo/GameDemo/Content/Fonts/Arial.spritefont</File>
-    <File>/Users/Jenny/Projects/GameDemo/GameDemo/Content/Locations/phoenix/witnessempty.png</File>
+    <File>/Users/Jenny/monogame-game/GameDemo/Content/Audio/ost/gumshoe.mp3</File>
+    <File>/Users/Jenny/monogame-game/GameDemo/Content/Audio/sfx/sfx-blipmale.wav</File>
+    <File>/Users/Jenny/monogame-game/GameDemo/Content/Characters/lphoenix/sneezing.png</File>
+    <File>/Users/Jenny/monogame-game/GameDemo/Content/Characters/lphoenix/sneezingMap.xml</File>
+    <File>/Users/Jenny/monogame-game/GameDemo/Content/Characters/lphoenix/talking.png</File>
+    <File>/Users/Jenny/monogame-game/GameDemo/Content/Characters/lphoenix/talkingMap.xml</File>
+    <File>/Users/Jenny/monogame-game/GameDemo/Content/Characters/redgeworth/disgusted.png</File>
+    <File>/Users/Jenny/monogame-game/GameDemo/Content/Characters/redgeworth/disgustedMap.xml</File>
+    <File>/Users/Jenny/monogame-game/GameDemo/Content/Characters/redgeworth/standing.png</File>
+    <File>/Users/Jenny/monogame-game/GameDemo/Content/Characters/redgeworth/standingMap.xml</File>
+    <File>/Users/Jenny/monogame-game/GameDemo/Content/Characters/redgeworth/stressed.png</File>
+    <File>/Users/Jenny/monogame-game/GameDemo/Content/Characters/redgeworth/stressedMap.xml</File>
+    <File>/Users/Jenny/monogame-game/GameDemo/Content/Fonts/Arial.spritefont</File>
+    <File>/Users/Jenny/monogame-game/GameDemo/Content/Locations/phoenix/witnessempty.png</File>
   </SourceFiles>
   <DestFiles>
-    <File>Audio/ost/gumshoe.mp3</File>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

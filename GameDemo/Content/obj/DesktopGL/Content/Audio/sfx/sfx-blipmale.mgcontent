@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>/Users/Jenny/Projects/GameDemo/GameDemo/Content/Audio/sfx/sfx-blipmale.wav</SourceFile>
+  <SourceFile>/Users/Jenny/monogame-game/GameDemo/Content/Audio/sfx/sfx-blipmale.wav</SourceFile>
   <SourceTime>2008-03-13T20:54:44-04:00</SourceTime>
-  <DestFile>/Users/Jenny/Projects/GameDemo/GameDemo/Content/bin/DesktopGL/Content/Audio/sfx/sfx-blipmale.xnb</DestFile>
-  <DestTime>2020-09-02T05:55:39.540104-04:00</DestTime>
+  <DestFile>/Users/Jenny/monogame-game/GameDemo/Content/bin/DesktopGL/Content/Audio/sfx/sfx-blipmale.xnb</DestFile>
+  <DestTime>2020-10-17T23:18:50.6648152-04:00</DestTime>
   <Importer>WavImporter</Importer>
   <ImporterTime>2020-08-10T16:17:54-04:00</ImporterTime>
   <Processor>SoundEffectProcessor</Processor>

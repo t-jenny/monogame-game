@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:ns="Microsoft.Xna.Framework">
+    <Asset Type="System.Collections.Generic.Dictionary[System.String, Microsoft.Xna.Framework.Rectangle]">
+        <Item><Key>Frame_0050.png</Key><Value>0 0 960 640</Value></Item>
+        <Item><Key>Frame_0051.png</Key><Value>0 641 960 640</Value></Item>
+    </Asset>
+</XnaContent>

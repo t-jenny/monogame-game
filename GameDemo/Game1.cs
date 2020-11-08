@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Xml;
-using System.Xml.Serialization;
+using System.Text.Json;
 using GameDemo.Characters;
-using GameDemo.Dialogue;
-using GameDemo.Locations;
-using GameDemo.Scene;
+using GameDemo.Events;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -17,46 +11,41 @@ namespace GameDemo
 {
     public class Game1 : Game
     {
-        private GraphicsDeviceManager graphics;
-        private SpriteBatch spriteBatch;
-        private SceneManager sceneManager;
-        private TxtReader txtReader;
+        private GraphicsDeviceManager Graphics;
+        private SpriteBatch SpriteBatch;
+        private MainCharacter MainCharacter;
+        private EventManager EventManager;
         private const int DEFAULT_WIDTH = 1280;
         private const int DEFAULT_HEIGHT = 780;
 
 
         public Game1()
         {
-            graphics = new GraphicsDeviceManager(this);
+            Graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
 
         protected override void Initialize()
         {
-            graphics.PreferredBackBufferWidth = DEFAULT_WIDTH;
-            graphics.PreferredBackBufferHeight = DEFAULT_HEIGHT;
-            graphics.ApplyChanges();
+            Graphics.PreferredBackBufferWidth = DEFAULT_WIDTH;
+            Graphics.PreferredBackBufferHeight = DEFAULT_HEIGHT;
+            Graphics.ApplyChanges();
 
-            txtReader = new TxtReader(this.Content);
-            sceneManager = new SceneManager(this.Content, this.graphics, this.txtReader);
+            MainCharacter = new MainCharacter();
+            String path = Path.Combine(Content.RootDirectory, "json-sample.txt");
+            String Text = File.ReadAllText(path);
+            AllEventDialogue AllEventDialogue = JsonSerializer.Deserialize<AllEventDialogue>(Text);
+            EventDialogue EventDialogue = AllEventDialogue.AllEvents["eventString"][0];
 
-            DialogueConditions testData = new DialogueConditions();
-
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.Indent = true;
-
-            using (XmlWriter writer = XmlWriter.Create("test.xml", settings))
-            {
-                Microsoft.Xna.Framework.Content.Pipeline.Serialization.Intermediate.IntermediateSerializer.Serialize(writer, testData, null);
-            }
+            EventManager = new EventManager(this.MainCharacter, EventDialogue, this.Content);
 
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
         }
 
         protected override void Update(GameTime gameTime)
@@ -64,7 +53,7 @@ namespace GameDemo
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            sceneManager.Update(gameTime);
+            EventManager.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -72,9 +61,9 @@ namespace GameDemo
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin();
-            sceneManager.Draw(spriteBatch);
-            spriteBatch.End();
+            SpriteBatch.Begin();
+            EventManager.Draw(SpriteBatch, Graphics);
+            SpriteBatch.End();
 
             base.Draw(gameTime);
         }

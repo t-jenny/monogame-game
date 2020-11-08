@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>/Users/Jenny/Projects/GameDemo/GameDemo/Content/Locations/phoenix/witnessempty.png</SourceFile>
+  <SourceFile>/Users/Jenny/monogame-game/GameDemo/Content/Locations/phoenix/witnessempty.png</SourceFile>
   <SourceTime>2006-12-02T19:23:44-05:00</SourceTime>
-  <DestFile>/Users/Jenny/Projects/GameDemo/GameDemo/Content/bin/DesktopGL/Content/Locations/phoenix/witnessempty.xnb</DestFile>
-  <DestTime>2020-09-06T00:20:09.8620783-04:00</DestTime>
+  <DestFile>/Users/Jenny/monogame-game/GameDemo/Content/bin/DesktopGL/Content/Locations/phoenix/witnessempty.xnb</DestFile>
+  <DestTime>2020-10-17T23:18:52.334618-04:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T16:17:54-04:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
