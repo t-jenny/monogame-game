@@ -31,7 +31,7 @@ namespace GameDemo.Dialogue
         MainCharacter MainCharacter;
         ContentManager Content;
         String[] Text;
-        int TextIndex;
+        int TextIndex = FIRST_INDEX;
 
         private TxtReader(MainCharacter mainCharacter, ContentManager content)
         {
@@ -51,9 +51,15 @@ namespace GameDemo.Dialogue
             Text = text;
         }
 
-        public void NextTxtObject()
+        // returns 1 if the next text object is out of bounds.
+        public int NextTxtObject()
         {
-            TextIndex++;
+            if (TextIndex < Text.Length - 1)
+            {
+                TextIndex++;
+                return 0;
+            }
+            else return 1;
         }
 
         public ITextObject CurrentTxtObject()
@@ -62,7 +68,7 @@ namespace GameDemo.Dialogue
             char FirstChar = CurrentString[FIRST_INDEX];
             ITextObject TextObject = null;
 
-            while (TextIndex < Text.Length)
+            if (TextIndex < Text.Length)
             {
                 switch (FirstChar)
                 {
@@ -76,6 +82,7 @@ namespace GameDemo.Dialogue
                         return new CharacterAnimation(Content, CurrentString.Substring(SECOND_INDEX), null);
 
                     case CHOICE:
+
                         List<String[]> ChoiceKeys = new List<String[]>();
                         while (FirstChar == CHOICE)
                         {
@@ -112,10 +119,10 @@ namespace GameDemo.Dialogue
                     case ADD:
                         char SecondChar = CurrentString[SECOND_INDEX];
                         String[] CharacterChanges = CurrentString.Substring(CHANGE_INDEX).Split(SPLIT);
-
+                        
                         foreach(String Change in CharacterChanges)
                         {
-                            switch(SecondChar)
+                            switch (SecondChar)
                             {
                                 case FLAG:
                                     MainCharacter.EventFlags.Add(Change);
@@ -176,7 +183,7 @@ namespace GameDemo.Dialogue
                         return new LineOfDialogue(Content, Dialogue, Sound, null);
                 }
             }
-
+            
             return TextObject;
         }
     }

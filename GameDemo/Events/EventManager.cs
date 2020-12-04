@@ -1,9 +1,13 @@
 ﻿using System;
+using System.IO;
+using System.Text.Json;
 using System.Collections.Generic;
 using GameDemo.Animations;
 using GameDemo.Characters;
 using GameDemo.Dialogue;
+using GameDemo.Engine;
 using GameDemo.Locations;
+using GameDemo.Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,7 +15,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GameDemo.Events
 {
-    public class EventManager
+    public class EventManager : IManager
     {
         private const double DESATURATION_PERCENT = 0.85;
 
@@ -28,11 +32,18 @@ namespace GameDemo.Events
         private Background Background;
         private LineOfDialogue Dialogue;
 
-        public EventManager(MainCharacter mainCharacter, EventDialogue eventDialogue, ContentManager content)
+        public void Reset(GameEngine gameEngine, MainCharacter mainCharacter, ContentManager content)
         {
+            content.Unload();
+
             this.MainCharacter = mainCharacter;
             this.Content = content;
             this.EndOfLine = false;
+
+            String path = Path.Combine(Content.RootDirectory, "json-sample.txt");
+            String Text = File.ReadAllText(path);
+            AllEventDialogue AllEventDialogue = JsonSerializer.Deserialize<AllEventDialogue>(Text);
+            EventDialogue eventDialogue = AllEventDialogue.AllEvents["eventString"][0];
 
             //Setting up for event to be true (remove later)
             MainCharacter.Relationships = new Dictionary<string, int>();
@@ -76,10 +87,12 @@ namespace GameDemo.Events
             {
                 Console.WriteLine("Cannot play event.");
             }
+
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameEngine gameEngine, GameTime gameTime)
         {
+            int TextEnd = 0;
             if (CurrentTextObject == null)
             {
                 CurrentTextObject = TxtReader.CurrentTxtObject();
@@ -90,13 +103,13 @@ namespace GameDemo.Events
                 case "Background":
                     Background = (Background)CurrentTextObject;
                     PriorCharacterAnimation = null;
-                    NextTextObject();
+                    TextEnd = NextTextObject();
                     break;
 
                 case "CharacterAnimation":
                     CharacterAnimation CurrentAnimation = (CharacterAnimation) CurrentTextObject;
                     DefaultAnimation = CurrentAnimation;
-                    NextTextObject();
+                    TextEnd = NextTextObject();
                     break;
 
                 case "LineOfDialogue":
@@ -105,7 +118,7 @@ namespace GameDemo.Events
                     break;
 
                 default:
-                    NextTextObject();
+                    TextEnd = NextTextObject();
                     break;
             }
 
@@ -121,9 +134,8 @@ namespace GameDemo.Events
             {
                 CharacterAnimation CurrentCharacter = Dialogue.CharacterAnimation;
 
-                TxtReader.NextTxtObject();
+                TextEnd = NextTextObject();
                 EndOfLine = false;
-                CurrentTextObject = TxtReader.CurrentTxtObject();
 
                 CharacterAnimation NextCharacter = CurrentCharacterAnimation();
 
@@ -135,14 +147,22 @@ namespace GameDemo.Events
                 }
             }
 
+            // event has ended - pop event off of game stack.
+            if (TextEnd == 1)
+            {
+                gameEngine.Pop(false, false);
+            }
+
             CurrentTextObject.Update(gameTime);
             PreviousButtonState = Mouse.GetState().LeftButton;
         }
 
-        private void NextTextObject()
+        // Move to the next text object, return 1 if there is no more text
+        private int NextTextObject()
         {
-            TxtReader.NextTxtObject();
+            int status = TxtReader.NextTxtObject();
             CurrentTextObject = TxtReader.CurrentTxtObject();
+            return status;
         }
 
         private CharacterAnimation CurrentCharacterAnimation()
@@ -158,7 +178,7 @@ namespace GameDemo.Events
             return Animation;
         }
 
-        public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        public void Draw(GameEngine gameEngine, SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
             Background.Draw(spriteBatch, graphics);
 

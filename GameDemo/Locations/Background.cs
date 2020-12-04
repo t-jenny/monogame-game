@@ -8,16 +8,15 @@ namespace GameDemo.Locations
 {
     public class Background : ITextObject
     {
-        static Texture2D Image;
+        // Constructor previously loaded only if image was null, but this
+        // seemed to cause issues when switching between modes.
+        static Texture2D Image; 
         const float LAYER_DEPTH = 0.0f;
         const float ORIGIN = 0.0f;
 
         public Background(ContentManager content, String location)
         {
-            if (Image == null)
-            {
-                Image = content.Load<Texture2D>("Locations/phoenix/" + location);
-            }
+            Image = content.Load<Texture2D>("Locations/phoenix/" + location);
         }
 
         public void Update(GameTime gameTime)
