@@ -17,10 +17,22 @@
     <File>/Users/Jenny/monogame-game/GameDemo/Content/Characters/redgeworth/standingMap.xml</File>
     <File>/Users/Jenny/monogame-game/GameDemo/Content/Characters/redgeworth/stressed.png</File>
     <File>/Users/Jenny/monogame-game/GameDemo/Content/Characters/redgeworth/stressedMap.xml</File>
+    <File>/Users/Jenny/monogame-game/GameDemo/Content/exit.png</File>
     <File>/Users/Jenny/monogame-game/GameDemo/Content/Fonts/Arial.spritefont</File>
+    <File>/Users/Jenny/monogame-game/GameDemo/Content/loading.png</File>
+    <File>/Users/Jenny/monogame-game/GameDemo/Content/Locations/phoenix/fantasy-map.png</File>
     <File>/Users/Jenny/monogame-game/GameDemo/Content/Locations/phoenix/witnessempty.png</File>
+    <File>/Users/Jenny/monogame-game/GameDemo/Content/notebook_icon.png</File>
+    <File>/Users/Jenny/monogame-game/GameDemo/Content/parchment.png</File>
+    <File>/Users/Jenny/monogame-game/GameDemo/Content/start.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

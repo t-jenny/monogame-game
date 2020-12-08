@@ -60,6 +60,7 @@ namespace GameDemo.Events
 
             bool PlayEvent = true;
 
+            //check maincharacter's attributes to see if the event should be played
             foreach (KeyValuePair<string, int> stat in eventDialogue.RequiredStats)
             {
                 if (MainCharacter.Stats[stat.Key] < stat.Value)
@@ -95,10 +96,18 @@ namespace GameDemo.Events
                 Console.WriteLine("Cannot play event.");
             }
 
+            //event marked as seen
+            MainCharacter.EventFlags.Add(eventDialogue.EventName);
+
         }
 
         public void Update(GameEngine gameEngine, GameTime gameTime)
         {
+            if (TextEnd)
+            {
+                return;
+            }
+
             if (CurrentTextObject == null)
             {
                 CurrentTextObject = TxtReader.NextTxtObject();

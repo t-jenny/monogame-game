@@ -94,3 +94,9 @@
 /Users/Jenny/monogame-game/GameDemo/bin/Debug/netcoreapp3.1/Content/Characters/redgeworth/standing.xnb
 /Users/Jenny/monogame-game/GameDemo/bin/Debug/netcoreapp3.1/Content/Characters/redgeworth/standingMap.xnb
 /Users/Jenny/monogame-game/GameDemo/bin/Debug/netcoreapp3.1/Content/Audio/sfx/smack.xnb
+/Users/Jenny/monogame-game/GameDemo/bin/Debug/netcoreapp3.1/Content/Locations/phoenix/fantasy-map.xnb
+/Users/Jenny/monogame-game/GameDemo/bin/Debug/netcoreapp3.1/Content/exit.xnb
+/Users/Jenny/monogame-game/GameDemo/bin/Debug/netcoreapp3.1/Content/loading.xnb
+/Users/Jenny/monogame-game/GameDemo/bin/Debug/netcoreapp3.1/Content/notebook_icon.xnb
+/Users/Jenny/monogame-game/GameDemo/bin/Debug/netcoreapp3.1/Content/parchment.xnb
+/Users/Jenny/monogame-game/GameDemo/bin/Debug/netcoreapp3.1/Content/start.xnb
