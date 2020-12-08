@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using GameDemo.Managers;
 using GameDemo.Characters;
+using GameDemo.Effects;
+using GameDemo.Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
@@ -19,15 +20,19 @@ namespace GameDemo.Engine
         private Stack<IManager> PushStack;
         private int StackSize;
         private int PushCount;
+        private ScreenFader ScreenFader;
 
         public GameEngine()
         {
             FadeOut = false;
             FadeOutFinished = false;
+            FadeIn = false;
+
             GameStack = new Stack<IManager>();
             PushStack = new Stack<IManager>();
             StackSize = 0;
-            PushCount = 0; 
+            PushCount = 0;
+            ScreenFader = new ScreenFader();
         }
 
         ~GameEngine()
@@ -37,7 +42,13 @@ namespace GameDemo.Engine
 
         public void Update(GameTime gameTime, MainCharacter mainCharacter, ContentManager content)
         {
-            if (PushCount > 0 && StateChange)
+            if (FadeOut && !ScreenFader.IsFading())
+            {
+                FadeOut = false;
+                FadeOutFinished = true;
+            }
+
+            if (FadeOutFinished && StateChange)
             {
                 while (PushCount > 0)
                 {
@@ -45,20 +56,21 @@ namespace GameDemo.Engine
                     PushCount--;
                     StackSize++;
                 }
-                GameStack.Peek().Reset(this, mainCharacter, content);
-                StateChange = false;
-            }
 
-            if (PushCount < 0 && StateChange)
-            {
                 while (PushCount < 0)
                 {
                     GameStack.Pop();
                     PushCount++;
                     StackSize--;
                 }
+
                 GameStack.Peek().Reset(this, mainCharacter, content);
                 StateChange = false;
+
+                if (FadeIn)
+                {
+                    ScreenFader.BeginFade(Color.Transparent, 500);
+                }
             }
 
             if (StackSize == 0)
@@ -67,12 +79,18 @@ namespace GameDemo.Engine
                 Game1.QuitGame();
             }
             GameStack.Peek().Update(this, gameTime);
+
+            // Update the screenfader
+            ScreenFader.Update(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
             if (StackSize == 0) return;
             GameStack.Peek().Draw(this, spriteBatch, graphics);
+
+            // For fades
+            ScreenFader.Draw(spriteBatch, graphics);
         }
 
         public void Push(IManager mm, bool fadeIn, bool fadeOut)
@@ -89,7 +107,7 @@ namespace GameDemo.Engine
             {
                 FadeOut = true;
                 FadeOutFinished = false;
-                // Should begin fade transition somehow
+                ScreenFader.BeginFade(Color.Black, 200);
             }
             else
             {
@@ -105,12 +123,16 @@ namespace GameDemo.Engine
             FadeIn = fadeIn;
             StateChange = true;
 
+#if DEBUG
+            Console.WriteLine("Popping IManager");
+#endif
+
             FadeIn = fadeIn;
             if (fadeOut)
             {
                 FadeOut = true;
                 FadeOutFinished = false;
-                // Should begin fade transition somehow
+                ScreenFader.BeginFade(Color.Black, 200);
             }
             else
             {

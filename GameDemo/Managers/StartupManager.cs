@@ -1,6 +1,7 @@
-﻿using System.Threading; // for loading
+﻿using System;
+using System.Threading; // for loading
 using GameDemo.Engine;
-using GameDemo.Events;
+using GameDemo.Map;
 using GameDemo.Managers;
 using GameDemo.Characters;
 using Microsoft.Xna.Framework;
@@ -20,11 +21,12 @@ namespace GameDemo.Startup
         /* StartMenu variables */
         private Texture2D StartButton;
         private Texture2D ExitButton;
-        private Texture2D LoadingTxt;
+        private Rectangle StartButtonRect;
+        private Rectangle ExitButtonRect;
 
-        private Vector2 StartButtonPos;
-        private Vector2 ExitButtonPos;
+        private Texture2D LoadingTxt;
         private Vector2 LoadingTxtPos;
+
         private StartupState GState;
         private MouseState MouseState;
         private MouseState PrevMouseState;
@@ -46,18 +48,12 @@ namespace GameDemo.Startup
 
             if (GState == StartupState.StartMenu)
             {
-                // Collision doesn't work very well.
-                Rectangle startButtonRect = new Rectangle((int)StartButtonPos.X,
-                    (int)StartButtonPos.Y, 100, 50);
-                Rectangle exitButtonRect = new Rectangle((int)ExitButtonPos.X,
-                    (int)ExitButtonPos.Y, 100, 50);
-
-                if (mouseClickRect.Intersects(startButtonRect))
+                if (StartButtonRect.Contains(mouseClickRect))
                 {
                     GState = StartupState.Loading;
                     IsLoading = false;
                 }
-                else if (mouseClickRect.Intersects(exitButtonRect))
+                else if (ExitButtonRect.Contains(mouseClickRect))
                 {
                     Game1.QuitGame();
                 }
@@ -66,14 +62,11 @@ namespace GameDemo.Startup
 
         void LoadGame(GameEngine gameEngine)
         {
-            // for now this is an eventmanager, in general it may be more like
-            // a calendarmanager or a brief intro screen to the calendar.
-            gameEngine.Push(new EventManager(), false, false);
+            gameEngine.Push(new MapManager(), true, true);
 
-            Thread.Sleep(3000);
+            Thread.Sleep(5000);
             GState = StartupState.Playing;
             IsLoading = true;
-
         }
 
         public void Reset(GameEngine gameEngine, MainCharacter mainCharacter, ContentManager content)
@@ -121,21 +114,23 @@ namespace GameDemo.Startup
         public void Draw(GameEngine gameEngine, SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
             // Start Button, Exit Button, and Loading Text
-            float startX = (graphics.GraphicsDevice.Viewport.Width / 2) - (StartButton.Width / 2);
-            float startY = graphics.GraphicsDevice.Viewport.Height / 3;
-            float exitX = (graphics.GraphicsDevice.Viewport.Width / 2) - (ExitButton.Width / 2);
-            float exitY = 2 * graphics.GraphicsDevice.Viewport.Height / 3;
-            float loadingX = (graphics.GraphicsDevice.Viewport.Width / 2) - (LoadingTxt.Width / 2);
-            float loadingY = (graphics.GraphicsDevice.Viewport.Height / 2) - (LoadingTxt.Height / 2);
-
-            StartButtonPos = new Vector2(startX, startY);
-            ExitButtonPos = new Vector2(exitX, exitY);
-            LoadingTxtPos = new Vector2(loadingX, loadingY);
-
-            if (GState == StartupState.StartMenu)
+            if (StartButtonRect.IsEmpty)
             {
-                spriteBatch.Draw(StartButton, StartButtonPos, Color.White);
-                spriteBatch.Draw(ExitButton, ExitButtonPos, Color.White);
+                float startX = (graphics.GraphicsDevice.Viewport.Width / 2) - (StartButton.Width / 2);
+                float startY = graphics.GraphicsDevice.Viewport.Height / 3;
+                float exitX = (graphics.GraphicsDevice.Viewport.Width / 2) - (ExitButton.Width / 2);
+                float exitY = 2 * graphics.GraphicsDevice.Viewport.Height / 3;
+                float loadingX = (graphics.GraphicsDevice.Viewport.Width / 2) - (LoadingTxt.Width / 2);
+                float loadingY = (graphics.GraphicsDevice.Viewport.Height / 2) - (LoadingTxt.Height / 2);
+                StartButtonRect = new Rectangle((int) startX, (int) startY, StartButton.Width, StartButton.Height);
+                ExitButtonRect = new Rectangle((int)exitX, (int)exitY, ExitButton.Width, ExitButton.Height);
+                LoadingTxtPos = new Vector2(loadingX, loadingY);
+            }
+            
+            if (GState == StartupState.StartMenu) {
+
+                spriteBatch.Draw(StartButton, StartButtonRect, Color.White);
+                spriteBatch.Draw(ExitButton, ExitButtonRect, Color.White);
             }
 
             if (GState == StartupState.Loading)

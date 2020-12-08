@@ -1,12 +1,11 @@
 ﻿<Properties StartupConfiguration="{229CB5D4-0E25-4FE3-B3D5-D73989F6B4DE}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="GameDemo/Dialogue/TxtReader.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="GameDemo/Locations/Background.cs">
     <Files>
-      <File FileName="GameDemo/Game1.cs" Line="73" Column="1" />
-      <File FileName="GameDemo/Content/json-sample.txt" />
-      <File FileName="GameDemo/Characters/MainCharacter.cs" />
-      <File FileName="GameDemo/Events/EventManager.cs" />
-      <File FileName="GameDemo/Dialogue/TxtReader.cs" Line="138" Column="26" />
+      <File FileName="GameDemo/Dialogue/TxtReader.cs" Line="31" Column="17" />
       <File FileName="GameDemo/Managers/GameEngine.cs" />
+      <File FileName="GameDemo/Events/EventManager.cs" />
+      <File FileName="GameDemo/Characters/MainCharacter.cs" />
+      <File FileName="GameDemo/Locations/Background.cs" Line="19" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -19,10 +18,11 @@
               <Node name="Animations" expanded="True" />
               <Node name="Characters" expanded="True" />
               <Node name="Content" expanded="True" />
-              <Node name="Dialogue" expanded="True">
-                <Node name="TxtReader.cs" selected="True" />
-              </Node>
+              <Node name="Dialogue" expanded="True" />
               <Node name="Events" expanded="True" />
+              <Node name="Locations" expanded="True">
+                <Node name="Background.cs" selected="True" />
+              </Node>
               <Node name="Managers" expanded="True" />
             </Node>
           </Node>

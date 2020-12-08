@@ -16,6 +16,7 @@ namespace GameDemo.Locations
 
         public Background(ContentManager content, String location)
         {
+            Console.WriteLine(location);
             Image = content.Load<Texture2D>("Locations/phoenix/" + location);
         }
 

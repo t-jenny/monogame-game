@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text.Json;
 using System.Collections.Generic;
@@ -162,8 +162,9 @@ namespace GameDemo.Events
 
             if (TextEnd)
             {
-                gameEngine.Pop(false, false);
+                gameEngine.Pop(true, true);
                 return;
+
             }
 
             CurrentTextObject.Update(gameTime);
