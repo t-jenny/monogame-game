@@ -15,7 +15,7 @@
           "beginning",
           "running"
         ],
-        "Text": "*witnessempty\n%ost/gumshoe\nIt seems like Phoenix is sick.\nOh here he comes!\n@redgeworth\nAcchoo! @lphoenix #sneezing %sfx/smack\nUrgh! @redgeworth #disgusted %sfx/smack\nUrgh sorry I'm not feeling well. @lphoenix #talking\nAm I feverish? @lphoenix #talking\nWhat did I do to deserve this? @redgeworth #stressed\nI think I have snot on my face! @redgeworth #stressed\nI'm sorry! @lphoenix #talking\nI guess I'll go now. @lphoenix #talking"
+        "Text": "*witnessempty\n%ost/gumshoe\nOh here he comes!\n@redgeworth\nAcchoo! @lphoenix #sneezing\nUrgh! @redgeworth #disgusted %sfx/smack\nUrgh sorry I'm not feeling well. @lphoenix #talking\nAm I feverish? @lphoenix #talking\nWhat did I do to deserve this? @redgeworth #stressed\nI think I have snot on my face @redgeworth #stressed\nI'm sorry! @lphoenix #talking\n+n: Phoenix is sick./He needs a tissue.\n+s: intelligence 1/strength 1\n+r: blush 1/tomazzi 1"
       }
     ],
     "eventString2": [
@@ -33,7 +33,7 @@
           "beginning",
           "running"
         ],
-        "Text": "*witnessempty\n%ost/gumshoe\nIt seems like Phoenix is sick.\nOh here he comes!\n@redgeworth\nAcchoo! @lphoenix #sneezing %sfx/smack\nUrgh! @redgeworth #disgusted %sfx/smack\nUrgh sorry I'm not feeling well. @lphoenix #talking\nAm I feverish? @lphoenix #talking\nWhat did I do to deserve this? @redgeworth #stressed\nI think I have snot on my face @redgeworth #stressed\nI'm sorry! @lphoenix #talking\n>choice_one/Give Phoenix a tissue.\n>choice_two/Tell him to go away.\n=choice_one\nAcchoo! @lphoenix #sneezing\nAcchoo! @lphoenix #sneezing\n+f: choice1\n=choice_two\nAcchoo! @lphoenix #sneezing\nAcchoo! @lphoenix #sneezing\nThanks! That was really nice. @lphoenix #talking\n+f: choice2/choice3\nSorry. I guess I'll go now. @lphoenix #talking\n+n: Phoenix is sick./He needs a tissue.\n+s: intelligence 1/strength 1\n+r: blush 1/tomazzi 1"
+        "Text": "*witnessempty\n%ost/gumshoe\nOh here he comes!\n@redgeworth\nAcchoo! @lphoenix #sneezing\nUrgh! @redgeworth #disgusted %sfx/smack\nUrgh sorry I'm not feeling well. @lphoenix #talking\nAm I feverish? @lphoenix #talking\nWhat did I do to deserve this? @redgeworth #stressed\nI think I have snot on my face @redgeworth #stressed\nI'm sorry! @lphoenix #talking\n+n: Phoenix is sick./He needs a tissue.\n+s: intelligence 1/strength 1\n+r: blush 1/tomazzi 1"
       }
     ]
   }

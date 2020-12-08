@@ -1,25 +1,28 @@
 ﻿<Properties StartupConfiguration="{229CB5D4-0E25-4FE3-B3D5-D73989F6B4DE}|Default">
-  <MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench ActiveDocument="GameDemo/Dialogue/TxtReader.cs">
+    <Files>
+      <File FileName="GameDemo/Game1.cs" Line="73" Column="1" />
+      <File FileName="GameDemo/Content/json-sample.txt" />
+      <File FileName="GameDemo/Characters/MainCharacter.cs" />
+      <File FileName="GameDemo/Events/EventManager.cs" />
+      <File FileName="GameDemo/Dialogue/TxtReader.cs" Line="138" Column="26" />
+      <File FileName="GameDemo/Managers/GameEngine.cs" />
+    </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="GameDemo" expanded="True">
             <Node name="GameDemo" expanded="True">
-              <Node name="Dependencies" expanded="True" />
+              <Node name="Dependencies" expanded="True">
+                <Node name="PackageDependencies" expanded="True" />
+              </Node>
               <Node name="Animations" expanded="True" />
               <Node name="Characters" expanded="True" />
-              <Node name="Content" expanded="True">
-                <Node name="Characters" expanded="True">
-                  <Node name="lphoenix" expanded="True" />
-                  <Node name="redgeworth" expanded="True" />
-                </Node>
-              </Node>
-              <Node name="Dialogue" expanded="True" />
-              <Node name="Effects" expanded="True">
-                <Node name="Audio.cs" selected="True" />
+              <Node name="Content" expanded="True" />
+              <Node name="Dialogue" expanded="True">
+                <Node name="TxtReader.cs" selected="True" />
               </Node>
               <Node name="Events" expanded="True" />
-              <Node name="Locations" expanded="True" />
               <Node name="Managers" expanded="True" />
             </Node>
           </Node>

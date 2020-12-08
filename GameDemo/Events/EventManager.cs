@@ -20,6 +20,7 @@ namespace GameDemo.Events
         private const double DESATURATION_PERCENT = 0.85;
 
         private bool EndOfLine;
+        private bool TextEnd;
 
         private MainCharacter MainCharacter;
         private ContentManager Content;
@@ -39,6 +40,7 @@ namespace GameDemo.Events
             this.MainCharacter = mainCharacter;
             this.Content = content;
             this.EndOfLine = false;
+            this.TextEnd = false;
 
             String path = Path.Combine(Content.RootDirectory, "json-sample.txt");
             String Text = File.ReadAllText(path);
@@ -79,6 +81,11 @@ namespace GameDemo.Events
                 PlayEvent = false;
             }
 
+            if (MainCharacter.EventFlags.Contains(eventDialogue.EventName))
+            {
+                PlayEvent = false;
+            }
+
             if (PlayEvent)
             {
                 TxtReader = new TxtReader(MainCharacter, Content, eventDialogue.Text);
@@ -92,10 +99,14 @@ namespace GameDemo.Events
 
         public void Update(GameEngine gameEngine, GameTime gameTime)
         {
-            int TextEnd = 0;
             if (CurrentTextObject == null)
             {
-                CurrentTextObject = TxtReader.CurrentTxtObject();
+                CurrentTextObject = TxtReader.NextTxtObject();
+            }
+
+            if (Dialogue != null)
+            {
+                EndOfLine = Dialogue.Complete();
             }
 
             switch (CurrentTextObject.GetType().Name)
@@ -103,66 +114,60 @@ namespace GameDemo.Events
                 case "Background":
                     Background = (Background)CurrentTextObject;
                     PriorCharacterAnimation = null;
-                    TextEnd = NextTextObject();
+                    CurrentTextObject = TxtReader.NextTxtObject();
                     break;
 
                 case "CharacterAnimation":
                     CharacterAnimation CurrentAnimation = (CharacterAnimation) CurrentTextObject;
                     DefaultAnimation = CurrentAnimation;
-                    TextEnd = NextTextObject();
+                    CurrentTextObject = TxtReader.NextTxtObject();
                     break;
 
                 case "LineOfDialogue":
-                    Dialogue = (LineOfDialogue)CurrentTextObject;
-                    EndOfLine = Dialogue.Complete();
+                    Dialogue = (LineOfDialogue) CurrentTextObject;
+                    if (DefaultAnimation != null)
+                    {
+                        Dialogue.SetSecondAnimation(DefaultAnimation, DESATURATION_PERCENT);
+                    }
+
+                    if (PreviousButtonState == ButtonState.Pressed && Mouse.GetState().LeftButton == ButtonState.Released && EndOfLine)
+                    {
+                        CharacterAnimation CurrentCharacter = Dialogue.CharacterAnimation;
+                        CurrentTextObject = TxtReader.NextTxtObject();
+                        EndOfLine = false;
+
+                        CharacterAnimation NextCharacter = null;
+
+                        if (CurrentTextObject != null)
+                        {
+                            NextCharacter = CurrentCharacterAnimation();
+                        }
+
+                        if (CurrentCharacter != null && NextCharacter != null
+                            && !NextCharacter.CharacterName.Equals(CurrentCharacter.CharacterName))
+                        {
+                            PriorCharacterAnimation = CurrentCharacter;
+                            DefaultAnimation = null;
+                        }
+                    }
+
                     break;
 
                 default:
-                    TextEnd = NextTextObject();
+                    CurrentTextObject = TxtReader.NextTxtObject();
                     break;
             }
 
-            if (CurrentTextObject.GetType().Name.Equals("LineOfDialogue"))
-            {
-                if (DefaultAnimation != null)
-                {
-                    Dialogue.SetSecondAnimation(DefaultAnimation, DESATURATION_PERCENT);
-                }
-            }
+            TextEnd = TxtReader.IsEmpty();
 
-            if (PreviousButtonState == ButtonState.Pressed && Mouse.GetState().LeftButton == ButtonState.Released && EndOfLine)
-            {
-                CharacterAnimation CurrentCharacter = Dialogue.CharacterAnimation;
-
-                TextEnd = NextTextObject();
-                EndOfLine = false;
-
-                CharacterAnimation NextCharacter = CurrentCharacterAnimation();
-
-                if (CurrentCharacter != null && NextCharacter != null
-                    && !NextCharacter.CharacterName.Equals(CurrentCharacter.CharacterName))
-                {
-                    PriorCharacterAnimation = CurrentCharacter;
-                    DefaultAnimation = null;
-                }
-            }
-
-            // event has ended - pop event off of game stack.
-            if (TextEnd == 1)
+            if (TextEnd)
             {
                 gameEngine.Pop(false, false);
+                return;
             }
 
             CurrentTextObject.Update(gameTime);
             PreviousButtonState = Mouse.GetState().LeftButton;
-        }
-
-        // Move to the next text object, return 1 if there is no more text
-        private int NextTextObject()
-        {
-            int status = TxtReader.NextTxtObject();
-            CurrentTextObject = TxtReader.CurrentTxtObject();
-            return status;
         }
 
         private CharacterAnimation CurrentCharacterAnimation()
@@ -180,6 +185,11 @@ namespace GameDemo.Events
 
         public void Draw(GameEngine gameEngine, SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
+            if (CurrentTextObject == null)
+            {
+                return;
+            }
+
             Background.Draw(spriteBatch, graphics);
 
             if (PriorCharacterAnimation != null)

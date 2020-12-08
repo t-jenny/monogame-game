@@ -18,8 +18,8 @@ namespace GameDemo.Dialogue
         private const char AUDIO = '%';
         private const char CHARACTER = '@';
         private const char ANIMATION = '#';
-        private const char CHOICE = '>';
-        private const char JUMP = '=';
+        //private const char CHOICE = '>';
+        //private const char JUMP = '=';
         private const char ADD = '+';
         private const char FLAG = 'f';
         private const char RELATIONSHIP = 'r';
@@ -30,8 +30,7 @@ namespace GameDemo.Dialogue
 
         MainCharacter MainCharacter;
         ContentManager Content;
-        String[] Text;
-        int TextIndex = FIRST_INDEX;
+        Queue<String> Text;
 
         private TxtReader(MainCharacter mainCharacter, ContentManager content)
         {
@@ -42,33 +41,46 @@ namespace GameDemo.Dialogue
         public TxtReader(MainCharacter mainCharacter, ContentManager content, String text)
             : this(mainCharacter, content)
         {
-            Text = text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            String[] TextArray = text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            Text = ConvertToQueue(TextArray);
         }
 
         public TxtReader(MainCharacter mainCharacter, ContentManager content, String[] text)
             : this(mainCharacter, content)
         {
-            Text = text;
+            Text = ConvertToQueue(text);
         }
 
-        // returns 1 if the next text object is out of bounds.
-        public int NextTxtObject()
+        private Queue<String> ConvertToQueue(String[] array)
         {
-            if (TextIndex < Text.Length - 1)
+            Queue<String> queue = new Queue<string>();
+
+            for (int i = 0; i < array.Length; i++)
             {
-                TextIndex++;
-                return 0;
+                queue.Enqueue(array[i]);
             }
-            else return 1;
+
+            return queue;
         }
 
-        public ITextObject CurrentTxtObject()
+        // returns 1 if the Queue is empty
+        public bool IsEmpty()
         {
-            String CurrentString = Text[TextIndex];
+            if (Text.Count == 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public ITextObject NextTxtObject()
+        {
+            String CurrentString = Text.Dequeue();
             char FirstChar = CurrentString[FIRST_INDEX];
             ITextObject TextObject = null;
 
-            if (TextIndex < Text.Length)
+            if (Text.Count > 0)
             {
                 switch (FirstChar)
                 {
@@ -81,6 +93,7 @@ namespace GameDemo.Dialogue
                     case CHARACTER:
                         return new CharacterAnimation(Content, CurrentString.Substring(SECOND_INDEX), null);
 
+                    /**
                     case CHOICE:
 
                         List<String[]> ChoiceKeys = new List<String[]>();
@@ -115,6 +128,7 @@ namespace GameDemo.Dialogue
 
                     case JUMP:
                         return TextObject;
+                    **/
 
                     case ADD:
                         char SecondChar = CurrentString[SECOND_INDEX];
@@ -133,7 +147,14 @@ namespace GameDemo.Dialogue
                                     String Character = Relationship[FIRST_INDEX];
                                     int Heart = MainCharacter.Relationships.GetValueOrDefault(Character, 0);
 
-                                    MainCharacter.Relationships.Add(Character, Heart + Int32.Parse(Relationship[SECOND_INDEX]));
+                                    if (Heart == 0)
+                                    {
+                                        MainCharacter.Relationships.Add(Character, Int32.Parse(Relationship[SECOND_INDEX]));
+                                    }
+                                    else
+                                    {
+                                        MainCharacter.Relationships[Character] = Heart + Int32.Parse(Relationship[SECOND_INDEX]);
+                                    }
                                     break;
 
                                 case STAT:
@@ -141,7 +162,15 @@ namespace GameDemo.Dialogue
                                     String StatPoint = Stat[FIRST_INDEX];
                                     int Level = MainCharacter.Stats.GetValueOrDefault(StatPoint, 0);
 
-                                    MainCharacter.Stats.Add(StatPoint, Level + Int32.Parse(Stat[SECOND_INDEX]));
+                                    if (Level == 0)
+                                    {
+                                        MainCharacter.Stats.Add(StatPoint, Int32.Parse(Stat[SECOND_INDEX]));
+                                    }
+                                    else
+                                    {
+                                        MainCharacter.Stats[StatPoint] = Level + Int32.Parse(Stat[SECOND_INDEX]);
+                                    }
+
                                     break;
 
                                 case NOTEBOOK:
@@ -149,8 +178,7 @@ namespace GameDemo.Dialogue
                                     break;
                             }
                         }
-                        TextIndex++;
-                        break;
+                        return NextTxtObject();
 
                     default:
                         int CharacterIndex = CurrentString.IndexOf(CHARACTER);
