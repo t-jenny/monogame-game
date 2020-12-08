@@ -88,6 +88,8 @@ namespace GameDemo.Locations
         private Background Background;
         private Texture2D Notebook;
         private Rectangle NotebookRect;
+        private Texture2D MapIcon;
+        private Rectangle MapIconRect;
 
         private SpriteFont Arial;
 
@@ -109,7 +111,8 @@ namespace GameDemo.Locations
             Normal,
             Selected,
             Confirmed,
-            ToNotebook
+            ToNotebook,
+            Returning
         }
 
         private void MouseClicked(MouseState mouseState)
@@ -136,6 +139,10 @@ namespace GameDemo.Locations
                     {
                         GState = LocationState.ToNotebook;
                     }
+                    if (MouseClickRect.Intersects(MapIconRect))
+                    {
+                        GState = LocationState.Returning;
+                    }
                     break;
 
                 case LocationState.Selected:
@@ -149,6 +156,9 @@ namespace GameDemo.Locations
                         GState = LocationState.Confirmed;
                         SpeechMenu = null;
                     }
+                    break;
+
+                default:
                     break;
             }
         }
@@ -173,6 +183,7 @@ namespace GameDemo.Locations
             Greetings = new Dictionary<string, string>();
 
             Notebook = Content.Load<Texture2D>("notebook_icon");
+            MapIcon = Content.Load<Texture2D>("map-icon");
             GState = LocationState.Normal;
 
             Arial = content.Load<SpriteFont>("Fonts/Arial");
@@ -214,19 +225,27 @@ namespace GameDemo.Locations
 
             PrevMouseState = MouseState;
 
-            if (GState == LocationState.Confirmed)
+            switch (GState)
             {
-                gameEngine.Push(new EventManager(), true, true);
-                IsTransitioning = true;
+                case (LocationState.Confirmed):
+                    gameEngine.Push(new EventManager(), true, true);
+                    IsTransitioning = true;
+                    break;
+
+                case (LocationState.ToNotebook):
+                    gameEngine.Push(new NotebookManager(), true, true);
+                    IsTransitioning = true;
+                    break;
+
+                case (LocationState.Returning):
+                    gameEngine.Pop(true, true);
+                    IsTransitioning = true;
+                    break;
+
+                default:
+                    break;
             }
 
-            if (GState == LocationState.ToNotebook)
-            {
-                gameEngine.Push(new NotebookManager(), true, true);
-                IsTransitioning = true;
-            }
-
-            
         }
 
         public void Draw(GameEngine gameEngine, SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
@@ -234,23 +253,28 @@ namespace GameDemo.Locations
             // Background
             Background.Draw(spriteBatch, graphics);
 
-            // Banner with Date
+            /***** Combine below into a single Banner Object *****/
             DateTime CurrentDate = MainCharacter.GetDate();
             String DateString = CurrentDate.ToString("dddd, MMMM dd") + " - " + BGImagePath;
             DrawingUtils.DrawTextBanner(graphics, spriteBatch, Arial, DateString, Color.Red, Color.Black);
+            if (NotebookRect.IsEmpty)
+            {
+                NotebookRect = new Rectangle(graphics.GraphicsDevice.Viewport.Width - 100, 20, 70, 70);
+            }
+            spriteBatch.Draw(Notebook, NotebookRect, Color.White);
+
+            if (MapIconRect.IsEmpty)
+            {
+                MapIconRect = new Rectangle(graphics.GraphicsDevice.Viewport.Width - 200, 20, 70, 70);
+            }
+            spriteBatch.Draw(MapIcon, MapIconRect, Color.White);
+            /***** End Replace *****/
 
             foreach (String CharName in CharCoords.Keys)
             {
                 // replace with a box sprite
                 spriteBatch.Draw(CharPics[CharName], CharCoords[CharName], Color.White);
             }
-
-            // Notebook
-            if (NotebookRect.IsEmpty)
-            {
-                NotebookRect = new Rectangle(graphics.GraphicsDevice.Viewport.Width - 100, 20, 70, 70);
-            }
-            spriteBatch.Draw(Notebook, NotebookRect, Color.White);
 
             // Location Info Menu if place is clicked
             if (GState == LocationState.Selected && SpeechMenu != null)
