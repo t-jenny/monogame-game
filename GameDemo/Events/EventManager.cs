@@ -150,7 +150,7 @@ namespace GameDemo.Events
             // event has ended - pop event off of game stack.
             if (TextEnd == 1)
             {
-                gameEngine.Pop(false, false);
+                gameEngine.Pop(true, true);
             }
 
             CurrentTextObject.Update(gameTime);

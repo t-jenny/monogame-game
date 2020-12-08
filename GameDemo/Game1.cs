@@ -1,4 +1,4 @@
-﻿using GameDemo.Characters;
+using GameDemo.Characters;
 using GameDemo.Engine;
 using GameDemo.Managers;
 using GameDemo.Startup;
@@ -9,7 +9,6 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GameDemo
 {
-    
     public class Game1 : Game
     {
         private GraphicsDeviceManager Graphics;
@@ -81,6 +80,5 @@ namespace GameDemo
         {
             IsQuitting = true;
         }
-        
     }
 }
