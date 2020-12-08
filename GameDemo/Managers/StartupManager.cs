@@ -64,7 +64,7 @@ namespace GameDemo.Startup
         {
             gameEngine.Push(new MapManager(), true, true);
 
-            Thread.Sleep(3000);
+            Thread.Sleep(2000);
             GState = StartupState.Playing;
             IsLoading = true;
         }
