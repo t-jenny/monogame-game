@@ -59,19 +59,12 @@ namespace GameDemo.Locations
             }
 
             // draw button 
-            Texture2D Button = DrawingUtils.FilledRectangle(graphics, Rect.Width, Rect.Height, ButtonCol);
-            spriteBatch.Draw(Button, Rect, Color.White);
+            DrawingUtils.DrawFilledRectangle(graphics, spriteBatch, Rect, ButtonCol);
             Vector2 ButtonPos = new Vector2(Rect.X + 5, Rect.Y);
             spriteBatch.DrawString(Font, Text, ButtonPos, TextCol);
 
             // draw border
-            Texture2D border = new Texture2D(graphics.GraphicsDevice, 1, 1);
-            border.SetData(new[] { Color.White });
-            spriteBatch.Draw(border, new Rectangle(Rect.Left, Rect.Top, 2, Rect.Height), Color.Black);
-            spriteBatch.Draw(border, new Rectangle(Rect.Right, Rect.Top, 2, Rect.Height), Color.Black);
-            spriteBatch.Draw(border, new Rectangle(Rect.Left, Rect.Top, Rect.Width, 2), Color.Black);
-            spriteBatch.Draw(border, new Rectangle(Rect.Left, Rect.Bottom, Rect.Width+2, 2), Color.Black);
-
+            DrawingUtils.DrawOpenRectangle(graphics, spriteBatch, Rect, Color.Black);
         }
     }
 }

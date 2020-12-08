@@ -232,27 +232,18 @@ namespace GameDemo.Map
             // Background
             Background.Draw(spriteBatch, graphics);
 
-            // Banner
-            int WindowWidth = (int)graphics.GraphicsDevice.Viewport.Width;
-            int WindowHeight = (int)graphics.GraphicsDevice.Viewport.Height;
-            Texture2D Banner = DrawingUtils.FilledRectangle(graphics, WindowWidth, 100, Color.Red);
-            spriteBatch.Draw(Banner, new Vector2(0.0f, 0.0f), Color.White);
-
-            // Current Date
+            // Banner with Date
             DateTime CurrentDate = MainCharacter.GetDate();
             String DateString = CurrentDate.ToString("dddd, MMMM dd") + " - Carpe Diem!";
             spriteBatch.DrawString(Arial, DateString, new Vector2(10.0f, 30.0f), Color.Black);
+
+            DrawingUtils.DrawTextBanner(graphics, spriteBatch, Arial, DateString, Color.Red, Color.Black);
 
             // Place Labels
             foreach (String PlaceName in LocationBoxes.Keys)
             {
                 // replace with a box sprite
-                Texture2D AreaLabel = DrawingUtils.FilledRectangle(graphics,
-                    LocationBoxes[PlaceName].Width,
-                    LocationBoxes[PlaceName].Height,
-                    Color.Brown);
-
-                spriteBatch.Draw(AreaLabel, LocationBoxes[PlaceName], Color.White);
+                DrawingUtils.DrawFilledRectangle(graphics, spriteBatch, LocationBoxes[PlaceName], Color.Brown);
                 Vector2 LabelVec = new Vector2(LocationBoxes[PlaceName].X, LocationBoxes[PlaceName].Y);
                 spriteBatch.DrawString(Arial, PlaceName, LabelVec, Color.White);
             }
@@ -260,7 +251,8 @@ namespace GameDemo.Map
             // Notebook
             if (NotebookRect.IsEmpty)
             {
-                NotebookRect = new Rectangle(WindowWidth - 100, WindowHeight - 100, 70, 70);
+                NotebookRect = new Rectangle(graphics.GraphicsDevice.Viewport.Width - 100,
+                    graphics.GraphicsDevice.Viewport.Height - 100, 70, 70);
             }
             spriteBatch.Draw(Notebook, NotebookRect, Color.White);
 

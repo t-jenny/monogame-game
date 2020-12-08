@@ -68,14 +68,7 @@ namespace GameDemo.Effects
         {
             if (CurrentColor.Equals(Color.Transparent)) return;
             GraphicsDevice GD = graphics.GraphicsDevice;
-            Overlay = DrawingUtils.FilledRectangle(graphics,
-                GD.Viewport.Width,
-                GD.Viewport.Height,
-                CurrentColor);
-
-            // Draw the overlay image
-            spriteBatch.Draw(Overlay, Vector2.Zero, CurrentColor);
-            
+            DrawingUtils.DrawFilledRectangle(graphics, spriteBatch, GD.Viewport.Bounds, CurrentColor);         
         }
     }
 }

@@ -13,6 +13,74 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GameDemo.Locations
 {
+    public class SpeechMenu
+    {
+        private const int MenuWidth = 450;
+        private const int MenuHeight = 250;
+        private readonly string Greeting;
+        private Vector2 Position;
+        private Texture2D Menu;
+
+        private Button TalkButton;
+        private Button IgnoreButton;
+
+        public SpeechMenu(string greeting, Rectangle person, ContentManager content)
+        {
+            Greeting = greeting;
+            Menu = content.Load<Texture2D>("speech");
+            
+            Position = new Vector2(person.X, person.Y - MenuHeight);
+        }
+
+        // Update the button on the location menu
+        public void Update()
+        {
+            if (TalkButton == null) return;
+            TalkButton.Update();
+            IgnoreButton.Update();
+        }
+
+        public bool IsExiting(Rectangle mouseClickRect)
+        {
+            return mouseClickRect.Intersects(IgnoreButton.Rect);
+        }
+
+        public bool IsConfirming(Rectangle mouseClickRect)
+        {
+            return mouseClickRect.Intersects(TalkButton.Rect);
+        }
+
+        public void Draw(SpriteBatch spriteBatch, SpriteFont font, GraphicsDeviceManager graphics)
+        {
+            // Location Menu
+            Vector2 GreetingSize = font.MeasureString(Greeting);
+
+            Rectangle MenuRect = new Rectangle((int)Position.X, (int)Position.Y, MenuWidth, MenuHeight);
+            spriteBatch.Draw(Menu, MenuRect, Color.White);
+            spriteBatch.DrawString(font, Greeting, new Vector2(Position.X + MenuWidth / 2 - GreetingSize.X / 2, Position.Y + 20), Color.Black);
+
+            // draw border (for testing)
+            //DrawingUtils.DrawOpenRectangle(graphics, spriteBatch, MenuRect, Color.Black);
+
+            // Explore Button
+            if (TalkButton == null)
+            {
+                TalkButton = new Button("Talk", font,
+                    (int)Position.X + MenuWidth / 3,
+                    (int)Position.Y + MenuHeight / 2);
+            }
+            TalkButton.Draw(spriteBatch, graphics);
+
+            if (IgnoreButton == null)
+            {
+                IgnoreButton = new Button("Ignore", font,
+                    (int)Position.X + 2 * MenuWidth / 3,
+                    (int)Position.Y + MenuHeight / 2);
+            }
+            IgnoreButton.Draw(spriteBatch, graphics);
+        }
+
+    }
 
     public class LocationManager : IManager
     {
@@ -31,11 +99,13 @@ namespace GameDemo.Locations
 
         private LocationState GState;
 
-        private Dictionary<String, Rectangle> ClickableBoxes;
-        private Dictionary<String, String> ClickableInfo;
+        private string SelectedPersonName;
+        private Dictionary<string, Vector2> CharCoords;
+        private Dictionary<string, Texture2D> CharPics;
+        private Dictionary<string, string> Greetings;
         private bool IsTransitioning;
 
-        private Button EventButton;
+        private SpeechMenu SpeechMenu;
 
         enum LocationState
         {
@@ -54,13 +124,33 @@ namespace GameDemo.Locations
             {
                 // If nothing selected, check whether location was selected
                 case LocationState.Normal:
+                    foreach (string CharName in CharPics.Keys)
+                    {
+                        Rectangle CharRect = new Rectangle((int)CharCoords[CharName].X,
+                            (int)CharCoords[CharName].Y, CharPics[CharName].Width, CharPics[CharName].Height);
+                        if (MouseClickRect.Intersects(CharRect))
+                        {
+                            GState = LocationState.Selected;
+                            SpeechMenu = new SpeechMenu(Greetings[CharName], CharRect, Content);
+                            SelectedPersonName = CharName;
+                        }
+                    }
                     if (MouseClickRect.Intersects(NotebookRect))
                     {
                         GState = LocationState.ToNotebook;
                     }
-                    if (MouseClickRect.Intersects(EventButton.Rect))
+                    break;
+
+                case LocationState.Selected:
+                    if (SpeechMenu.IsExiting(MouseClickRect))
+                    {
+                        GState = LocationState.Normal;
+                        SpeechMenu = null;
+                    }
+                    else if (SpeechMenu.IsConfirming(MouseClickRect))
                     {
                         GState = LocationState.Confirmed;
+                        SpeechMenu = null;
                     }
                     break;
             }
@@ -81,33 +171,33 @@ namespace GameDemo.Locations
 
             // Visual Elements
             Background = new Background(content, BGImagePath);
-            //ClickableBoxes = new Dictionary<String, Rectangle>();
-            //ClickableInfo = new Dictionary<String, String>();
+            CharCoords = new Dictionary<string, Vector2>();
+            CharPics = new Dictionary<string, Texture2D>();
+            Greetings = new Dictionary<string, string>();
+
             Notebook = Content.Load<Texture2D>("notebook_icon");
             GState = LocationState.Normal;
 
             Arial = content.Load<SpriteFont>("Fonts/Arial");
-            EventButton = null;
+            SpeechMenu = null;
 
-            //Dictionary<String, Vector2> Locations = new Dictionary<String, Vector2>();
+            /***** Replace this with JSON load *****/
+            if (BGImagePath == "Jennyland")
+            {
+                CharCoords.Add("jenny", new Vector2(500, 400));
+                Greetings.Add("jenny", "Wassup!");
+            }
+            if (BGImagePath == "Kaiville")
+            {
+                CharCoords.Add("kai", new Vector2(140, 415));
+                Greetings.Add("kai", "Howdy!");
+            }
 
-            // would probabily read in from json
-            //Locations.Add("Kaiville", new Vector2(800, 200));
-            //Locations.Add("Jennyland", new Vector2(400, 300));
-            //LocationInfo.Add("Kaiville", "A happy place");
-            //LocationInfo.Add("Jennyland", "Lots of cool cats");
-
-            // need to construct list of locations based on main character stat
-            // use json with file extension and coordinates of rectangle
-            //foreach (String Name in Locations.Keys)
-            //{
-            //    Vector2 TextSize = Arial.MeasureString(Name);
-            //    Rectangle LocBox = new Rectangle((int)Locations[Name].X,
-            //        (int)Locations[Name].Y,
-            //        (int)TextSize.X,
-            //        (int)TextSize.Y);
-            //    LocationBoxes.Add(Name, LocBox);
-            //}
+            foreach(string CharName in CharCoords.Keys)
+            {
+                CharPics.Add(CharName, Content.Load<Texture2D>("Characters/" + CharName));
+            }
+            /***** End Replace *****/
 
             MouseState = Mouse.GetState();
             PrevMouseState = MouseState;
@@ -118,7 +208,7 @@ namespace GameDemo.Locations
             if (IsTransitioning) return;
             MouseState = Mouse.GetState();
 
-            if (EventButton != null) EventButton.Update();
+            if (SpeechMenu != null) SpeechMenu.Update();
 
             if (PrevMouseState.LeftButton == ButtonState.Pressed && MouseState.LeftButton == ButtonState.Released)
             {
@@ -147,30 +237,30 @@ namespace GameDemo.Locations
             // Background
             Background.Draw(spriteBatch, graphics);
 
-            // Banner
-            int WindowWidth = (int)graphics.GraphicsDevice.Viewport.Width;
-            int WindowHeight = (int)graphics.GraphicsDevice.Viewport.Height;
-            Texture2D Banner = DrawingUtils.FilledRectangle(graphics, WindowWidth, 100, Color.Red);
-            spriteBatch.Draw(Banner, new Vector2(0.0f, 0.0f), Color.White);
-
-            // Current Date
+            // Banner with Date
             DateTime CurrentDate = MainCharacter.GetDate();
-            String DateString = CurrentDate.ToString("dddd, MMMM dd") + " - Carpe Diem!";
-            spriteBatch.DrawString(Arial, DateString, new Vector2(10.0f, 30.0f), Color.Black);
+            String DateString = CurrentDate.ToString("dddd, MMMM dd") + " - " + BGImagePath;
+            DrawingUtils.DrawTextBanner(graphics, spriteBatch, Arial, DateString, Color.Red, Color.Black);
 
-            // Event trigger (for now)
-            if (EventButton == null)
+            foreach (String CharName in CharCoords.Keys)
             {
-                EventButton = new Button("Click for Event", Arial, 300, 300);
+                // replace with a box sprite
+                spriteBatch.Draw(CharPics[CharName], CharCoords[CharName], Color.White);
             }
-            EventButton.Draw(spriteBatch, graphics);
 
             // Notebook
             if (NotebookRect.IsEmpty)
             {
-                NotebookRect = new Rectangle(WindowWidth - 100, WindowHeight - 100, 70, 70);
+                NotebookRect = new Rectangle(graphics.GraphicsDevice.Viewport.Width - 100,
+                    graphics.GraphicsDevice.Viewport.Height - 100, 70, 70);
             }
             spriteBatch.Draw(Notebook, NotebookRect, Color.White);
+
+            // Location Info Menu if place is clicked
+            if (GState == LocationState.Selected && SpeechMenu != null)
+            {
+                SpeechMenu.Draw(spriteBatch, Arial, graphics);
+            }
         }
     }
 }
