@@ -24,7 +24,6 @@ namespace GameDemo.Map
 
         private Button ExploreButton;
         private Button ExitButton;
-        private Rectangle ExitButtonRect;
 
         public LocationMenu(string name, string info, ContentManager content)
         {
@@ -34,7 +33,6 @@ namespace GameDemo.Map
             Position = new Vector2(300, 300);
 
             Menu = content.Load<Texture2D>("parchment");
-            ExitButtonRect = new Rectangle((int) Position.X + MenuWidth - 50, (int)Position.Y - 50, 50, 50);
         }
 
         // Name of the location
@@ -94,6 +92,7 @@ namespace GameDemo.Map
         private MainCharacter MainCharacter;
         private ContentManager Content;
 
+        private string SelectedPlaceName;
         private const string MapPath = "fantasy-map";
         private Background Background;
         private Texture2D Notebook;
@@ -134,6 +133,7 @@ namespace GameDemo.Map
                         {
                             GState = MapState.Selected;
                             LocationMenu = new LocationMenu(PlaceName + ":", LocationInfo[PlaceName], Content);
+                            SelectedPlaceName = PlaceName;
                         }
                     }
                     if (MouseClickRect.Intersects(NotebookRect))
@@ -215,7 +215,7 @@ namespace GameDemo.Map
 
             if (GState == MapState.Confirmed)
             {
-                gameEngine.Push(new EventManager(), true, true);
+                gameEngine.Push(new LocationManager(SelectedPlaceName), true, true);
                 IsTransitioning = true;
             }
 
