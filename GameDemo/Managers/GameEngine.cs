@@ -127,7 +127,6 @@ namespace GameDemo.Engine
             Console.WriteLine("Popping IManager");
 #endif
 
-            FadeIn = fadeIn;
             if (fadeOut)
             {
                 FadeOut = true;
@@ -140,6 +139,31 @@ namespace GameDemo.Engine
                 FadeOutFinished = true;
             }
             PushCount--;
+        }
+
+        // Pop all of the items on the game stack except for 1
+        // (this basically duplicates Pop)
+        public void PopAll(bool fadeIn, bool fadeOut)
+        {
+            FadeIn = fadeIn;
+            StateChange = true;
+
+#if DEBUG
+            Console.WriteLine("Popping Back to Startup");
+#endif
+            if (fadeOut)
+            {
+                FadeOut = true;
+                FadeOutFinished = false;
+                ScreenFader.BeginFade(Color.Black, 200);
+            }
+            else
+            {
+                FadeOut = false;
+                FadeOutFinished = true;
+            }
+            foreach (IManager Manager in GameStack) PushCount--;
+            PushCount++;
         }
     }
 }

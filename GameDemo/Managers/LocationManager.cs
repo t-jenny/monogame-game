@@ -4,6 +4,7 @@ using GameDemo.Characters;
 using GameDemo.Engine;
 using GameDemo.Events;
 using GameDemo.Managers;
+using GameDemo.Notebook;
 using GameDemo.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -221,7 +222,7 @@ namespace GameDemo.Locations
 
             if (GState == LocationState.ToNotebook)
             {
-                gameEngine.Pop(true, true);
+                gameEngine.Push(new NotebookManager(), true, true);
                 IsTransitioning = true;
             }
 

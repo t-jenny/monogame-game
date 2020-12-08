@@ -27,6 +27,14 @@ namespace GameDemo.Utils
             return;
         }
 
+        public static void DrawUnderline(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Rectangle rect, Color color)
+        {
+            Texture2D border = new Texture2D(graphics.GraphicsDevice, 1, 1);
+            border.SetData(new[] { Color.White });
+            spriteBatch.Draw(border, new Rectangle(rect.Left, rect.Bottom, rect.Width + 2, 2), color);
+            return;
+        }
+
         public static void DrawTextBanner(GraphicsDeviceManager graphics,
             SpriteBatch spriteBatch,
             SpriteFont font,
