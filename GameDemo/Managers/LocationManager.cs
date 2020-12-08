@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using GameDemo.Characters;
 using GameDemo.Engine;
 using GameDemo.Events;
-using GameDemo.Locations;
 using GameDemo.Managers;
 using GameDemo.Utils;
 using Microsoft.Xna.Framework;
@@ -58,9 +57,6 @@ namespace GameDemo.Locations
             Rectangle MenuRect = new Rectangle((int)Position.X, (int)Position.Y, MenuWidth, MenuHeight);
             spriteBatch.Draw(Menu, MenuRect, Color.White);
             spriteBatch.DrawString(font, Greeting, new Vector2(Position.X + MenuWidth / 2 - GreetingSize.X / 2, Position.Y + 20), Color.Black);
-
-            // draw border (for testing)
-            //DrawingUtils.DrawOpenRectangle(graphics, spriteBatch, MenuRect, Color.Black);
 
             // Explore Button
             if (TalkButton == null)
@@ -251,8 +247,7 @@ namespace GameDemo.Locations
             // Notebook
             if (NotebookRect.IsEmpty)
             {
-                NotebookRect = new Rectangle(graphics.GraphicsDevice.Viewport.Width - 100,
-                    graphics.GraphicsDevice.Viewport.Height - 100, 70, 70);
+                NotebookRect = new Rectangle(graphics.GraphicsDevice.Viewport.Width - 100, 20, 70, 70);
             }
             spriteBatch.Draw(Notebook, NotebookRect, Color.White);
 

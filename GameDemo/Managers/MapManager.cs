@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using GameDemo.Characters;
 using GameDemo.Engine;
-using GameDemo.Events;
+using GameDemo.Dialogue;
 using GameDemo.Locations;
 using GameDemo.Managers;
 using GameDemo.Utils;
@@ -95,6 +95,9 @@ namespace GameDemo.Map
         private string SelectedPlaceName;
         private const string MapPath = "fantasy-map";
         private Background Background;
+
+        private TextBox Textbox;
+
         private Texture2D Notebook;
         private Rectangle NotebookRect;
 
@@ -170,7 +173,10 @@ namespace GameDemo.Map
             Background = new Background(content, MapPath);
             LocationBoxes = new Dictionary<String, Rectangle>();
             LocationInfo = new Dictionary<String, String>();
+
             Notebook = Content.Load<Texture2D>("notebook_icon");
+            Textbox = new TextBox(content, "Where do ya wanna go today?");
+
             GState = MapState.Normal;
 
             Arial = content.Load<SpriteFont>("Fonts/Arial");
@@ -205,6 +211,7 @@ namespace GameDemo.Map
             MouseState = Mouse.GetState();
 
             if (LocationMenu != null) LocationMenu.Update();
+            Textbox.Update(gameTime);
 
             if (PrevMouseState.LeftButton == ButtonState.Pressed && MouseState.LeftButton == ButtonState.Released)
             {
@@ -248,11 +255,13 @@ namespace GameDemo.Map
                 spriteBatch.DrawString(Arial, PlaceName, LabelVec, Color.White);
             }
 
+            // Textbox
+            Textbox.Draw(spriteBatch, graphics);
+
             // Notebook
             if (NotebookRect.IsEmpty)
             {
-                NotebookRect = new Rectangle(graphics.GraphicsDevice.Viewport.Width - 100,
-                    graphics.GraphicsDevice.Viewport.Height - 100, 70, 70);
+                NotebookRect = new Rectangle(graphics.GraphicsDevice.Viewport.Width - 100, 20, 70, 70);
             }
             spriteBatch.Draw(Notebook, NotebookRect, Color.White);
 

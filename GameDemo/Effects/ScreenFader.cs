@@ -14,7 +14,6 @@ namespace GameDemo.Effects
 
         private TimeSpan CurrentTime;
         private TimeSpan EndTime;
-        private Texture2D Overlay;
 
         private bool Fading;
 
