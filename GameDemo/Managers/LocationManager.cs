@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GameDemo.Characters;
 using GameDemo.Engine;
 using GameDemo.Events;
+using GameDemo.Components;
 using GameDemo.Managers;
 using GameDemo.Notebook;
 using GameDemo.Utils;
@@ -13,70 +14,16 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GameDemo.Locations
 {
-    public class SpeechMenu
+    public class SpeechMenu : PopupMenu
     {
-        private const int MenuWidth = 450;
-        private const int MenuHeight = 250;
-        private readonly string Greeting;
-        private Vector2 Position;
-        private Texture2D Menu;
-
-        private Button TalkButton;
-        private Button IgnoreButton;
-
-        public SpeechMenu(string greeting, Rectangle person, ContentManager content)
+        public SpeechMenu(string greeting, Rectangle person, ContentManager content) : base()
         {
-            Greeting = greeting;
+            StaticText = greeting;
             Menu = content.Load<Texture2D>("speech");
-            
             Position = new Vector2(person.X, person.Y - MenuHeight);
+            ConfirmButtonText = "Talk";
+            CancelButtonText = "Ignore";
         }
-
-        // Update the button on the location menu
-        public void Update()
-        {
-            if (TalkButton == null) return;
-            TalkButton.Update();
-            IgnoreButton.Update();
-        }
-
-        public bool IsExiting(Rectangle mouseClickRect)
-        {
-            return mouseClickRect.Intersects(IgnoreButton.Rect);
-        }
-
-        public bool IsConfirming(Rectangle mouseClickRect)
-        {
-            return mouseClickRect.Intersects(TalkButton.Rect);
-        }
-
-        public void Draw(SpriteBatch spriteBatch, SpriteFont font, GraphicsDeviceManager graphics)
-        {
-            // Location Menu
-            Vector2 GreetingSize = font.MeasureString(Greeting);
-
-            Rectangle MenuRect = new Rectangle((int)Position.X, (int)Position.Y, MenuWidth, MenuHeight);
-            spriteBatch.Draw(Menu, MenuRect, Color.White);
-            spriteBatch.DrawString(font, Greeting, new Vector2(Position.X + MenuWidth / 2 - GreetingSize.X / 2, Position.Y + 20), Color.Black);
-
-            // Explore Button
-            if (TalkButton == null)
-            {
-                TalkButton = new Button("Talk", font,
-                    (int)Position.X + MenuWidth / 3,
-                    (int)Position.Y + MenuHeight / 2);
-            }
-            TalkButton.Draw(spriteBatch, graphics);
-
-            if (IgnoreButton == null)
-            {
-                IgnoreButton = new Button("Ignore", font,
-                    (int)Position.X + 2 * MenuWidth / 3,
-                    (int)Position.Y + MenuHeight / 2);
-            }
-            IgnoreButton.Draw(spriteBatch, graphics);
-        }
-
     }
 
     public class LocationManager : IManager
@@ -105,14 +52,16 @@ namespace GameDemo.Locations
         private bool IsTransitioning;
 
         private SpeechMenu SpeechMenu;
+        private ConfirmMenu ConfirmMenu;
 
         enum LocationState
         {
             Normal,
-            Selected,
-            Confirmed,
+            ClickedPerson,
+            ConfirmedPerson,
             ToNotebook,
-            Returning
+            ClickedReturn,
+            ConfirmedReturn
         }
 
         private void MouseClicked(MouseState mouseState)
@@ -130,7 +79,7 @@ namespace GameDemo.Locations
                             (int)CharCoords[CharName].Y, CharPics[CharName].Width, CharPics[CharName].Height);
                         if (MouseClickRect.Intersects(CharRect))
                         {
-                            GState = LocationState.Selected;
+                            GState = LocationState.ClickedPerson;
                             SpeechMenu = new SpeechMenu(Greetings[CharName], CharRect, Content);
                             SelectedPersonName = CharName;
                         }
@@ -141,20 +90,36 @@ namespace GameDemo.Locations
                     }
                     if (MouseClickRect.Intersects(MapIconRect))
                     {
-                        GState = LocationState.Returning;
+                        GState = LocationState.ClickedReturn;
+                        string newLine = Environment.NewLine;
+                        string query = "Are you sure you're" + newLine + "done exploring for now?";
+                        ConfirmMenu = new ConfirmMenu(query, Content);
                     }
                     break;
 
-                case LocationState.Selected:
-                    if (SpeechMenu.IsExiting(MouseClickRect))
+                case LocationState.ClickedPerson:
+                    if (SpeechMenu.IsCanceling(MouseClickRect))
                     {
                         GState = LocationState.Normal;
                         SpeechMenu = null;
                     }
                     else if (SpeechMenu.IsConfirming(MouseClickRect))
                     {
-                        GState = LocationState.Confirmed;
+                        GState = LocationState.ConfirmedPerson;
                         SpeechMenu = null;
+                    }
+                    break;
+
+                case LocationState.ClickedReturn:
+                    if (ConfirmMenu.IsCanceling(MouseClickRect))
+                    {
+                        GState = LocationState.Normal;
+                        ConfirmMenu = null;
+                    }
+                    else if (ConfirmMenu.IsConfirming(MouseClickRect))
+                    {
+                        GState = LocationState.ConfirmedReturn;
+                        ConfirmMenu = null;
                     }
                     break;
 
@@ -217,6 +182,7 @@ namespace GameDemo.Locations
             MouseState = Mouse.GetState();
 
             if (SpeechMenu != null) SpeechMenu.Update();
+            if (ConfirmMenu != null) ConfirmMenu.Update();
 
             if (PrevMouseState.LeftButton == ButtonState.Pressed && MouseState.LeftButton == ButtonState.Released)
             {
@@ -227,7 +193,7 @@ namespace GameDemo.Locations
 
             switch (GState)
             {
-                case (LocationState.Confirmed):
+                case (LocationState.ConfirmedPerson):
                     gameEngine.Push(new EventManager(), true, true);
                     IsTransitioning = true;
                     break;
@@ -237,7 +203,7 @@ namespace GameDemo.Locations
                     IsTransitioning = true;
                     break;
 
-                case (LocationState.Returning):
+                case (LocationState.ConfirmedReturn):
                     gameEngine.Pop(true, true);
                     IsTransitioning = true;
                     break;
@@ -270,16 +236,22 @@ namespace GameDemo.Locations
             spriteBatch.Draw(MapIcon, MapIconRect, Color.White);
             /***** End Replace *****/
 
+            // Draw Characters
             foreach (String CharName in CharCoords.Keys)
             {
-                // replace with a box sprite
                 spriteBatch.Draw(CharPics[CharName], CharCoords[CharName], Color.White);
             }
 
-            // Location Info Menu if place is clicked
-            if (GState == LocationState.Selected && SpeechMenu != null)
+            // Speech Menu if place is clicked
+            if (GState == LocationState.ClickedPerson && SpeechMenu != null)
             {
                 SpeechMenu.Draw(spriteBatch, Arial, graphics);
+            }
+
+            // Confirm Menu if returning to map
+            if (GState == LocationState.ClickedReturn && ConfirmMenu != null)
+            {
+                ConfirmMenu.Draw(spriteBatch, Arial, graphics);
             }
         }
     }

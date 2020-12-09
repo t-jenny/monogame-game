@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace GameDemo.Locations
+namespace GameDemo.Components
 {
     public class Button
     {

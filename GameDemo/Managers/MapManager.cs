@@ -4,6 +4,7 @@ using GameDemo.Characters;
 using GameDemo.Engine;
 using GameDemo.Dialogue;
 using GameDemo.Locations;
+using GameDemo.Components;
 using GameDemo.Managers;
 using GameDemo.Notebook;
 using GameDemo.Utils;
@@ -14,78 +15,19 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GameDemo.Map
 {
-    public class LocationMenu
+    public class LocationMenu : PopupMenu
     {
-        private const int MenuWidth = 450;
-        private const int MenuHeight = 250;
-        private readonly string Name;
-        private readonly string Info;
-        private Vector2 Position;
-        private Texture2D Menu;
+        public string PlaceName {get; set;}
 
-        private Button ExploreButton;
-        private Button ExitButton;
-
-        public LocationMenu(string name, string info, ContentManager content)
+        public LocationMenu(string name, string info, ContentManager content) : base()
         {
-            Name = name;
-            Info = info;
-
-            Position = new Vector2(300, 300);
-
+            PlaceName = name;
+            StaticText = name + Environment.NewLine + info;
             Menu = content.Load<Texture2D>("parchment");
+            Position = new Vector2(400, 300);
+            ConfirmButtonText = "Explore";
+            CancelButtonText = "Cancel";
         }
-
-        // Name of the location
-        public string LocationName()
-        {
-            return Name;
-        }
-
-        // Update the button on the location menu
-        public void Update()
-        {
-            if (ExploreButton == null) return;
-            ExitButton.Update();
-            ExploreButton.Update();
-        }
-
-        public bool IsExiting(Rectangle mouseClickRect)
-        {
-            return mouseClickRect.Intersects(ExitButton.Rect);
-        }
-
-        public bool IsConfirming(Rectangle mouseClickRect)
-        {
-            return mouseClickRect.Intersects(ExploreButton.Rect);
-        }
-
-        public void Draw(SpriteBatch spriteBatch, SpriteFont font, GraphicsDeviceManager graphics)
-        {
-            // Location Menu
-            Rectangle MenuRect = new Rectangle((int)Position.X, (int)Position.Y - 50, MenuWidth, MenuHeight);
-            spriteBatch.Draw(Menu, MenuRect, Color.White);
-            spriteBatch.DrawString(font, Name, new Vector2(Position.X + 40, Position.Y), Color.Black);
-            spriteBatch.DrawString(font, Info, new Vector2(Position.X + 40, Position.Y + 50), Color.Black);
-
-            if (ExitButton == null)
-            {
-                ExitButton = new Button("x", font,
-                    (int)Position.X + MenuWidth - 50,
-                    (int)Position.Y - 50);
-            }
-            ExitButton.Draw(spriteBatch, graphics);
-
-            // Explore Button
-            if (ExploreButton == null)
-            {
-                ExploreButton = new Button("Explore", font,
-                    (int)Position.X + MenuRect.Width / 2,
-                    (int)Position.Y + MenuRect.Height / 2);
-            }
-            ExploreButton.Draw(spriteBatch, graphics);
-        }
-
     }
 
     public class MapManager : IManager
@@ -147,7 +89,7 @@ namespace GameDemo.Map
                     break;
 
                 case MapState.Selected:
-                    if (LocationMenu.IsExiting(MouseClickRect))
+                    if (LocationMenu.IsCanceling(MouseClickRect))
                     {
                         GState = MapState.Normal;
                         LocationMenu = null;

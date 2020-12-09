@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GameDemo.Characters;
 using GameDemo.Engine;
 using GameDemo.Locations;
+using GameDemo.Components;
 using GameDemo.Managers;
 using GameDemo.Utils;
 using Microsoft.Xna.Framework;
@@ -23,6 +24,7 @@ namespace GameDemo.Notebook
         private Texture2D ReturnIcon;
         private Rectangle ReturnIconRect;
         private Button QuitButton;
+        private ConfirmMenu ConfirmQuitMenu;
 
         private SpriteFont Arial;
 
@@ -40,7 +42,8 @@ namespace GameDemo.Notebook
             Profiles,
             Locations,
             Options,
-            Quitting
+            ClickedQuitGame,
+            ConfirmedQuitGame
         }
 
         public void MouseClicked(MouseState mouseState)
@@ -48,19 +51,36 @@ namespace GameDemo.Notebook
             Point MouseClick = new Point(mouseState.X, mouseState.Y);
             Rectangle MouseClickRect = new Rectangle(MouseClick, new Point(50, 50));
 
-            if (GState != NotebookState.Returning)
+            switch (GState)
             {
-                if (MouseClickRect.Intersects(ReturnIconRect))
-                {
-                    GState = NotebookState.Returning;
-                }
+                case NotebookState.Returning:
+                    break;
 
-                if (MouseClickRect.Intersects(QuitButton.Rect))
-                {
-                    GState = NotebookState.Quitting;
-                }
+                case NotebookState.ClickedQuitGame:
+                    if (ConfirmQuitMenu.IsConfirming(MouseClickRect))
+                    {
+                        GState = NotebookState.ConfirmedQuitGame;
+                    }
+                    if (ConfirmQuitMenu.IsCanceling(MouseClickRect))
+                    {
+                        GState = NotebookState.Stats; // replace with whichever state exposes the quit button
+                    }
+                    break;
+
+                default:
+                    if (MouseClickRect.Intersects(ReturnIconRect))
+                    {
+                        GState = NotebookState.Returning;
+                    }
+
+                    if (MouseClickRect.Intersects(QuitButton.Rect))
+                    {
+                        GState = NotebookState.ClickedQuitGame;
+                        string Query = "Are you sure you want" + Environment.NewLine + "to quit the game?";
+                        ConfirmQuitMenu = new ConfirmMenu(Query, Content);
+                    }
+                    break;
             }
-
         }
 
         public void Reset(GameEngine gameEngine, MainCharacter mainCharacter, ContentManager content)
@@ -89,6 +109,7 @@ namespace GameDemo.Notebook
             if (IsTransitioning) return;
             MouseState = Mouse.GetState();
             if (QuitButton != null) QuitButton.Update();
+            if (ConfirmQuitMenu != null) ConfirmQuitMenu.Update();
 
             if (PrevMouseState.LeftButton == ButtonState.Pressed && MouseState.LeftButton == ButtonState.Released)
             {
@@ -104,7 +125,7 @@ namespace GameDemo.Notebook
                 IsTransitioning = true;
             }
 
-            if (GState == NotebookState.Quitting)
+            if (GState == NotebookState.ConfirmedQuitGame)
             {
                 gameEngine.PopAll(true, true);
                 IsTransitioning = true;
@@ -156,6 +177,12 @@ namespace GameDemo.Notebook
             QuitButton.Draw(spriteBatch, graphics);
 
             /***** End Notebook Page placeholder *****/
+
+            // Confirm Menu if quitting the game
+            if (GState == NotebookState.ClickedQuitGame && ConfirmQuitMenu != null)
+            {
+                ConfirmQuitMenu.Draw(spriteBatch, Arial, graphics);
+            }
 
         }
     }
