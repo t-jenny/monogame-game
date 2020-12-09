@@ -16,13 +16,17 @@ namespace GameDemo.Locations
 {
     public class SpeechMenu : PopupMenu
     {
-        public SpeechMenu(string greeting, Rectangle person, ContentManager content) : base()
+
+        public SpeechMenu(string greeting, Rectangle person, ContentManager content) : base(content)
         {
             StaticText = greeting;
             Menu = content.Load<Texture2D>("speech");
             Position = new Vector2(person.X, person.Y - MenuHeight);
+
             ConfirmButtonText = "Talk";
             CancelButtonText = "Ignore";
+            ButtonLabels.Add(ConfirmButtonText);
+            ButtonLabels.Add(CancelButtonText);
         }
     }
 
@@ -49,6 +53,7 @@ namespace GameDemo.Locations
         private Dictionary<string, Vector2> CharCoords;
         private Dictionary<string, Texture2D> CharPics;
         private Dictionary<string, string> Greetings;
+        private Dictionary<string, bool> SpokenWith;
         private bool IsTransitioning;
 
         private SpeechMenu SpeechMenu;
@@ -81,6 +86,7 @@ namespace GameDemo.Locations
                         {
                             GState = LocationState.ClickedPerson;
                             SpeechMenu = new SpeechMenu(Greetings[CharName], CharRect, Content);
+                            if (SpokenWith[CharName]) SpeechMenu.DisableButton(SpeechMenu.ConfirmButtonText);
                             SelectedPersonName = CharName;
                         }
                     }
@@ -98,7 +104,7 @@ namespace GameDemo.Locations
                     break;
 
                 case LocationState.ClickedPerson:
-                    if (SpeechMenu.IsCanceling(MouseClickRect))
+                    if (SpeechMenu.IsCancelling(MouseClickRect))
                     {
                         GState = LocationState.Normal;
                         SpeechMenu = null;
@@ -106,12 +112,13 @@ namespace GameDemo.Locations
                     else if (SpeechMenu.IsConfirming(MouseClickRect))
                     {
                         GState = LocationState.ConfirmedPerson;
+                        SpokenWith[SelectedPersonName] = true;
                         SpeechMenu = null;
                     }
                     break;
 
                 case LocationState.ClickedReturn:
-                    if (ConfirmMenu.IsCanceling(MouseClickRect))
+                    if (ConfirmMenu.IsCancelling(MouseClickRect))
                     {
                         GState = LocationState.Normal;
                         ConfirmMenu = null;
@@ -131,6 +138,7 @@ namespace GameDemo.Locations
         public LocationManager(string pathName)
         {
             BGImagePath = pathName;
+            SpokenWith = new Dictionary<string, bool>(); 
         }
 
         public void Reset(GameEngine gameEngine, MainCharacter mainCharacter, ContentManager content)
@@ -159,11 +167,13 @@ namespace GameDemo.Locations
             {
                 CharCoords.Add("jenny", new Vector2(500, 400));
                 Greetings.Add("jenny", "Wassup!");
+                if (!SpokenWith.ContainsKey("jenny")) SpokenWith["jenny"] = false;
             }
             if (BGImagePath == "Kaiville")
             {
                 CharCoords.Add("kai", new Vector2(140, 415));
                 Greetings.Add("kai", "Howdy!");
+                if (!SpokenWith.ContainsKey("kai")) SpokenWith["kai"] = false;
             }
 
             foreach(string CharName in CharCoords.Keys)
@@ -219,7 +229,7 @@ namespace GameDemo.Locations
             // Background
             Background.Draw(spriteBatch, graphics);
 
-            /***** Combine below into a single Banner Object *****/
+            /***** Combine below into a single Banner Object? *****/
             DateTime CurrentDate = MainCharacter.GetDate();
             String DateString = CurrentDate.ToString("dddd, MMMM dd") + " - " + BGImagePath;
             DrawingUtils.DrawTextBanner(graphics, spriteBatch, Arial, DateString, Color.Red, Color.Black);

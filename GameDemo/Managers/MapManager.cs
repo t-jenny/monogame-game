@@ -19,15 +19,15 @@ namespace GameDemo.Map
     {
         public string PlaceName {get; set;}
 
-        public LocationMenu(string name, string info, ContentManager content) : base()
+        public LocationMenu(string name, string info, ContentManager content) : base(content)
         {
             PlaceName = name;
             StaticText = name + Environment.NewLine + info;
-            Menu = content.Load<Texture2D>("parchment");
-            Position = new Vector2(400, 300);
             ConfirmButtonText = "Explore";
             CancelButtonText = "Cancel";
-        }
+            ButtonLabels.Add(ConfirmButtonText);
+            ButtonLabels.Add(CancelButtonText);
+         }
     }
 
     public class MapManager : IManager
@@ -89,7 +89,7 @@ namespace GameDemo.Map
                     break;
 
                 case MapState.Selected:
-                    if (LocationMenu.IsCanceling(MouseClickRect))
+                    if (LocationMenu.IsCancelling(MouseClickRect))
                     {
                         GState = MapState.Normal;
                         LocationMenu = null;

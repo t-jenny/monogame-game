@@ -61,7 +61,7 @@ namespace GameDemo.Notebook
                     {
                         GState = NotebookState.ConfirmedQuitGame;
                     }
-                    if (ConfirmQuitMenu.IsCanceling(MouseClickRect))
+                    if (ConfirmQuitMenu.IsCancelling(MouseClickRect))
                     {
                         GState = NotebookState.Stats; // replace with whichever state exposes the quit button
                     }
@@ -161,6 +161,9 @@ namespace GameDemo.Notebook
 
             Vector2 TextOffset = new Vector2(0.0f, Arial.MeasureString("[Your Name]").Y + 5.0f);
 
+            // Stats
+            TextPos += TextOffset;
+            spriteBatch.DrawString(Arial, "My Stats: ", TextPos, Color.Black);
             foreach (string Stat in MainCharacter.Stats.Keys)
             {
                 TextPos += TextOffset;
@@ -168,11 +171,20 @@ namespace GameDemo.Notebook
                 spriteBatch.DrawString(Arial, StatString, TextPos, Color.Black);
             }
 
+            // Relationship Levels
+            TextPos += 2 * TextOffset;
+            spriteBatch.DrawString(Arial, "Friendship Levels: ", TextPos, Color.Black);
+            foreach (string CharName in MainCharacter.Relationships.Keys)
+            {
+                TextPos += TextOffset;
+                string RelString = CharName + ": " + MainCharacter.Relationships[CharName];
+                spriteBatch.DrawString(Arial, RelString, TextPos, Color.Black);
+            }
             if (QuitButton == null)
             {
                 QuitButton = new Button("Quit Game", Arial,
                     (int)TextPos.X + (int) Arial.MeasureString("[Your Name]").X / 2,
-                    (int)(TextPos + TextOffset).Y + 5);
+                    (int)(TextPos + 2*TextOffset).Y + 5);
             }
             QuitButton.Draw(spriteBatch, graphics);
 
