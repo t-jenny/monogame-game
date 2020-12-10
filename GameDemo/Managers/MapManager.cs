@@ -193,7 +193,8 @@ namespace GameDemo.Map
             foreach (String PlaceName in LocationBoxes.Keys)
             {
                 // replace with a box sprite
-                DrawingUtils.DrawFilledRectangle(graphics, spriteBatch, LocationBoxes[PlaceName], Color.Brown);
+                Texture2D Box = DrawingUtils.FilledRectangle(graphics, spriteBatch, LocationBoxes[PlaceName], Color.Brown);
+                spriteBatch.Draw(Box, LocationBoxes[PlaceName], Color.White);
                 Vector2 LabelVec = new Vector2(LocationBoxes[PlaceName].X, LocationBoxes[PlaceName].Y);
                 spriteBatch.DrawString(Arial, PlaceName, LabelVec, Color.White);
             }

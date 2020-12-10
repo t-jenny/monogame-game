@@ -51,7 +51,7 @@ namespace GameDemo.Locations
 
         private string SelectedPersonName;
         private Dictionary<string, Vector2> CharCoords;
-        private Dictionary<string, Texture2D> CharPics;
+        private Dictionary<string, ClickableTexture> CharPics;
         private Dictionary<string, string> Greetings;
         private Dictionary<string, bool> SpokenWith;
         private bool IsTransitioning;
@@ -152,7 +152,7 @@ namespace GameDemo.Locations
             // Visual Elements
             Background = new Background(content, BGImagePath);
             CharCoords = new Dictionary<string, Vector2>();
-            CharPics = new Dictionary<string, Texture2D>();
+            CharPics = new Dictionary<string, ClickableTexture>();
             Greetings = new Dictionary<string, string>();
 
             Notebook = Content.Load<Texture2D>("notebook_icon");
@@ -178,7 +178,8 @@ namespace GameDemo.Locations
 
             foreach(string CharName in CharCoords.Keys)
             {
-                CharPics.Add(CharName, Content.Load<Texture2D>("Characters/" + CharName));
+                Texture2D CharTexture = Content.Load<Texture2D>("Characters/" + CharName);
+                CharPics[CharName] = new ClickableTexture(CharTexture, CharCoords[CharName]);
             }
             /***** End Replace *****/
 
@@ -193,6 +194,10 @@ namespace GameDemo.Locations
 
             if (SpeechMenu != null) SpeechMenu.Update();
             if (ConfirmMenu != null) ConfirmMenu.Update();
+            foreach (string CharName in CharPics.Keys)
+            {
+                CharPics[CharName].Update();
+            }
 
             if (PrevMouseState.LeftButton == ButtonState.Pressed && MouseState.LeftButton == ButtonState.Released)
             {
@@ -247,9 +252,9 @@ namespace GameDemo.Locations
             /***** End Replace *****/
 
             // Draw Characters
-            foreach (String CharName in CharCoords.Keys)
+            foreach (string CharName in CharCoords.Keys)
             {
-                spriteBatch.Draw(CharPics[CharName], CharCoords[CharName], Color.White);
+                CharPics[CharName].Draw(spriteBatch, graphics);
             }
 
             // Speech Menu if place is clicked

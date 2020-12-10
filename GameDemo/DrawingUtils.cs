@@ -28,12 +28,18 @@ namespace GameDemo.Utils
             return GradTex;
         }
 
-        public static void DrawFilledRectangle(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Rectangle rect, Color color)
+        public static Texture2D FilledRectangle(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Rectangle rect, Color color)
         {
             Color[] Colors = new Color[rect.Width * rect.Height];
             for (int i = 0; i < Colors.Length; ++i) Colors[i] = color;
             Texture2D FullRect = new Texture2D(graphics.GraphicsDevice, rect.Width, rect.Height);
             FullRect.SetData(Colors);
+            return FullRect;
+        }
+
+        public static void DrawFilledRectangle(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Rectangle rect, Color color)
+        {
+            Texture2D FullRect = FilledRectangle(graphics, spriteBatch, rect, color);
             spriteBatch.Draw(FullRect, rect, color);
             return;
         }
@@ -75,6 +81,21 @@ namespace GameDemo.Utils
             DrawGradientRectangle(graphics, spriteBatch, BannerRect, bannerCol);
 
             spriteBatch.DrawString(font, text, new Vector2(10.0f, 30.0f), textCol);
+        }
+
+        public static void DrawShadedTexture(GraphicsDeviceManager graphics,
+            SpriteBatch spriteBatch, Texture2D texture, float percentage, Rectangle rect)
+        {
+            Texture2D NewTexture = new Texture2D(graphics.GraphicsDevice, rect.Width, rect.Height);
+            Color[] data = new Color[texture.Width * texture.Height];
+            texture.GetData(data);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                data[i] = Color.Lerp(data[i], Color.Black, percentage);
+            }
+            NewTexture.SetData(data);
+            spriteBatch.Draw(NewTexture, rect, Color.White);
         }
     }
 }
