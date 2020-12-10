@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -97,5 +98,31 @@ namespace GameDemo.Utils
             NewTexture.SetData(data);
             spriteBatch.Draw(NewTexture, rect, Color.White);
         }
+
+        public static string WrappedString(SpriteFont font, string text, Rectangle rect, float padding)
+        {
+            string NewString = string.Empty;
+            string[] Words = text.Split(" ");
+            float LineLength = 0.0f;
+            for (int i = 0; i < Words.Length; i++)
+            {
+                LineLength += font.MeasureString(Words[i] + " ").X;
+                string Space = " ";
+                if (LineLength > (1.0f - 2.0f * padding) * rect.Width)
+                {
+                    NewString += Environment.NewLine;
+                    LineLength = 0.0f;
+                }
+                if (Words[i].Equals("\n"))
+                {
+                    LineLength = 0.0f;
+                    Space = "";
+                }
+
+                NewString += Words[i] + Space;
+            }
+            return NewString;
+        }
+
     }
 }

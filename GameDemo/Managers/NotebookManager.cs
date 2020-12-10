@@ -76,7 +76,7 @@ namespace GameDemo.Notebook
                     if (MouseClickRect.Intersects(QuitButton.Rect))
                     {
                         GState = NotebookState.ClickedQuitGame;
-                        string Query = "Are you sure you want" + Environment.NewLine + "to quit the game?";
+                        string Query = "Are you sure you want to quit the game?";
                         ConfirmQuitMenu = new ConfirmMenu(Query, Content);
                     }
                     break;

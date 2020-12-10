@@ -97,8 +97,7 @@ namespace GameDemo.Locations
                     if (MouseClickRect.Intersects(MapIconRect))
                     {
                         GState = LocationState.ClickedReturn;
-                        string newLine = Environment.NewLine;
-                        string query = "Are you sure you're" + newLine + "done exploring for now?";
+                        string query = "Are you sure you're done exploring for now?";
                         ConfirmMenu = new ConfirmMenu(query, Content);
                     }
                     break;

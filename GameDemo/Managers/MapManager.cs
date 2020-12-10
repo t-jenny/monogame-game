@@ -22,7 +22,7 @@ namespace GameDemo.Map
         public LocationMenu(string name, string info, ContentManager content) : base(content)
         {
             PlaceName = name;
-            StaticText = name + Environment.NewLine + info;
+            StaticText = name + ": \n " + info;
             ConfirmButtonText = "Explore";
             CancelButtonText = "Cancel";
             ButtonLabels.Add(ConfirmButtonText);
@@ -78,7 +78,7 @@ namespace GameDemo.Map
                         if (MouseClickRect.Intersects(LocationBoxes[PlaceName]))
                         {
                             GState = MapState.Selected;
-                            LocationMenu = new LocationMenu(PlaceName + ":", LocationInfo[PlaceName], Content);
+                            LocationMenu = new LocationMenu(PlaceName, LocationInfo[PlaceName], Content);
                             SelectedPlaceName = PlaceName;
                         }
                     }
