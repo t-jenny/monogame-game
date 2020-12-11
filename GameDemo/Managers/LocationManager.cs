@@ -72,7 +72,7 @@ namespace GameDemo.Locations
         private void MouseClicked(MouseState mouseState)
         {
             Point MouseClick = new Point(mouseState.X, mouseState.Y);
-            Rectangle MouseClickRect = new Rectangle(MouseClick, new Point(50, 50));
+            Rectangle MouseClickRect = new Rectangle(MouseClick, new Point(10, 10));
 
             switch (GState)
             {
@@ -191,8 +191,9 @@ namespace GameDemo.Locations
             if (IsTransitioning) return;
             MouseState = Mouse.GetState();
 
-            if (SpeechMenu != null) SpeechMenu.Update(gameTime);
-            if (ConfirmMenu != null) ConfirmMenu.Update(gameTime);
+            /*** Update components ***/
+            SpeechMenu?.Update(gameTime);
+            ConfirmMenu?.Update(gameTime);
             foreach (string CharName in CharPics.Keys)
             {
                 CharPics[CharName].Update();

@@ -153,7 +153,8 @@ namespace GameDemo.Map
             if (IsTransitioning) return;
             MouseState = Mouse.GetState();
 
-            if (LocationMenu != null) LocationMenu.Update(gameTime);
+            /*** Update Components ***/
+            LocationMenu?.Update(gameTime);
             Textbox.Update(gameTime);
 
             if (PrevMouseState.LeftButton == ButtonState.Pressed && MouseState.LeftButton == ButtonState.Released)

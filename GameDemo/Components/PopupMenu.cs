@@ -54,9 +54,10 @@ namespace GameDemo.Components
             {
                 if (i + 1 > Buttons.Count)
                 {
+                    Vector2 ButtonTextSize = font.MeasureString(ButtonLabels[i]);
                     Buttons.Add(new Button(ButtonLabels[i], font,
-                    (int)Position.X + (i + 1) * MenuWidth / (ButtonLabels.Count + 1),
-                    (int)Position.Y + (int) TextSize.Y + 2 * MenuHeight / 10));
+                    (int)(Position.X + (i + 1) * MenuWidth / (ButtonLabels.Count + 1) - ButtonTextSize.X / 2),
+                    (int)(Position.Y + TextSize.Y + 2 * MenuHeight / 10)));
                 }
                 Buttons[i].Draw(spriteBatch, graphics);
             }

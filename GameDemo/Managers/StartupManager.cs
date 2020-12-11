@@ -128,9 +128,10 @@ namespace GameDemo.Startup
                 BackgroundThread.Start();
             }
 
-            if (StartButton != null) StartButton.Update();
-            if (ExitButton != null) ExitButton.Update();
-            if (KeyboardInputMenu != null) KeyboardInputMenu.Update(gameTime);
+            /*** Update Components ***/
+            StartButton?.Update();
+            ExitButton?.Update();
+            KeyboardInputMenu?.Update(gameTime);
 
             MouseState = Mouse.GetState();
             if (PrevMouseState.LeftButton == ButtonState.Pressed && MouseState.LeftButton == ButtonState.Released)

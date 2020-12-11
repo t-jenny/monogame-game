@@ -22,7 +22,7 @@ namespace GameDemo.Components
             TextString = string.Empty;
         }
 
-        // From https://www.gamedev.net/forums/topic/457783-xna-getting-text-from-keyboard/page__p__4040190
+        // Update pressed keys
         private void UpdateInput()
         {
             OldKeyboardState = CurrentKeyboardState;
@@ -67,7 +67,7 @@ namespace GameDemo.Components
 
         public void Draw(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, SpriteFont font)
         {
-            Color FieldColor = IsActive? Color.LightGray : Color.White;
+            Color FieldColor = IsActive? Color.White : Color.LightGray;
             DrawingUtils.DrawFilledRectangle(graphics, spriteBatch, Rect, FieldColor);
             spriteBatch.DrawString(font, TextString, new Vector2(Rect.X + 5, Rect.Y + 5), Color.Black);
             DrawingUtils.DrawUnderline(graphics, spriteBatch, Rect, Color.Black);
@@ -101,6 +101,7 @@ namespace GameDemo.Components
             if (InputTextField != null) InputTextField.Update(gameTime);
         }
 
+        // Overrides the entire PopupMenu Draw method due to InputTextField
         public override void Draw(SpriteBatch spriteBatch, SpriteFont font, GraphicsDeviceManager graphics)
         {
             float Padding = 0.1f;
@@ -127,8 +128,9 @@ namespace GameDemo.Components
             {
                 if (i + 1 > Buttons.Count)
                 {
+                    Vector2 ButtonTextSize = font.MeasureString(ButtonLabels[i]);
                     Buttons.Add(new Button(ButtonLabels[i], font,
-                    (int)(Position.X + (i + 1) * MenuWidth / (ButtonLabels.Count + 1)),
+                    (int)(Position.X + (i + 1) * MenuWidth / (ButtonLabels.Count + 1) - ButtonTextSize.X / 2),
                     (int)(Position.Y + TextSize.Y + LineHeight + 2 * MenuHeight / 10)));
                 }
                 Buttons[i].Draw(spriteBatch, graphics);

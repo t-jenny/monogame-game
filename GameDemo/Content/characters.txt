@@ -1,0 +1,20 @@
+﻿{
+  "AllChars": {
+    "Jenny": {
+      "Name":  "Jenny Tang",
+      "ImagePath": "Characters/jenny",
+      "Age": 26,
+      "Description": "Not the villain. Likes to make Youtube videos.",
+      "Personality": "feisty",
+      "BFFs": [ "Jenny", "Tomazzi" ]
+    },
+    "Kai": {
+      "Name" : "Kai Okada",
+      "ImagePath": "Characters/kai",
+      "Age": 26,
+      "Description": "Definitely a suspicious character. Likes origami.",
+      "Personality": "smarmy",
+      "BFFs": [ "Blush" ]
+    }
+  }
+}

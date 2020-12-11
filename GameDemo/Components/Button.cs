@@ -22,9 +22,7 @@ namespace GameDemo.Components
             Font = font;
             Vector2 TextSize = Font.MeasureString(text);
 
-            Rect = new Rectangle(x - ((int)TextSize.X - 10) / 2, y,
-                (int)TextSize.X + 10,
-                (int)TextSize.Y);
+            Rect = new Rectangle(x, y, (int)TextSize.X + 10, (int)TextSize.Y);
         }
 
         public void Update()
