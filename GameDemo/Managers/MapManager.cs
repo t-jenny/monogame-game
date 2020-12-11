@@ -118,7 +118,7 @@ namespace GameDemo.Map
             LocationInfo = new Dictionary<String, String>();
 
             Notebook = Content.Load<Texture2D>("notebook_icon");
-            Textbox = new TextBox(content, "Where do ya wanna go today?");
+            Textbox = new TextBox(content, "Where do ya wanna go today, " + MainCharacter.Name + "?");
 
             GState = MapState.Normal;
 
@@ -153,7 +153,7 @@ namespace GameDemo.Map
             if (IsTransitioning) return;
             MouseState = Mouse.GetState();
 
-            if (LocationMenu != null) LocationMenu.Update();
+            if (LocationMenu != null) LocationMenu.Update(gameTime);
             Textbox.Update(gameTime);
 
             if (PrevMouseState.LeftButton == ButtonState.Pressed && MouseState.LeftButton == ButtonState.Released)

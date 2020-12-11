@@ -5,7 +5,7 @@ namespace GameDemo.Characters
 {
     public class MainCharacter
     {
-        public string Name = "DJ Tang-izzle";
+        public string Name;
         public double DayOffset;
         public Dictionary<string, int> Stats { get; set; }
         public Dictionary<string, int> Relationships { get; set; }

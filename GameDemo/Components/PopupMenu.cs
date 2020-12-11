@@ -10,8 +10,8 @@ namespace GameDemo.Components
     // A menu with explanatory text and two options (confirm or cancel)
     public class PopupMenu
     {
-        protected const int MenuWidth = 450;
-        protected const int MenuHeight = 250;
+        protected int MenuWidth { get; set; } = 450;
+        protected int MenuHeight { get; set; } = 250;
         protected string StaticText { get; set; } = "Are you sure?";
         protected Vector2 Position { get; set; } = new Vector2(400, 300); // center of screen
         protected Texture2D Menu { get; set; }
@@ -29,7 +29,7 @@ namespace GameDemo.Components
             Menu = content.Load<Texture2D>("parchment");
         }
 
-        public virtual void Update()
+        public virtual void Update(GameTime gameTime)
         {
             if (Buttons.Count == 0) return;
             for (int i = 0; i < Buttons.Count; i++)

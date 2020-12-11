@@ -191,8 +191,8 @@ namespace GameDemo.Locations
             if (IsTransitioning) return;
             MouseState = Mouse.GetState();
 
-            if (SpeechMenu != null) SpeechMenu.Update();
-            if (ConfirmMenu != null) ConfirmMenu.Update();
+            if (SpeechMenu != null) SpeechMenu.Update(gameTime);
+            if (ConfirmMenu != null) ConfirmMenu.Update(gameTime);
             foreach (string CharName in CharPics.Keys)
             {
                 CharPics[CharName].Update();

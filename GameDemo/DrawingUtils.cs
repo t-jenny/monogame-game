@@ -93,7 +93,9 @@ namespace GameDemo.Utils
 
             for (int i = 0; i < data.Length; i++)
             {
-                data[i] = Color.Lerp(data[i], Color.Black, percentage);
+                data[i].R = Convert.ToByte(data[i].R * (1.0f - percentage));
+                data[i].G = Convert.ToByte(data[i].G * (1.0f - percentage));
+                data[i].B = Convert.ToByte(data[i].B * (1.0f - percentage));
             }
             NewTexture.SetData(data);
             spriteBatch.Draw(NewTexture, rect, Color.White);

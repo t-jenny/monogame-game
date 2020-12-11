@@ -109,7 +109,7 @@ namespace GameDemo.Notebook
             if (IsTransitioning) return;
             MouseState = Mouse.GetState();
             if (QuitButton != null) QuitButton.Update();
-            if (ConfirmQuitMenu != null) ConfirmQuitMenu.Update();
+            if (ConfirmQuitMenu != null) ConfirmQuitMenu.Update(gameTime);
 
             if (PrevMouseState.LeftButton == ButtonState.Pressed && MouseState.LeftButton == ButtonState.Released)
             {

@@ -15,9 +15,9 @@ namespace GameDemo.Startup
 {
     public class StartupManager : IManager {
 
-
         private MainCharacter MainCharacter;
         private ContentManager Content;
+        private SpriteFont Arial;
 
         /* StartMenu variables */
         private Texture2D StartButtonImg;
@@ -31,6 +31,7 @@ namespace GameDemo.Startup
         private StartupState GState;
         private MouseState MouseState;
         private MouseState PrevMouseState;
+        private KeyboardInputMenu KeyboardInputMenu;
         private bool IsLoading;
 
         private Thread BackgroundThread;
@@ -38,8 +39,9 @@ namespace GameDemo.Startup
         enum StartupState
         {
             StartMenu,
-            Playing,
-            Loading
+            EnterName,
+            Loading,
+            Playing
         }
 
         /* MouseClick Handler for Start Menu */
@@ -47,17 +49,41 @@ namespace GameDemo.Startup
         {
             Rectangle mouseClickRect = new Rectangle(x, y, 20, 20);
 
-            if (GState == StartupState.StartMenu)
-            {
-                if (StartButton.Rect.Contains(mouseClickRect))
-                {
-                    GState = StartupState.Loading;
-                    IsLoading = false;
-                }
-                else if (ExitButton.Rect.Contains(mouseClickRect))
-                {
-                    Game1.QuitGame();
-                }
+            switch(GState) {
+                case StartupState.StartMenu:
+                    bool ClickedPlay = StartButton.Rect.Contains(mouseClickRect);
+                    if (ClickedPlay && MainCharacter.Name == null)
+                    {
+                        GState = StartupState.EnterName;
+                        string Query = "Hi, what's your name?";
+                        KeyboardInputMenu = new KeyboardInputMenu(Query, Content);
+                    }
+                    else if (ClickedPlay)
+                    {
+                        GState = StartupState.Loading;
+                        IsLoading = false;
+                    }
+                    else if (ExitButton.Rect.Contains(mouseClickRect))
+                    {
+                        Game1.QuitGame();
+                    }
+                    break;
+
+                case StartupState.EnterName:
+                    if (KeyboardInputMenu.IsConfirming(mouseClickRect))
+                    {
+                        GState = StartupState.Loading;
+                        MainCharacter.Name = KeyboardInputMenu.GetText();
+                    }
+                    if (KeyboardInputMenu.IsCancelling(mouseClickRect))
+                    {
+                        GState = StartupState.StartMenu;
+                        KeyboardInputMenu = null;
+                    }
+                    break;
+
+                default:
+                    break;
             }
         }
 
@@ -65,7 +91,7 @@ namespace GameDemo.Startup
         {
             gameEngine.Push(new MapManager(), true, true);
 
-            Thread.Sleep(2000);
+            Thread.Sleep(3000);
             GState = StartupState.Playing;
             IsLoading = true;
         }
@@ -73,14 +99,18 @@ namespace GameDemo.Startup
         public void Reset(GameEngine gameEngine, MainCharacter mainCharacter, ContentManager content)
         {
             content.Unload();
-            this.MainCharacter = mainCharacter;
-            this.Content = content;
+            MainCharacter = mainCharacter;
+            Content = content;
+            Arial = content.Load<SpriteFont>("Fonts/Arial");
 
             /* Should go in StartMenuManager */
             StartButtonImg = Content.Load<Texture2D>("start");
             ExitButtonImg = Content.Load<Texture2D>("exit");
+
             StartButton = null;
             ExitButton = null;
+            KeyboardInputMenu = null;
+
             LoadingTxt = Content.Load<Texture2D>("loading");
             GState = StartupState.StartMenu;
 
@@ -100,6 +130,7 @@ namespace GameDemo.Startup
 
             if (StartButton != null) StartButton.Update();
             if (ExitButton != null) ExitButton.Update();
+            if (KeyboardInputMenu != null) KeyboardInputMenu.Update(gameTime);
 
             MouseState = Mouse.GetState();
             if (PrevMouseState.LeftButton == ButtonState.Pressed && MouseState.LeftButton == ButtonState.Released)
@@ -134,12 +165,15 @@ namespace GameDemo.Startup
                 LoadingTxtPos = new Vector2(loadingX, loadingY);
             }
             
-            if (GState == StartupState.StartMenu) {
+            if (GState != StartupState.Loading) {
                 StartButton.Draw(spriteBatch, graphics);
                 ExitButton.Draw(spriteBatch, graphics);
+                if (GState == StartupState.EnterName && KeyboardInputMenu != null)
+                {
+                    KeyboardInputMenu.Draw(spriteBatch, Arial, graphics);
+                }
             }
-
-            if (GState == StartupState.Loading)
+            else
             {
                 spriteBatch.Draw(LoadingTxt, LoadingTxtPos, Color.YellowGreen);
             }
