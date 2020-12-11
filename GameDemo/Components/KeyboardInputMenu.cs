@@ -35,12 +35,15 @@ namespace GameDemo.Components
             {
                 if (OldKeyboardState.IsKeyUp(Key))
                 {
-                    if (Key == Keys.Back) // backspace key
+                    if (Key == Keys.Back && TextString.Length > 0) // backspace
                         TextString = TextString.Remove(TextString.Length - 1, 1);
-                    else
-                    if (Key == Keys.Space)
+                    else if (TextString.Length > 16)
+                        break;
+                    else if (Key == Keys.Space)
                         TextString = TextString.Insert(TextString.Length, " ");
-                    else
+                    else if (Key == Keys.OemQuotes) // apostrophe
+                        TextString = TextString.Insert(TextString.Length, "\'");
+                    else if (Key.ToString().Length == 1)
                         TextString += Key.ToString();
                 }
             }
@@ -48,7 +51,7 @@ namespace GameDemo.Components
 
         public void Update(GameTime gameTime)
         {
-            UpdateInput();
+            if (IsActive) UpdateInput();
             MouseState MouseState = Mouse.GetState();
             Point MousePoint = new Point(MouseState.X, MouseState.Y);
 
@@ -95,7 +98,7 @@ namespace GameDemo.Components
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            InputTextField.Update(gameTime);
+            if (InputTextField != null) InputTextField.Update(gameTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch, SpriteFont font, GraphicsDeviceManager graphics)

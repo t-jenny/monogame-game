@@ -47,7 +47,7 @@ namespace GameDemo.Startup
         /* MouseClick Handler for Start Menu */
         private void MouseClicked(int x, int y)
         {
-            Rectangle mouseClickRect = new Rectangle(x, y, 20, 20);
+            Rectangle mouseClickRect = new Rectangle(x, y, 10, 10);
 
             switch(GState) {
                 case StartupState.StartMenu:
