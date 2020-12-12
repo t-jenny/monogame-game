@@ -122,7 +122,7 @@ namespace GameDemo.Notebook
                     {
                         GState = NotebookState.ClickedQuitGame;
                         string Query = "Are you sure you want to quit the game?";
-                        ConfirmQuitMenu = new ConfirmMenu(Query, Content);
+                        ConfirmQuitMenu = new ConfirmMenu(Query, Content, Arial);
                     }
                     break;
             }
@@ -229,8 +229,7 @@ namespace GameDemo.Notebook
 
             // Banner with Date
             string DateString = MainCharacter.GetDateTimeString();
-            spriteBatch.DrawString(Arial, DateString, new Vector2(10.0f, 30.0f), Color.Black);
-            DrawingUtils.DrawTextBanner(graphics, spriteBatch, Arial, DateString, Color.Red, Color.Black);
+            DrawingUtils.DrawTextBanner(spriteBatch, graphics, Arial, DateString, Color.Red, Color.Black);
 
             // Return-to-world icon
             if (ReturnIconRect.IsEmpty)
@@ -271,9 +270,7 @@ namespace GameDemo.Notebook
                 case "Save & Quit":
                     if (QuitButton == null)
                     {
-                        QuitButton = new Button("Quit Game", Arial,
-                            (int)TextPos.X,
-                            (int)(TextPos + 2 * TextOffset).Y + 5);
+                        QuitButton = new Button("Quit Game", Arial, (int)TextPos.X, (int)TextPos.Y);
                     }
                     QuitButton.Draw(spriteBatch, graphics);
                     break;
@@ -321,7 +318,7 @@ namespace GameDemo.Notebook
             // Confirm Menu if quitting the game
             if (GState == NotebookState.ClickedQuitGame && ConfirmQuitMenu != null)
             {
-                ConfirmQuitMenu.Draw(spriteBatch, graphics, Arial);
+                ConfirmQuitMenu.Draw(spriteBatch, graphics);
             }
 
         }

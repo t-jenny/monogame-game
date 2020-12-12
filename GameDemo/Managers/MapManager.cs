@@ -19,7 +19,7 @@ namespace GameDemo.Map
     {
         public string PlaceName {get; set;}
 
-        public LocationMenu(string name, string info, ContentManager content) : base(content)
+        public LocationMenu(string name, string info, ContentManager content, SpriteFont font) : base(content, font)
         {
             PlaceName = name;
             StaticText = name + ": \n " + info;
@@ -68,7 +68,7 @@ namespace GameDemo.Map
         public void MouseClicked(MouseState mouseState)
         {
             Point MouseClick = new Point(mouseState.X, mouseState.Y);
-            Rectangle MouseClickRect = new Rectangle(MouseClick, new Point(50, 50));
+            Rectangle MouseClickRect = new Rectangle(MouseClick, new Point(10, 10));
 
             switch (GState)
             {
@@ -79,7 +79,7 @@ namespace GameDemo.Map
                         if (MouseClickRect.Intersects(LocationBoxes[PlaceName]))
                         {
                             GState = MapState.Selected;
-                            LocationMenu = new LocationMenu(PlaceName, LocationInfo[PlaceName], Content);
+                            LocationMenu = new LocationMenu(PlaceName, LocationInfo[PlaceName], Content, Arial);
                             SelectedPlaceName = PlaceName;
                         }
                     }
@@ -190,33 +190,31 @@ namespace GameDemo.Map
             // Banner with Date
             string DateString = MainCharacter.GetDateTimeString();
             DateString += " - Carpe Diem!";
-            spriteBatch.DrawString(Arial, DateString, new Vector2(10.0f, 30.0f), Color.Black);
+            DrawingUtils.DrawTextBanner(spriteBatch, graphics, Arial, DateString, Color.Red, Color.Black);
 
-            DrawingUtils.DrawTextBanner(graphics, spriteBatch, Arial, DateString, Color.Red, Color.Black);
-
-            // Place Labels
-            foreach (String PlaceName in LocationBoxes.Keys)
-            {
-                // replace with a box sprite
-                Texture2D Box = DrawingUtils.FilledRectangle(graphics, spriteBatch, LocationBoxes[PlaceName], Color.Brown);
-                spriteBatch.Draw(Box, LocationBoxes[PlaceName], Color.White);
-                Vector2 LabelVec = new Vector2(LocationBoxes[PlaceName].X, LocationBoxes[PlaceName].Y);
-                spriteBatch.DrawString(Arial, PlaceName, LabelVec, Color.White);
-            }
-
-            // Textbox
-            Textbox.Draw(spriteBatch, graphics);
-
-            // Notebook
+            // Notebook Icon
             if (NotebookRect.IsEmpty)
             {
                 NotebookRect = new Rectangle(graphics.GraphicsDevice.Viewport.Width - 100, 20, 70, 70);
             }
             spriteBatch.Draw(Notebook, NotebookRect, Color.White);
 
+            // Place Labels
+            foreach (String PlaceName in LocationBoxes.Keys)
+            {
+                // replace with a box sprite
+                Texture2D Box = DrawingUtils.FilledRectangle(graphics, LocationBoxes[PlaceName], Color.Brown);
+                spriteBatch.Draw(Box, LocationBoxes[PlaceName], Color.White);
+                Vector2 LabelVec = new Vector2(LocationBoxes[PlaceName].X, LocationBoxes[PlaceName].Y);
+                spriteBatch.DrawString(Arial, PlaceName, LabelVec, Color.White);
+            }
+
+            // Textbox "What do you want to do today?"
+            Textbox.Draw(spriteBatch, graphics);
+
             // Location Info Menu if place is clicked
             if (GState == MapState.Selected && LocationMenu != null) {
-                LocationMenu.Draw(spriteBatch, graphics, Arial);
+                LocationMenu.Draw(spriteBatch, graphics);
             }
         }
     }

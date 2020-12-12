@@ -57,12 +57,12 @@ namespace GameDemo.Components
             }
 
             // draw button 
-            DrawingUtils.DrawGradientRectangle(graphics, spriteBatch, Rect, ButtonCol);
+            DrawingUtils.DrawGradientRectangle(spriteBatch, graphics, Rect, ButtonCol);
             Vector2 ButtonPos = new Vector2(Rect.X + 5, Rect.Y);
             spriteBatch.DrawString(Font, Text, ButtonPos, TextCol);
 
             // draw border
-            DrawingUtils.DrawOpenRectangle(graphics, spriteBatch, Rect, Color.Gray);
+            DrawingUtils.DrawOpenRectangle(spriteBatch, graphics, Rect, Color.Gray);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace GameDemo.Locations
     public class SpeechMenu : PopupMenu
     {
 
-        public SpeechMenu(string greeting, Rectangle person, ContentManager content) : base(content)
+        public SpeechMenu(string greeting, Rectangle person, ContentManager content, SpriteFont font) : base(content, font)
         {
             StaticText = greeting;
             Menu = content.Load<Texture2D>("speech");
@@ -85,7 +85,7 @@ namespace GameDemo.Locations
                         if (MouseClickRect.Intersects(CharRect))
                         {
                             GState = LocationState.ClickedPerson;
-                            SpeechMenu = new SpeechMenu(Greetings[CharName], CharRect, Content);
+                            SpeechMenu = new SpeechMenu(Greetings[CharName], CharRect, Content, Arial);
                             if (SpokenWith[CharName]) SpeechMenu.DisableButton(SpeechMenu.ConfirmButtonText);
                             SelectedPersonName = CharName;
                         }
@@ -98,7 +98,7 @@ namespace GameDemo.Locations
                     {
                         GState = LocationState.ClickedReturn;
                         string query = "Are you sure you're done exploring for now?";
-                        ConfirmMenu = new ConfirmMenu(query, Content);
+                        ConfirmMenu = new ConfirmMenu(query, Content, Arial);
                     }
                     break;
 
@@ -234,9 +234,11 @@ namespace GameDemo.Locations
             // Background
             Background.Draw(spriteBatch, graphics);
 
-            /***** Combine below into a single Banner Object? *****/
+            // Banner
             String DateString = MainCharacter.GetDateTimeString() + " - " + BGImagePath;
-            DrawingUtils.DrawTextBanner(graphics, spriteBatch, Arial, DateString, Color.Red, Color.Black);
+            DrawingUtils.DrawTextBanner(spriteBatch, graphics, Arial, DateString, Color.Red, Color.Black);
+
+            // Banner Icons
             if (NotebookRect.IsEmpty)
             {
                 NotebookRect = new Rectangle(graphics.GraphicsDevice.Viewport.Width - 100, 20, 70, 70);
@@ -248,7 +250,6 @@ namespace GameDemo.Locations
                 MapIconRect = new Rectangle(graphics.GraphicsDevice.Viewport.Width - 200, 20, 70, 70);
             }
             spriteBatch.Draw(MapIcon, MapIconRect, Color.White);
-            /***** End Replace *****/
 
             // Draw Characters
             foreach (string CharName in CharCoords.Keys)
@@ -259,13 +260,13 @@ namespace GameDemo.Locations
             // Speech Menu if place is clicked
             if (GState == LocationState.ClickedPerson && SpeechMenu != null)
             {
-                SpeechMenu.Draw(spriteBatch, graphics, Arial);
+                SpeechMenu.Draw(spriteBatch, graphics);
             }
 
             // Confirm Menu if returning to map
             if (GState == LocationState.ClickedReturn && ConfirmMenu != null)
             {
-                ConfirmMenu.Draw(spriteBatch, graphics, Arial);
+                ConfirmMenu.Draw(spriteBatch, graphics);
             }
         }
     }

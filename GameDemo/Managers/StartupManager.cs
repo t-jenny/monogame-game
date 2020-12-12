@@ -56,7 +56,7 @@ namespace GameDemo.Startup
                     {
                         GState = StartupState.EnterName;
                         string Query = "Hi, what's your name?";
-                        KeyboardInputMenu = new KeyboardInputMenu(Query, Content);
+                        KeyboardInputMenu = new KeyboardInputMenu(Query, Content, Arial);
                     }
                     else if (ClickedPlay)
                     {
@@ -181,7 +181,7 @@ namespace GameDemo.Startup
                 CountdownTimer.Draw(spriteBatch); // remove later
                 if (GState == StartupState.EnterName && KeyboardInputMenu != null)
                 {
-                    KeyboardInputMenu.Draw(spriteBatch, graphics, Arial);
+                    KeyboardInputMenu.Draw(spriteBatch, graphics);
                 }
             }
             else

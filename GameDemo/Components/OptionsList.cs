@@ -60,7 +60,7 @@ namespace GameDemo.Components
             {
                 if (Opt.Label == SelectedOption)
                 {
-                    DrawingUtils.DrawUnderline(graphics, spriteBatch, Opt.Rect, Color.Purple);
+                    DrawingUtils.DrawUnderline(spriteBatch, graphics, Opt.Rect, Color.Purple);
                 }
                 spriteBatch.DrawString(Font, Opt.Label, new Vector2(Opt.Rect.X, Opt.Rect.Y), Color.Black);
             }

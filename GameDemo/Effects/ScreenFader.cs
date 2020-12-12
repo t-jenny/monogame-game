@@ -67,7 +67,7 @@ namespace GameDemo.Effects
         {
             if (CurrentColor.Equals(Color.Transparent)) return;
             GraphicsDevice GD = graphics.GraphicsDevice;
-            DrawingUtils.DrawFilledRectangle(graphics, spriteBatch, GD.Viewport.Bounds, CurrentColor);         
+            DrawingUtils.DrawFilledRectangle(spriteBatch, graphics, GD.Viewport.Bounds, CurrentColor);         
         }
     }
 }

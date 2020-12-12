@@ -29,7 +29,7 @@ namespace GameDemo.Utils
             return GradTex;
         }
 
-        public static Texture2D FilledRectangle(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Rectangle rect, Color color)
+        public static Texture2D FilledRectangle(GraphicsDeviceManager graphics, Rectangle rect, Color color)
         {
             Color[] Colors = new Color[rect.Width * rect.Height];
             for (int i = 0; i < Colors.Length; ++i) Colors[i] = color;
@@ -38,20 +38,20 @@ namespace GameDemo.Utils
             return FullRect;
         }
 
-        public static void DrawFilledRectangle(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Rectangle rect, Color color)
+        public static void DrawFilledRectangle(SpriteBatch spriteBatch, GraphicsDeviceManager graphics, Rectangle rect, Color color)
         {
-            Texture2D FullRect = FilledRectangle(graphics, spriteBatch, rect, color);
+            Texture2D FullRect = FilledRectangle(graphics, rect, color);
             spriteBatch.Draw(FullRect, rect, color);
             return;
         }
 
-        public static void DrawGradientRectangle(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Rectangle rect, Color color)
+        public static void DrawGradientRectangle(SpriteBatch spriteBatch, GraphicsDeviceManager graphics, Rectangle rect, Color color)
         {
             Texture2D GradTex = GradientTexture(graphics, rect.Width, rect.Height, color);
             spriteBatch.Draw(GradTex, rect, color);
         }
 
-        public static void DrawOpenRectangle(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Rectangle rect, Color color)
+        public static void DrawOpenRectangle(SpriteBatch spriteBatch, GraphicsDeviceManager graphics, Rectangle rect, Color color)
         {
             Texture2D border = new Texture2D(graphics.GraphicsDevice, 1, 1);
             border.SetData(new[] { Color.White });
@@ -62,7 +62,7 @@ namespace GameDemo.Utils
             return;
         }
 
-        public static void DrawUnderline(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Rectangle rect, Color color)
+        public static void DrawUnderline(SpriteBatch spriteBatch, GraphicsDeviceManager graphics, Rectangle rect, Color color)
         {
             Texture2D border = new Texture2D(graphics.GraphicsDevice, 1, 1);
             border.SetData(new[] { Color.White });
@@ -70,8 +70,7 @@ namespace GameDemo.Utils
             return;
         }
 
-        public static void DrawTextBanner(GraphicsDeviceManager graphics,
-            SpriteBatch spriteBatch,
+        public static void DrawTextBanner(SpriteBatch spriteBatch, GraphicsDeviceManager graphics,
             SpriteFont font,
             string text,
             Color bannerCol,
@@ -79,7 +78,7 @@ namespace GameDemo.Utils
         {
             int WindowWidth = (int)graphics.GraphicsDevice.Viewport.Width;
             Rectangle BannerRect = new Rectangle(0, 0, WindowWidth, 100);
-            DrawGradientRectangle(graphics, spriteBatch, BannerRect, bannerCol);
+            DrawGradientRectangle(spriteBatch, graphics, BannerRect, bannerCol);
 
             spriteBatch.DrawString(font, text, new Vector2(10.0f, 30.0f), textCol);
         }
