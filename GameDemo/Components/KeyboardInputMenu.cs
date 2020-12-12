@@ -65,7 +65,7 @@ namespace GameDemo.Components
             }
         }
 
-        public void Draw(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, SpriteFont font)
+        public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics, SpriteFont font)
         {
             Color FieldColor = IsActive? Color.White : Color.LightGray;
             DrawingUtils.DrawFilledRectangle(graphics, spriteBatch, Rect, FieldColor);
@@ -102,7 +102,7 @@ namespace GameDemo.Components
         }
 
         // Overrides the entire PopupMenu Draw method due to InputTextField
-        public override void Draw(SpriteBatch spriteBatch, SpriteFont font, GraphicsDeviceManager graphics)
+        public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics, SpriteFont font)
         {
             float Padding = 0.1f;
             float LineHeight = font.MeasureString(StaticText).Y;
@@ -122,7 +122,7 @@ namespace GameDemo.Components
                     (int) (Position.Y + font.MeasureString(WrappedText).Y + font.LineSpacing),
                     (int) ((1.0f - 2*Padding) * MenuWidth), (int) LineHeight));
             }
-            InputTextField.Draw(graphics, spriteBatch, font);
+            InputTextField.Draw(spriteBatch, graphics, font);
 
             for (int i = 0; i < ButtonLabels.Count; i++)
             {

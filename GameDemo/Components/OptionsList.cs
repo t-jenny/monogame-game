@@ -54,7 +54,7 @@ namespace GameDemo.Components
 
         }
 
-        public void Draw(GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
             foreach (Option Opt in Options)
             {

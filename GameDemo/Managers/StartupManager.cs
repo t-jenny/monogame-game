@@ -19,11 +19,11 @@ namespace GameDemo.Startup
         private ContentManager Content;
         private SpriteFont Arial;
 
-        /* StartMenu variables */
         private Texture2D StartButtonImg;
         private Texture2D ExitButtonImg;
         private ClickableTexture StartButton;
         private ClickableTexture ExitButton;
+        private CountdownTimer CountdownTimer; // Added to test CountdownTimer
 
         private Texture2D LoadingTxt;
         private Vector2 LoadingTxtPos;
@@ -107,9 +107,11 @@ namespace GameDemo.Startup
             StartButtonImg = Content.Load<Texture2D>("start");
             ExitButtonImg = Content.Load<Texture2D>("exit");
 
+            // important to reset these components to null when the manager is reloaded
             StartButton = null;
             ExitButton = null;
             KeyboardInputMenu = null;
+            CountdownTimer = null; // remove later
 
             LoadingTxt = Content.Load<Texture2D>("loading");
             GState = StartupState.StartMenu;
@@ -132,6 +134,7 @@ namespace GameDemo.Startup
             StartButton?.Update();
             ExitButton?.Update();
             KeyboardInputMenu?.Update(gameTime);
+            CountdownTimer?.Update(gameTime);
 
             MouseState = Mouse.GetState();
             if (PrevMouseState.LeftButton == ButtonState.Pressed && MouseState.LeftButton == ButtonState.Released)
@@ -154,24 +157,31 @@ namespace GameDemo.Startup
             // Start Button, Exit Button, and Loading Text
             if (StartButton == null)
             {
-                float startX = (graphics.GraphicsDevice.Viewport.Width / 2) - (StartButtonImg.Width / 2);
-                float startY = graphics.GraphicsDevice.Viewport.Height / 3;
-                float exitX = (graphics.GraphicsDevice.Viewport.Width / 2) - (ExitButtonImg.Width / 2);
-                float exitY = 2 * graphics.GraphicsDevice.Viewport.Height / 3;
-                float loadingX = (graphics.GraphicsDevice.Viewport.Width / 2) - (LoadingTxt.Width / 2);
-                float loadingY = (graphics.GraphicsDevice.Viewport.Height / 2) - (LoadingTxt.Height / 2);
+                float StartX = (graphics.GraphicsDevice.Viewport.Width / 2) - (StartButtonImg.Width / 2);
+                float StartY = graphics.GraphicsDevice.Viewport.Height / 3;
+                float ExitX = (graphics.GraphicsDevice.Viewport.Width / 2) - (ExitButtonImg.Width / 2);
+                float ExitY = 2 * graphics.GraphicsDevice.Viewport.Height / 3;
+                float LoadingX = (graphics.GraphicsDevice.Viewport.Width / 2) - (LoadingTxt.Width / 2);
+                float LoadingY = (graphics.GraphicsDevice.Viewport.Height / 2) - (LoadingTxt.Height / 2);
 
-                StartButton = new ClickableTexture(StartButtonImg, new Vector2(startX, startY));
-                ExitButton = new ClickableTexture(ExitButtonImg, new Vector2(exitX, exitY));
-                LoadingTxtPos = new Vector2(loadingX, loadingY);
+                StartButton = new ClickableTexture(StartButtonImg, new Vector2(StartX, StartY));
+                ExitButton = new ClickableTexture(ExitButtonImg, new Vector2(ExitX, ExitY));
+                LoadingTxtPos = new Vector2(LoadingX, LoadingY);
+
+                // countdown timer - remove later
+                float CountdownX = 0.9f * graphics.GraphicsDevice.Viewport.Width;
+                float CountdownY = 0.1f * graphics.GraphicsDevice.Viewport.Height;
+                CountdownTimer = new CountdownTimer(Arial, 1, 0, new Vector2(CountdownX, CountdownY));
             }
+
             
             if (GState != StartupState.Loading) {
                 StartButton.Draw(spriteBatch, graphics);
                 ExitButton.Draw(spriteBatch, graphics);
+                CountdownTimer.Draw(spriteBatch); // remove later
                 if (GState == StartupState.EnterName && KeyboardInputMenu != null)
                 {
-                    KeyboardInputMenu.Draw(spriteBatch, Arial, graphics);
+                    KeyboardInputMenu.Draw(spriteBatch, graphics, Arial);
                 }
             }
             else

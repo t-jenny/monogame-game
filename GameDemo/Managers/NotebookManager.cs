@@ -243,10 +243,6 @@ namespace GameDemo.Notebook
             /***** Draw notebook info (make this more modular *****/
             Vector2 TextPos = new Vector2(1.1f * ScreenWidth / 2, 120);
 
-            //spriteBatch.DrawString(JustBreathe, MainCharacter.Name + "\'s Notebook", TextPos, Color.Black);
-            //Point NameSize = JustBreathe.MeasureString(MainCharacter.Name + "\'s Notebook").ToPoint();
-            //Rectangle NameRect = new Rectangle(TextPos.ToPoint(), NameSize);
-            //DrawingUtils.DrawUnderline(graphics, spriteBatch, NameRect, Color.Black);
             TextPos += TextOffset;
 
             // Notebook Page Display
@@ -306,7 +302,7 @@ namespace GameDemo.Notebook
                 Rectangle OptionsListRect = new Rectangle(150, 120, 300, 500);
                 OptionsList = new OptionsList(GetOptions(), JustBreathe25, OptionsListRect);
             }
-            OptionsList.Draw(graphics, spriteBatch);
+            OptionsList.Draw(spriteBatch, graphics);
 
             // Draw Notebook Tabs
             if (PeopleTab == null)
@@ -326,7 +322,7 @@ namespace GameDemo.Notebook
             // Confirm Menu if quitting the game
             if (GState == NotebookState.ClickedQuitGame && ConfirmQuitMenu != null)
             {
-                ConfirmQuitMenu.Draw(spriteBatch, Arial, graphics);
+                ConfirmQuitMenu.Draw(spriteBatch, graphics, Arial);
             }
 
         }

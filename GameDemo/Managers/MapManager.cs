@@ -216,7 +216,7 @@ namespace GameDemo.Map
 
             // Location Info Menu if place is clicked
             if (GState == MapState.Selected && LocationMenu != null) {
-                LocationMenu.Draw(spriteBatch, Arial, graphics);
+                LocationMenu.Draw(spriteBatch, graphics, Arial);
             }
         }
     }

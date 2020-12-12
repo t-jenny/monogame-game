@@ -260,13 +260,13 @@ namespace GameDemo.Locations
             // Speech Menu if place is clicked
             if (GState == LocationState.ClickedPerson && SpeechMenu != null)
             {
-                SpeechMenu.Draw(spriteBatch, Arial, graphics);
+                SpeechMenu.Draw(spriteBatch, graphics, Arial);
             }
 
             // Confirm Menu if returning to map
             if (GState == LocationState.ClickedReturn && ConfirmMenu != null)
             {
-                ConfirmMenu.Draw(spriteBatch, Arial, graphics);
+                ConfirmMenu.Draw(spriteBatch, graphics, Arial);
             }
         }
     }

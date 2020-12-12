@@ -38,7 +38,7 @@ namespace GameDemo.Components
             }
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch, SpriteFont font, GraphicsDeviceManager graphics)
+        public virtual void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics, SpriteFont font)
         {
             // Location Menu
             Rectangle MenuRect = new Rectangle((int)Position.X, (int)Position.Y, MenuWidth, MenuHeight);
@@ -99,12 +99,12 @@ namespace GameDemo.Components
             ButtonLabels.Add(CancelButtonText);
         }
 
-        public override void Draw(SpriteBatch spriteBatch, SpriteFont font, GraphicsDeviceManager graphics)
+        public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics, SpriteFont font)
         {
             Color Overlay = Color.Lerp(Color.Transparent, Color.Black, 0.7f);
             GraphicsDevice GD = graphics.GraphicsDevice;
             DrawingUtils.DrawFilledRectangle(graphics, spriteBatch, GD.Viewport.Bounds, Overlay);
-            base.Draw(spriteBatch, font, graphics);
+            base.Draw(spriteBatch, graphics, font);
         }
     }
 }
