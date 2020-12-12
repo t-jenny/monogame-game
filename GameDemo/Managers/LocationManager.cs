@@ -235,8 +235,7 @@ namespace GameDemo.Locations
             Background.Draw(spriteBatch, graphics);
 
             /***** Combine below into a single Banner Object? *****/
-            DateTime CurrentDate = MainCharacter.GetDate();
-            String DateString = CurrentDate.ToString("dddd, MMMM dd") + " - " + BGImagePath;
+            String DateString = MainCharacter.GetDateTimeString() + " - " + BGImagePath;
             DrawingUtils.DrawTextBanner(graphics, spriteBatch, Arial, DateString, Color.Red, Color.Black);
             if (NotebookRect.IsEmpty)
             {

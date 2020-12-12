@@ -109,7 +109,7 @@ namespace GameDemo.Map
         {
             content.Unload();
 
-            if (AddTimeOnReturn) mainCharacter.NextDay(); // Increment the day next time returned to menu.
+            if (AddTimeOnReturn) mainCharacter.NextTimeBlock(); // Increment the day next time returned to menu.
 
             MainCharacter = mainCharacter;
             Content = content;
@@ -188,8 +188,8 @@ namespace GameDemo.Map
             Background.Draw(spriteBatch, graphics);
 
             // Banner with Date
-            DateTime CurrentDate = MainCharacter.GetDate();
-            String DateString = CurrentDate.ToString("dddd, MMMM dd") + " - Carpe Diem!";
+            string DateString = MainCharacter.GetDateTimeString();
+            DateString += " - Carpe Diem!";
             spriteBatch.DrawString(Arial, DateString, new Vector2(10.0f, 30.0f), Color.Black);
 
             DrawingUtils.DrawTextBanner(graphics, spriteBatch, Arial, DateString, Color.Red, Color.Black);

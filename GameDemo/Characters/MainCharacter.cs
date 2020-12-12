@@ -6,7 +6,7 @@ namespace GameDemo.Characters
     public class MainCharacter
     {
         public string Name;
-        public double DayOffset;
+        private double DayOffset;
         public Dictionary<string, int> Stats { get; set; }
         public Dictionary<string, int> Relationships { get; set; }
         public HashSet<string> EventFlags { get; set; }
@@ -23,6 +23,11 @@ namespace GameDemo.Characters
             Inventory = new HashSet<string>();
         }
 
+        public void NextTimeBlock()
+        {
+            DayOffset += 0.5;
+        }
+
         public void NextDay()
         {
             DayOffset += 1.0;
@@ -30,8 +35,18 @@ namespace GameDemo.Characters
 
         public DateTime GetDate()
         {
-            DateTime DT = new DateTime(2025, 5, 31);
+            DateTime DT = new DateTime(2025, 5, 31, 0, 0, 0);
             return DT.AddDays(DayOffset);
+        }
+
+        public string GetDateTimeString()
+        {
+            DateTime DT = new DateTime(2025, 5, 31, 0, 0, 0);
+            DateTime CurrentDate = DT.AddDays(DayOffset);
+            string DateString = CurrentDate.ToString("dddd, MMMM dd");
+            string TimeOfDay = "Morning";
+            if (CurrentDate.Hour > 0) TimeOfDay = "Afternoon";
+            return DateString + (": " + TimeOfDay);
         }
 
     }

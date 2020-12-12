@@ -228,8 +228,7 @@ namespace GameDemo.Notebook
             int ScreenWidth = graphics.GraphicsDevice.Viewport.Width;
 
             // Banner with Date
-            DateTime CurrentDate = MainCharacter.GetDate();
-            String DateString = CurrentDate.ToString("dddd, MMMM dd");
+            string DateString = MainCharacter.GetDateTimeString();
             spriteBatch.DrawString(Arial, DateString, new Vector2(10.0f, 30.0f), Color.Black);
             DrawingUtils.DrawTextBanner(graphics, spriteBatch, Arial, DateString, Color.Red, Color.Black);
 
