@@ -55,6 +55,7 @@ namespace GameDemo.Map
         private Dictionary<String, String> LocationInfo;
         private LocationMenu LocationMenu;
         private bool IsTransitioning;
+        private bool AddTimeOnReturn;
 
         enum MapState
         {
@@ -97,6 +98,7 @@ namespace GameDemo.Map
                     else if (LocationMenu.IsConfirming(MouseClickRect))
                     {
                         GState = MapState.Confirmed;
+                        AddTimeOnReturn = true;
                         LocationMenu = null;
                     }
                     break;
@@ -106,11 +108,13 @@ namespace GameDemo.Map
         public void Reset(GameEngine gameEngine, MainCharacter mainCharacter, ContentManager content)
         {
             content.Unload();
-            mainCharacter.NextDay(); // Increment the day next time returned to menu.
+
+            if (AddTimeOnReturn) mainCharacter.NextDay(); // Increment the day next time returned to menu.
 
             MainCharacter = mainCharacter;
             Content = content;
             IsTransitioning = false;
+            AddTimeOnReturn = false;
 
             // Visual Elements
             Background = new Background(content, MapPath);

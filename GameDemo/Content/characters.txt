@@ -15,6 +15,14 @@
       "Description": "Definitely a suspicious character. Likes origami.",
       "Personality": "smarmy",
       "BFFs": [ "Blush" ]
+    },
+    "Diana": {
+      "Name" : "Diana Kim",
+      "ImagePath": "Characters/diana",
+      "Age": 10,
+      "Description": "A happy child, given to mischief.",
+      "Personality": "saucy",
+      "BFFs": [ "Sir Lionel" ]
     }
   }
 }

@@ -27,15 +27,17 @@ namespace GameDemo.Notebook
         private Rectangle ReturnIconRect;
 
         // Notebook tabs/sections
-        private Button PeopleButton;
-        private Button OptionsButton;
-        private Button StatsButton;
+        private ClickableTexture PeopleTab;
+        private ClickableTexture OptionsTab;
+        private ClickableTexture StatsTab;
         private OptionsList OptionsList;
 
         private Button QuitButton;
         private ConfirmMenu ConfirmQuitMenu;
 
         private SpriteFont Arial;
+        private SpriteFont JustBreathe;
+        private SpriteFont JustBreathe25;
         private Vector2 TextOffset;
         private Vector2 Indent;
 
@@ -63,13 +65,13 @@ namespace GameDemo.Notebook
             {
                 case NotebookState.Profiles:
                     // pull from people known to main character
-                    return new string[] { "Jenny", "Kai" };
+                    return new string[] { "Diana", "Jenny", "Kai" };
 
                 case NotebookState.Stats:
                     return new string[] { "My Stats", "Relationships" };
 
                 case NotebookState.Options:
-                    return new string[] { "Save & Quit", "Settings" };
+                    return new string[] { "Settings", "Save & Quit" };
 
                 default:
                     return new string[] { };
@@ -96,17 +98,17 @@ namespace GameDemo.Notebook
                     break;
 
                 default:
-                    if (MouseClickRect.Intersects(StatsButton.Rect))
+                    if (MouseClickRect.Intersects(StatsTab.Rect))
                     {
                         GState = NotebookState.Stats;
                         OptionsList = null;
                     }
-                    if (MouseClickRect.Intersects(PeopleButton.Rect))
+                    if (MouseClickRect.Intersects(PeopleTab.Rect))
                     {
                         GState = NotebookState.Profiles;
                         OptionsList = null;
                     }
-                    if (MouseClickRect.Intersects(OptionsButton.Rect))
+                    if (MouseClickRect.Intersects(OptionsTab.Rect))
                     {
                         GState = NotebookState.Options;
                         OptionsList = null;
@@ -143,7 +145,9 @@ namespace GameDemo.Notebook
             OptionsList = null;
 
             Arial = content.Load<SpriteFont>("Fonts/Arial");
-            TextOffset = new Vector2(0.0f, Arial.MeasureString("A").Y + 0.5f);
+            JustBreathe = content.Load<SpriteFont>("Fonts/JustBreathe20");
+            JustBreathe25 = content.Load<SpriteFont>("Fonts/JustBreathe25");
+            TextOffset = new Vector2(0.0f, JustBreathe.MeasureString("A").Y + 0.5f);
             Indent = new Vector2(Arial.MeasureString("A").X, 0.0f);
 
             MouseState = Mouse.GetState();
@@ -157,9 +161,9 @@ namespace GameDemo.Notebook
 
             /*** Update Components ***/
             // Notebook sections
-            PeopleButton?.Update();
-            OptionsButton?.Update();
-            StatsButton?.Update();
+            PeopleTab?.Update();
+            OptionsTab?.Update();
+            StatsTab?.Update();
             OptionsList?.Update();
 
             // Game Quit Components
@@ -191,18 +195,30 @@ namespace GameDemo.Notebook
         private void DrawCharacterEntry(SpriteBatch spriteBatch, Character character, Vector2 textPos)
         {
             Texture2D CharPic = Content.Load<Texture2D>(character.ImagePath);
-            spriteBatch.Draw(CharPic, textPos += new Vector2(0.0f, 10.0f), Color.White);
+            Rectangle PicRect = new Rectangle((int)textPos.X, (int)textPos.Y, 100, 100);
+            spriteBatch.Draw(CharPic, PicRect, Color.White);
 
-            spriteBatch.DrawString(Arial, character.Name, textPos += new Vector2(0.0f, CharPic.Height), Color.Black);
-            spriteBatch.DrawString(Arial, "Age: " + character.Age, textPos += TextOffset, Color.Black);
-            spriteBatch.DrawString(Arial, "Personality: " + character.Personality, textPos += TextOffset, Color.Black);
-            spriteBatch.DrawString(Arial, "Description: ", textPos += TextOffset, Color.Black);
-            Point DescBoxSize = new Point(350, 300);
-            string Description = DrawingUtils.WrappedString(Arial,
+            spriteBatch.DrawString(JustBreathe, character.Name, textPos += new Vector2(PicRect.Width + 5.0f, 0.0f), Color.Black);
+            spriteBatch.DrawString(JustBreathe, "Age: " + character.Age, textPos += TextOffset, Color.Black);
+            spriteBatch.DrawString(JustBreathe, "Personality: " + character.Personality, textPos += TextOffset, Color.Black);
+
+            // Character Description:
+            spriteBatch.DrawString(JustBreathe, "Description: ",
+                textPos += 2.5f * TextOffset - new Vector2(PicRect.Width + 5.0f, 0.0f),
+                Color.Black);
+            Point DescBoxSize = new Point(300, 300);
+            string Description = DrawingUtils.WrappedString(JustBreathe,
                 character.Description,
                 new Rectangle(((textPos+=TextOffset) + Indent).ToPoint(), DescBoxSize),
                 0.1f);
-            spriteBatch.DrawString(Arial, Description, textPos + Indent, Color.Black);
+            spriteBatch.DrawString(JustBreathe, Description, textPos + Indent, Color.Black);
+
+            // Best Friends:
+            spriteBatch.DrawString(JustBreathe, "Best Friends: ", textPos += 4 * TextOffset, Color.Black);
+            foreach (string FriendName in character.BFFs)
+            {
+                spriteBatch.DrawString(JustBreathe, "- " + FriendName, (textPos += TextOffset) + Indent, Color.Black);
+            }
         }
 
         public void Draw(GameEngine gameEngine, SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
@@ -225,34 +241,34 @@ namespace GameDemo.Notebook
             spriteBatch.Draw(ReturnIcon, ReturnIconRect, Color.White);
 
             /***** Draw notebook info (make this more modular *****/
-            Vector2 TextPos = new Vector2(650, 120);
+            Vector2 TextPos = new Vector2(1.1f * ScreenWidth / 2, 120);
 
-            spriteBatch.DrawString(Arial, MainCharacter.Name + "\'s Notebook", TextPos, Color.Black);
-            Point NameSize = Arial.MeasureString(MainCharacter.Name + "\'s Notebook").ToPoint();
-            Rectangle NameRect = new Rectangle(TextPos.ToPoint(), NameSize);
-            DrawingUtils.DrawUnderline(graphics, spriteBatch, NameRect, Color.Black);
+            //spriteBatch.DrawString(JustBreathe, MainCharacter.Name + "\'s Notebook", TextPos, Color.Black);
+            //Point NameSize = JustBreathe.MeasureString(MainCharacter.Name + "\'s Notebook").ToPoint();
+            //Rectangle NameRect = new Rectangle(TextPos.ToPoint(), NameSize);
+            //DrawingUtils.DrawUnderline(graphics, spriteBatch, NameRect, Color.Black);
             TextPos += TextOffset;
 
             // Notebook Page Display
             switch (OptionsList?.SelectedOption)
             {
                 case "My Stats":
-                    spriteBatch.DrawString(Arial, "My Stats: ", TextPos, Color.Black);
+                    spriteBatch.DrawString(JustBreathe, "My Stats: ", TextPos, Color.Black);
                     foreach (string Stat in MainCharacter.Stats.Keys)
                     {
                         TextPos += TextOffset;
                         string StatString = Stat + ": " + MainCharacter.Stats[Stat];
-                        spriteBatch.DrawString(Arial, StatString, TextPos, Color.Black);
+                        spriteBatch.DrawString(JustBreathe, StatString, TextPos, Color.Black);
                     }
                     break;
 
                 case "Relationships":
-                    spriteBatch.DrawString(Arial, "Friendship Levels: ", TextPos, Color.Black);
+                    spriteBatch.DrawString(JustBreathe, "Friendship Levels: ", TextPos, Color.Black);
                     foreach (string CharName in MainCharacter.Relationships.Keys)
                     {
                         TextPos += TextOffset;
                         string RelString = CharName + ": " + MainCharacter.Relationships[CharName];
-                        spriteBatch.DrawString(Arial, RelString, TextPos, Color.Black);
+                        spriteBatch.DrawString(JustBreathe, RelString, TextPos, Color.Black);
                     }
                     break;
 
@@ -288,20 +304,24 @@ namespace GameDemo.Notebook
             if (OptionsList == null)
             {
                 Rectangle OptionsListRect = new Rectangle(150, 120, 300, 500);
-                OptionsList = new OptionsList(GetOptions(), Arial, OptionsListRect);
+                OptionsList = new OptionsList(GetOptions(), JustBreathe25, OptionsListRect);
             }
             OptionsList.Draw(graphics, spriteBatch);
 
             // Draw Notebook Tabs
-            if (PeopleButton == null)
+            if (PeopleTab == null)
             {
-                PeopleButton = new Button("People", Arial, (int)(0.95f * ScreenWidth / 2), 40);
-                StatsButton = new Button("Stats", Arial, PeopleButton.Rect.X + PeopleButton.Rect.Width + 10, 40);
-                OptionsButton = new Button("Options", Arial, StatsButton.Rect.X + StatsButton.Rect.Width + 10, 40);
+                PeopleTab = new ClickableTexture(Content.Load<Texture2D>("tab_people"),
+                    new Vector2(ScreenWidth / 2, 95.0f));
+                StatsTab = new ClickableTexture(Content.Load<Texture2D>("tab_stats"),
+                    new Vector2(PeopleTab.Rect.X + PeopleTab.Rect.Width, 95.0f));
+                OptionsTab = new ClickableTexture(Content.Load<Texture2D>("tab_options"),
+                    new Vector2(StatsTab.Rect.X + StatsTab.Rect.Width, 95.0f));
             }
-            PeopleButton.Draw(spriteBatch, graphics);
-            StatsButton.Draw(spriteBatch, graphics);
-            OptionsButton.Draw(spriteBatch, graphics);
+            OptionsTab.Draw(spriteBatch, graphics);
+            StatsTab.Draw(spriteBatch, graphics);
+            PeopleTab.Draw(spriteBatch, graphics);
+
 
             // Confirm Menu if quitting the game
             if (GState == NotebookState.ClickedQuitGame && ConfirmQuitMenu != null)
