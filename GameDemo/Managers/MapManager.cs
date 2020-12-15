@@ -135,6 +135,8 @@ namespace GameDemo.Map
             Locations.Add("Jennyland", new Vector2(400, 300));
             LocationInfo.Add("Kaiville", "A happy place");
             LocationInfo.Add("Jennyland", "Lots of cool cats");
+            Locations.Add("Castle", new Vector2(850, 400));
+            LocationInfo.Add("Castle", "Where the game begins");
 
             // need to construct list of locations based on main character stat
             // use json with file extension and coordinates of rectangle

@@ -1,0 +1,7 @@
+﻿{
+    "Id" : 0,
+    "Culprit" : "tomazzi",
+    "Suspects" : [ "blush", "lionel", "tomazzi" ],
+    "TestimonyOnly" : [ "peter", "king" ],
+    "Locations" : [ "castle" ]
+}

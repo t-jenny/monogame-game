@@ -19,10 +19,10 @@ namespace GameDemo.Components
         public int X { get; private set; }
         public int Y { get; private set; }
 
-        public ClickableTexture(Texture2D texture, Vector2 vector)
+        public ClickableTexture(Texture2D texture, Vector2 position)
         {
-            X = (int) vector.X;
-            Y = (int) vector.Y;
+            X = (int) position.X;
+            Y = (int) position.Y;
             BaseTexture = texture;
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;

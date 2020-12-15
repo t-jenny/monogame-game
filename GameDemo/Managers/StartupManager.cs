@@ -2,6 +2,7 @@
 using System.Threading; // for loading
 using GameDemo.Engine;
 using GameDemo.Map;
+using GameDemo.Locations;
 using GameDemo.Managers;
 using GameDemo.Characters;
 using GameDemo.Components;
@@ -131,8 +132,11 @@ namespace GameDemo.Startup
             }
 
             /*** Update Components ***/
-            StartButton?.Update();
-            ExitButton?.Update();
+            if (GState == StartupState.StartMenu)
+            {
+                StartButton?.Update();
+                ExitButton?.Update();
+            }
             KeyboardInputMenu?.Update(gameTime);
             CountdownTimer?.Update(gameTime);
 
@@ -169,8 +173,8 @@ namespace GameDemo.Startup
                 LoadingTxtPos = new Vector2(LoadingX, LoadingY);
 
                 // countdown timer - remove later
-                float CountdownX = 0.9f * graphics.GraphicsDevice.Viewport.Width;
-                float CountdownY = 0.1f * graphics.GraphicsDevice.Viewport.Height;
+                float CountdownX = 0.0f;
+                float CountdownY = 0.0f;
                 CountdownTimer = new CountdownTimer(Arial, 1, 0, new Vector2(CountdownX, CountdownY));
             }
 

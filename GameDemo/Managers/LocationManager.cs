@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
 using GameDemo.Characters;
 using GameDemo.Engine;
 using GameDemo.Events;
@@ -50,7 +52,6 @@ namespace GameDemo.Locations
         private LocationState GState;
 
         private string SelectedPersonName;
-        private Dictionary<string, Vector2> CharCoords;
         private Dictionary<string, ClickableTexture> CharPics;
         private Dictionary<string, string> Greetings;
         private Dictionary<string, bool> SpokenWith;
@@ -80,12 +81,10 @@ namespace GameDemo.Locations
                 case LocationState.Normal:
                     foreach (string CharName in CharPics.Keys)
                     {
-                        Rectangle CharRect = new Rectangle((int)CharCoords[CharName].X,
-                            (int)CharCoords[CharName].Y, CharPics[CharName].Width, CharPics[CharName].Height);
-                        if (MouseClickRect.Intersects(CharRect))
+                        if (MouseClickRect.Intersects(CharPics[CharName].Rect))
                         {
                             GState = LocationState.ClickedPerson;
-                            SpeechMenu = new SpeechMenu(Greetings[CharName], CharRect, Content, Arial);
+                            SpeechMenu = new SpeechMenu(Greetings[CharName], CharPics[CharName].Rect, Content, Arial);
                             if (SpokenWith[CharName]) SpeechMenu.DisableButton(SpeechMenu.ConfirmButtonText);
                             SelectedPersonName = CharName;
                         }
@@ -148,9 +147,18 @@ namespace GameDemo.Locations
             Content = content;
             IsTransitioning = false;
 
+            // Load Characters
+            String CharPath = Path.Combine(Content.RootDirectory, "characters.txt");
+            String CharJSON = File.ReadAllText(CharPath);
+            AllCharacters CharList = JsonSerializer.Deserialize<AllCharacters>(CharJSON);
+
+            // Load Case Info
+            String CasePath = Path.Combine(Content.RootDirectory, "case" + MainCharacter.CurrentCase + ".txt");
+            String CaseJSON = File.ReadAllText(CasePath);
+            Case Case = JsonSerializer.Deserialize<Case>(CaseJSON);
+
             // Visual Elements
             Background = new Background(content, BGImagePath);
-            CharCoords = new Dictionary<string, Vector2>();
             CharPics = new Dictionary<string, ClickableTexture>();
             Greetings = new Dictionary<string, string>();
 
@@ -161,24 +169,19 @@ namespace GameDemo.Locations
             Arial = content.Load<SpriteFont>("Fonts/Arial");
             SpeechMenu = null;
 
-            /***** Replace this with JSON load *****/
-            if (BGImagePath == "Jennyland")
+            if (BGImagePath == "Castle")
             {
-                CharCoords.Add("jenny", new Vector2(500, 400));
-                Greetings.Add("jenny", "Wassup!");
-                if (!SpokenWith.ContainsKey("jenny")) SpokenWith["jenny"] = false;
-            }
-            if (BGImagePath == "Kaiville")
-            {
-                CharCoords.Add("kai", new Vector2(140, 415));
-                Greetings.Add("kai", "Howdy!");
-                if (!SpokenWith.ContainsKey("kai")) SpokenWith["kai"] = false;
-            }
+                int NumSuspects = Case.Suspects.Count;
+                Vector2 CharPos = new Vector2(200, 400); // may want to customize position at a given location later
+                foreach (string Suspect in Case.Suspects)
+                {
+                    Greetings[Suspect] = CharList.AllChars[Suspect].Greetings[0];
+                    Texture2D CharTexture = Content.Load<Texture2D>(CharList.AllChars[Suspect].ImagePath);
+                    CharPics[Suspect] = new ClickableTexture(CharTexture, CharPos);
+                    if (!SpokenWith.ContainsKey(Suspect)) SpokenWith[Suspect] = false;
 
-            foreach(string CharName in CharCoords.Keys)
-            {
-                Texture2D CharTexture = Content.Load<Texture2D>("Characters/" + CharName);
-                CharPics[CharName] = new ClickableTexture(CharTexture, CharCoords[CharName]);
+                    CharPos.X += 900 / NumSuspects;
+                }  
             }
             /***** End Replace *****/
 
@@ -194,9 +197,13 @@ namespace GameDemo.Locations
             /*** Update components ***/
             SpeechMenu?.Update(gameTime);
             ConfirmMenu?.Update(gameTime);
-            foreach (string CharName in CharPics.Keys)
+
+            if (GState == LocationState.Normal)
             {
-                CharPics[CharName].Update();
+                foreach (string CharName in CharPics.Keys)
+                {
+                    CharPics[CharName].Update();
+                }
             }
 
             if (PrevMouseState.LeftButton == ButtonState.Pressed && MouseState.LeftButton == ButtonState.Released)
@@ -210,6 +217,12 @@ namespace GameDemo.Locations
             {
                 case (LocationState.ConfirmedPerson):
                     gameEngine.Push(new EventManager(), true, true);
+
+                    // Add an entry for the relationship when you meet a character.
+                    if (!MainCharacter.Relationships.ContainsKey(SelectedPersonName))
+                    {
+                        MainCharacter.Relationships[SelectedPersonName] = 0;
+                    }
                     IsTransitioning = true;
                     break;
 
@@ -252,7 +265,7 @@ namespace GameDemo.Locations
             spriteBatch.Draw(MapIcon, MapIconRect, Color.White);
 
             // Draw Characters
-            foreach (string CharName in CharCoords.Keys)
+            foreach (string CharName in CharPics.Keys)
             {
                 CharPics[CharName].Draw(spriteBatch, graphics);
             }

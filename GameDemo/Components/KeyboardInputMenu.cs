@@ -81,7 +81,10 @@ namespace GameDemo.Components
 
         public KeyboardInputMenu(string query, ContentManager content, SpriteFont font):base(content, font)
         {
+            // Adjust defaults
             MenuWidth = 600;
+            Position = new Vector2(350, 300);
+
             StaticText = query;
             ConfirmButtonText = "Enter";
             CancelButtonText = "Cancel";
@@ -128,9 +131,9 @@ namespace GameDemo.Components
                 if (i + 1 > Buttons.Count)
                 {
                     Vector2 ButtonTextSize = Font.MeasureString(ButtonLabels[i]);
-                    Buttons.Add(new Button(ButtonLabels[i], Font,
-                    (int)(Position.X + (i + 1) * MenuWidth / (ButtonLabels.Count + 1) - ButtonTextSize.X / 2),
-                    (int)(Position.Y + TextSize.Y + LineHeight + 2 * MenuHeight / 10)));
+                    Vector2 CenteredButtonPos = new Vector2(Position.X + (i + 1) * MenuWidth / (ButtonLabels.Count + 1) - ButtonTextSize.X / 2,
+                    Position.Y + TextSize.Y + LineHeight + 2 * MenuHeight / 10);
+                    Buttons.Add(new Button(ButtonLabels[i], Font, CenteredButtonPos));
                 }
                 Buttons[i].Draw(spriteBatch, graphics);
             }

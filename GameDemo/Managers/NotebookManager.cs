@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using System.Linq;
 using GameDemo.Characters;
 using GameDemo.Engine;
 using GameDemo.Locations;
@@ -30,6 +32,7 @@ namespace GameDemo.Notebook
         private ClickableTexture PeopleTab;
         private ClickableTexture OptionsTab;
         private ClickableTexture StatsTab;
+        private AllCharacters CharList;
         private OptionsList OptionsList;
 
         private Button QuitButton;
@@ -64,8 +67,11 @@ namespace GameDemo.Notebook
             switch (GState)
             {
                 case NotebookState.Profiles:
-                    // pull from people known to main character
-                    return new string[] { "Diana", "Jenny", "Kai" };
+
+                    // pull from people known to main character (should be a list not this dict)
+                    string[] Names = MainCharacter.Relationships.Keys.ToArray();
+                    Array.Sort(Names);
+                    return Names;
 
                 case NotebookState.Stats:
                     return new string[] { "My Stats", "Relationships" };
@@ -82,7 +88,7 @@ namespace GameDemo.Notebook
         private void MouseClicked(MouseState mouseState)
         {
             Point MouseClick = new Point(mouseState.X, mouseState.Y);
-            Rectangle MouseClickRect = new Rectangle(MouseClick, new Point(50, 50));
+            Rectangle MouseClickRect = new Rectangle(MouseClick, new Point(10, 10));
 
             switch (GState)
             {
@@ -128,12 +134,18 @@ namespace GameDemo.Notebook
             }
         }
 
+
         public void Reset(GameEngine gameEngine, MainCharacter mainCharacter, ContentManager content)
         {
             content.Unload();
 
             MainCharacter = mainCharacter;
             Content = content;
+
+            // Load Characters
+            String path = Path.Combine(Content.RootDirectory, "characters.txt");
+            String CharJSON = File.ReadAllText(path);
+            CharList = JsonSerializer.Deserialize<AllCharacters>(CharJSON);
 
             // Visual Elements
             Background = new Background(content, NotebookPath);
@@ -192,7 +204,7 @@ namespace GameDemo.Notebook
 
         }
 
-        private void DrawCharacterEntry(SpriteBatch spriteBatch, Character character, Vector2 textPos)
+        private void DrawCharacterEntry(SpriteBatch spriteBatch, GraphicsDeviceManager graphics, Character character, Vector2 textPos)
         {
             Texture2D CharPic = Content.Load<Texture2D>(character.ImagePath);
             Rectangle PicRect = new Rectangle((int)textPos.X, (int)textPos.Y, 100, 100);
@@ -202,23 +214,26 @@ namespace GameDemo.Notebook
             spriteBatch.DrawString(JustBreathe, "Age: " + character.Age, textPos += TextOffset, Color.Black);
             spriteBatch.DrawString(JustBreathe, "Personality: " + character.Personality, textPos += TextOffset, Color.Black);
 
+            spriteBatch.DrawString(JustBreathe, "Occupation: " + character.Occupation,
+                textPos += 2.5f * TextOffset - new Vector2(PicRect.Width + 5.0f, 0.0f), Color.Black);
             // Character Description:
-            spriteBatch.DrawString(JustBreathe, "Description: ",
-                textPos += 2.5f * TextOffset - new Vector2(PicRect.Width + 5.0f, 0.0f),
-                Color.Black);
-            Point DescBoxSize = new Point(300, 300);
-            string Description = DrawingUtils.WrappedString(JustBreathe,
-                character.Description,
-                new Rectangle(((textPos+=TextOffset) + Indent).ToPoint(), DescBoxSize),
-                0.1f);
+            spriteBatch.DrawString(JustBreathe, "Description: ", textPos += 2.0f * TextOffset, Color.Black);
+            Point DescBoxSize = new Point(350, 300);
+            Rectangle DescBoxRect = new Rectangle(((textPos += TextOffset) + Indent).ToPoint(), DescBoxSize);
+            string Description = DrawingUtils.WrappedString(JustBreathe, character.Description, DescBoxRect, 0.1f);
             spriteBatch.DrawString(JustBreathe, Description, textPos + Indent, Color.Black);
 
             // Best Friends:
-            spriteBatch.DrawString(JustBreathe, "Best Friends: ", textPos += 4 * TextOffset, Color.Black);
+            spriteBatch.DrawString(JustBreathe, "Best Friends: ", textPos += 6 * TextOffset, Color.Black);
             foreach (string FriendName in character.BFFs)
             {
                 spriteBatch.DrawString(JustBreathe, "- " + FriendName, (textPos += TextOffset) + Indent, Color.Black);
             }
+
+            // Button to access testimony for character (should center on notebook page)
+            Vector2 TestimonyButtonPos = textPos + TextOffset + new Vector2(200, 0);
+            Button TestimonyButton = new Button("To Testimony", JustBreathe, TestimonyButtonPos);
+            TestimonyButton.Draw(spriteBatch, graphics);
         }
 
         public void Draw(GameEngine gameEngine, SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
@@ -258,7 +273,10 @@ namespace GameDemo.Notebook
 
                 case "Relationships":
                     spriteBatch.DrawString(JustBreathe, "Friendship Levels: ", TextPos, Color.Black);
-                    foreach (string CharName in MainCharacter.Relationships.Keys)
+                    List<string> RelationshipList = MainCharacter.Relationships.Keys.ToList();
+                    RelationshipList.Sort();
+
+                    foreach (string CharName in RelationshipList)
                     {
                         TextPos += TextOffset;
                         string RelString = CharName + ": " + MainCharacter.Relationships[CharName];
@@ -270,7 +288,7 @@ namespace GameDemo.Notebook
                 case "Save & Quit":
                     if (QuitButton == null)
                     {
-                        QuitButton = new Button("Quit Game", Arial, (int)TextPos.X, (int)TextPos.Y);
+                        QuitButton = new Button("Quit Game", Arial, TextPos);
                     }
                     QuitButton.Draw(spriteBatch, graphics);
                     break;
@@ -282,10 +300,7 @@ namespace GameDemo.Notebook
                 default:
                     if (OptionsList?.SelectedOption != null)
                     {
-                        String path = Path.Combine(Content.RootDirectory, "characters.txt");
-                        String CharJSON = File.ReadAllText(path);
-                        AllCharacters CharList = JsonSerializer.Deserialize<AllCharacters>(CharJSON);
-                        DrawCharacterEntry(spriteBatch, CharList.AllChars[OptionsList.SelectedOption], TextPos);
+                        DrawCharacterEntry(spriteBatch, graphics, CharList.AllChars[OptionsList.SelectedOption], TextPos);
                     }
                     break;
 

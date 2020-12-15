@@ -48,18 +48,19 @@ namespace GameDemo.Components
             string WrappedText = DrawingUtils.WrappedString(Font, StaticText, MenuRect, 0.1f);
 
             Vector2 TextSize = Font.MeasureString(WrappedText);
+            float LineHeight = Font.MeasureString("A").Y;
+            Vector2 TextPos = new Vector2(Position.X + (MenuWidth - TextSize.X) / 2, Position.Y + LineHeight);
 
-            spriteBatch.DrawString(Font, WrappedText,
-                new Vector2(Position.X + (MenuWidth - TextSize.X)/2, Position.Y + MenuHeight / 10), Color.Black);
+            spriteBatch.DrawString(Font, WrappedText, TextPos, Color.Black);
 
             for (int i = 0; i < ButtonLabels.Count; i++)
             {
                 if (i + 1 > Buttons.Count)
                 {
                     Vector2 ButtonTextSize = Font.MeasureString(ButtonLabels[i]);
-                    Buttons.Add(new Button(ButtonLabels[i], Font,
-                    (int)(Position.X + (i + 1) * MenuWidth / (ButtonLabels.Count + 1) - ButtonTextSize.X / 2),
-                    (int)(Position.Y + TextSize.Y + 2 * MenuHeight / 10)));
+                    Vector2 ButtonPos = new Vector2(Position.X + (i + 1) * MenuWidth / (ButtonLabels.Count + 1) - ButtonTextSize.X / 2,
+                        (TextPos + TextSize).Y + LineHeight / 4);
+                    Buttons.Add(new Button(ButtonLabels[i], Font, ButtonPos));
                 }
                 Buttons[i].Draw(spriteBatch, graphics);
             }

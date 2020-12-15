@@ -7,6 +7,7 @@ namespace GameDemo.Characters
     {
         public string Name;
         private double DayOffset;
+        public uint CurrentCase { get; set; } = 0;
         public Dictionary<string, int> Stats { get; set; }
         public Dictionary<string, int> Relationships { get; set; }
         public HashSet<string> EventFlags { get; set; }

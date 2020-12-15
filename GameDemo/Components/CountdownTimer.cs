@@ -10,10 +10,11 @@ namespace GameDemo.Components
         private readonly SpriteFont Font;
         private Vector2 Position;
 
-        public CountdownTimer(SpriteFont font, int NumMinutes, int NumSeconds, Vector2 Position)
+        public CountdownTimer(SpriteFont font, int numMinutes, int numSeconds, Vector2 position)
         {
-            TimeLeft = new TimeSpan(0, NumMinutes, NumSeconds);
+            TimeLeft = new TimeSpan(0, numMinutes, numSeconds);
             Font = font;
+            Position = position;
         }
 
         public bool IsDone()

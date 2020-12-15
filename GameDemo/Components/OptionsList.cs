@@ -30,11 +30,11 @@ namespace GameDemo.Components
             Font = font;
             Rect = rect;
             int Diff = 20;
-            int LineHt = (int) font.MeasureString("A").Y;
+            int LineHeight = (int) font.MeasureString("A").Y;
             Options = new List<Option>();
             for (int i = 0; i < options.Length; i++)
             {
-                Point Coords = new Point(Rect.X + Diff, Rect.Y + LineHt * i + Diff);
+                Point Coords = new Point(Rect.X + Diff, Rect.Y + LineHeight * i + Diff);
                 Options.Add(new Option(options[i], font, Coords));
             }
         }

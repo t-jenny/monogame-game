@@ -16,13 +16,14 @@ namespace GameDemo.Components
 
         public Rectangle Rect { get; set; }
 
-        public Button(String text, SpriteFont font, int x, int y)
+        public Button(String text, SpriteFont font, Vector2 position)
         { 
             Text = text;
             Font = font;
-            Vector2 TextSize = Font.MeasureString(text);
+            Vector2 ButtonDims = Font.MeasureString(text);
+            ButtonDims += new Vector2(10.0f, 0.0f);
 
-            Rect = new Rectangle(x, y, (int)TextSize.X + 10, (int)TextSize.Y);
+            Rect = new Rectangle(position.ToPoint(), ButtonDims.ToPoint());
         }
 
         public void Update()

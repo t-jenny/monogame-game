@@ -107,12 +107,13 @@ namespace GameDemo.Utils
             float LineLength = 0.0f;
             for (int i = 0; i < Words.Length; i++)
             {
-                LineLength += font.MeasureString(Words[i] + " ").X;
+                float WordLength = font.MeasureString(Words[i]).X;
+                LineLength += WordLength;
                 string Space = " ";
                 if (LineLength > (1.0f - 2.0f * padding) * rect.Width)
                 {
                     NewString += Environment.NewLine;
-                    LineLength = 0.0f;
+                    LineLength = WordLength;
                 }
                 if (Words[i].Equals("\n"))
                 {

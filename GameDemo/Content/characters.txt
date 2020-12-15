@@ -1,27 +1,60 @@
 ﻿{
   "AllChars": {
-    "Jenny": {
+    "blush": {
+      "Name": "Beatrice Blush",
+      "Occupation": "Head of Castle Staff",
+      "ImagePath": "Characters/blush",
+      "Age": 48,
+      "Description": "Not someone you want to make an enemy of, Ms. Blush keeps the castle functioning like clockwork.",
+      "Personality": "Tart",
+      "BFFs": [ "Tomazzi" ],
+      "Greetings" : [ "What do you need?" ]
+    },
+    "tomazzi": {
+      "Name": "Thomas Tomazzi",
+      "Occupation": "Head Chef",
+      "ImagePath": "Characters/tomazzi",
+      "Age": 43,
+      "Description": "A picture of ebullience, Tomazzi is fond of cracking jokes with his superiors, but can be a hard taskmaster in the kitchen.",
+      "Personality": "Juicy",
+      "BFFs": [ "Blush" ],
+      "Greetings": [ "Hey there, buddy!" ]
+    },
+    "lionel": {
+      "Name": "Sir Lionel",
+      "Occupation": "Royal Adviser",
+      "ImagePath": "Characters/lionel",
+      "Age": 65,
+      "Description": "Comes from a long line of loyal, royal advisers. Many say his sense of humor is wanting.",
+      "Personality": "Bittersweet",
+      "BFFs": [ "Goldy" ],
+      "Greetings": [ "You again?" ]
+    },
+    "jenny": {
       "Name":  "Jenny Tang",
+      "Occupation": "Trickster",
       "ImagePath": "Characters/jenny",
       "Age": 26,
       "Description": "Not the villain. Likes to make Youtube videos.",
-      "Personality": "feisty",
-      "BFFs": [ "Jenny", "Tomazzi" ]
+      "Personality": "Feisty",
+      "BFFs": [ "Tomazzi" ]
     },
-    "Kai": {
+    "kai": {
       "Name" : "Kai Okada",
+      "Occupation" : "Librarian",
       "ImagePath": "Characters/kai",
       "Age": 26,
       "Description": "Definitely a suspicious character. Likes origami.",
-      "Personality": "smarmy",
+      "Personality": "Smarmy",
       "BFFs": [ "Blush" ]
     },
-    "Diana": {
+    "diana": {
       "Name" : "Diana Kim",
+      "Occupation" : "Barrister", 
       "ImagePath": "Characters/diana",
       "Age": 10,
       "Description": "A happy child, given to mischief.",
-      "Personality": "saucy",
+      "Personality": "Saucy",
       "BFFs": [ "Sir Lionel" ]
     }
   }
