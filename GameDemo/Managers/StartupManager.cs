@@ -101,6 +101,7 @@ namespace GameDemo.Startup
         {
             content.Unload();
             MainCharacter = mainCharacter;
+            Console.WriteLine(MainCharacter.Name);
             Content = content;
             Arial = content.Load<SpriteFont>("Fonts/Arial");
 

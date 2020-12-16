@@ -5,9 +5,9 @@ namespace GameDemo.Characters
 {
     public class MainCharacter
     {
-        public string Name;
-        private double DayOffset;
-        public uint CurrentCase { get; set; } = 0;
+        public string Name { get; set; }
+        public double DayOffset { get; set; } = 0.0;
+        public int CurrentCase { get; set; } = 0;
         public Dictionary<string, int> Stats { get; set; }
         public Dictionary<string, int> Relationships { get; set; }
         public HashSet<string> EventFlags { get; set; }
@@ -16,7 +16,6 @@ namespace GameDemo.Characters
 
         public MainCharacter()
         {
-            DayOffset = 0.0;
             Stats = new Dictionary<string, int>();
             Relationships = new Dictionary<string, int>();
             EventFlags = new HashSet<string>();

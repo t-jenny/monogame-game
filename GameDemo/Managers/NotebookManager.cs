@@ -42,6 +42,7 @@ namespace GameDemo.Notebook
         private OptionsList TopicOptionsList;
 
         private Button QuitButton;
+        private Button SaveButton;
         private ConfirmMenu ConfirmQuitMenu;
 
         //Make this part of notebook page class;
@@ -68,10 +69,17 @@ namespace GameDemo.Notebook
             Stats,
             Testimonies,
             Profiles,
-            Locations,
             Options,
             ClickedQuitGame,
             ConfirmedQuitGame
+        }
+
+        // from Microsoft Docs
+        private void SaveGame()
+        {
+            string path = Path.Combine(Content.RootDirectory, "savedata.txt");
+            string json = JsonSerializer.Serialize<MainCharacter>(MainCharacter);
+            File.WriteAllText(path, json);
         }
 
         private string[] GetOptions()
@@ -107,7 +115,7 @@ namespace GameDemo.Notebook
                     }
                     if (ConfirmQuitMenu.IsCancelling(MouseClickRect))
                     {
-                        GState = NotebookState.Stats; // replace with whichever state exposes the quit button
+                        GState = NotebookState.Options; // replace with whichever state exposes the quit button
                     }
                     break;
 
@@ -149,6 +157,10 @@ namespace GameDemo.Notebook
                             string Query = "Are you sure you want to quit the game?";
                             ConfirmQuitMenu = new ConfirmMenu(Query, Content, Arial);
                         }
+                        if (SaveButton != null && MouseClickRect.Intersects(SaveButton.Rect))
+                        {
+                            SaveGame();
+                        }
                     }
                     break;
             }
@@ -176,6 +188,7 @@ namespace GameDemo.Notebook
             Background = new Background(content, NotebookPath);
             ReturnIcon = Content.Load<Texture2D>("return-icon");
             QuitButton = null;
+            SaveButton = null;
 
             // Always start by viewing stats.
             GState = NotebookState.Stats;
@@ -209,6 +222,7 @@ namespace GameDemo.Notebook
 
             // Game Quit Components
             QuitButton?.Update();
+            SaveButton?.Update();
             ConfirmQuitMenu?.Update(gameTime);
 
             if (PrevMouseState.LeftButton == ButtonState.Pressed && MouseState.LeftButton == ButtonState.Released)
@@ -340,6 +354,7 @@ namespace GameDemo.Notebook
                     }
                     break;
 
+                case NotebookState.ClickedQuitGame:
                 case NotebookState.Options:
                     // Lefthand Page
                     spriteBatch.DrawString(JustBreathe25, "Options:", new Vector2(150, 120), Color.Black);
@@ -349,9 +364,11 @@ namespace GameDemo.Notebook
                     {
                         if (QuitButton == null)
                         {
-                            QuitButton = new Button("Quit Game", Arial, TextPos);
+                            SaveButton = new Button("Save Game", Arial, TextPos);
+                            QuitButton = new Button("Quit Game", Arial, TextPos + new Vector2(0.0f, 2 * SaveButton.Rect.Height));
                         }
                         QuitButton.Draw(spriteBatch, graphics);
+                        SaveButton.Draw(spriteBatch, graphics);
                     }
                     break;
 
@@ -368,8 +385,8 @@ namespace GameDemo.Notebook
                 case NotebookState.Testimonies:
                     // Add topics list to lefthand page
                     spriteBatch.DrawString(JustBreathe25, "Testimonies:", new Vector2(150, 120), Color.Black);
-                    spriteBatch.DrawString(JustBreathe25, "By Person", new Vector2(150, 120 + JustBreathe25.LineSpacing), Color.Black);
-                    spriteBatch.DrawString(JustBreathe25, "By Topic", new Vector2(375, 120 + JustBreathe25.LineSpacing), Color.Black);
+                    spriteBatch.DrawString(JustBreathe25, "Person", new Vector2(150, 120 + JustBreathe25.LineSpacing), Color.Black);
+                    spriteBatch.DrawString(JustBreathe25, "Topic", new Vector2(375, 120 + JustBreathe25.LineSpacing), Color.Black);
                     if (TopicOptionsList == null)
                     {
                         Rectangle TopicOptionsListRect = new Rectangle(375, 120 + 2 * JustBreathe25.LineSpacing, 300, 500);

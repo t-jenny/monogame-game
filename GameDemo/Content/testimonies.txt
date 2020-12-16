@@ -27,7 +27,7 @@
             "TopicTag" : "attack",
             "IsInitial" : true,
             "FrontPadding" : "",
-            "Text" : "The last time I saw the Princess before the attack was earlier near the Science Lab.  There was a loud explosion, which is pretty common from that wing of the palace, and Princess Poppy and Lady Portia rushed out coughing.",
+            "Text" : "At the time of the attack, I was coming from the kitchen to inform Princess Poppy that dinner was delayed when I found Lady Portia in the East Corridor holding the unconscious Princess.",
             "EndPadding" : "",
             "IdContradict" : -1
         },

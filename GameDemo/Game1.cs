@@ -1,8 +1,12 @@
+using System;
+using System.IO;
+using System.Text.Json;
 using GameDemo.Characters;
 using GameDemo.Engine;
 using GameDemo.Managers;
 using GameDemo.Startup;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -38,7 +42,11 @@ namespace GameDemo
             Graphics.PreferredBackBufferHeight = DEFAULT_HEIGHT;
             Graphics.ApplyChanges();
 
-            MainCharacter = new MainCharacter();
+            String path = Path.Combine(Content.RootDirectory, "savedata.txt");
+            String LoadDataJSON = File.ReadAllText(path);
+            if (LoadDataJSON.Equals(String.Empty)) MainCharacter = new MainCharacter();
+            else MainCharacter = JsonSerializer.Deserialize<MainCharacter>(LoadDataJSON); String CharJSON = File.ReadAllText(path);
+
             IsMouseVisible = true;
 
             MainEngine.Push(new StartupManager(), false, false);
@@ -80,5 +88,6 @@ namespace GameDemo
         {
             IsQuitting = true;
         }
+
     }
 }
