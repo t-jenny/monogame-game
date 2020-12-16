@@ -111,7 +111,7 @@ namespace GameDemo.Components
             Rectangle MenuRect = new Rectangle((int)Position.X, (int)Position.Y, MenuWidth, MenuHeight);
             spriteBatch.Draw(Menu, MenuRect, Color.White);
 
-            string WrappedText = DrawingUtils.WrappedString(Font, StaticText, MenuRect, Padding);
+            string WrappedText = DrawingUtils.WrappedString(Font, StaticText, MenuRect, Padding)[0];
             Vector2 TextSize = Font.MeasureString(WrappedText);
 
             spriteBatch.DrawString(Font, WrappedText,

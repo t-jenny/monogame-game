@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -100,30 +101,48 @@ namespace GameDemo.Utils
             spriteBatch.Draw(NewTexture, rect, Color.White);
         }
 
-        public static string WrappedString(SpriteFont font, string text, Rectangle rect, float padding)
+        public static List<string> WrappedString(SpriteFont font, string text, Rectangle rect, float padding)
         {
+            List<string> Pages = new List<string>();
             string NewString = string.Empty;
             string[] Words = text.Split(" ");
-            float LineLength = 0.0f;
+            float LineWidth = 0.0f;
+            float LineHeight = font.MeasureString("A").Y;
+            float TextHeight = LineHeight;
+
             for (int i = 0; i < Words.Length; i++)
             {
                 float WordLength = font.MeasureString(Words[i]).X;
-                LineLength += WordLength;
+                LineWidth += WordLength;
                 string Space = " ";
-                if (LineLength > (1.0f - 2.0f * padding) * rect.Width)
+                if (LineWidth > (1.0f - 2.0f * padding) * rect.Width)
                 {
-                    NewString += Environment.NewLine;
-                    LineLength = WordLength;
+                    TextHeight += LineHeight;
+                    if (TextHeight > (1.0f - 2.0f * padding) * rect.Height)
+                    {
+                        Pages.Add(NewString);
+                        NewString = string.Empty;
+                        TextHeight = 0.0f;
+                    }
+                    else
+                    {
+                        NewString += Environment.NewLine;
+                    }
+                    LineWidth = WordLength;
                 }
+
+                // There's a subtle bug here...
                 if (Words[i].Equals("\n"))
                 {
-                    LineLength = 0.0f;
+                    LineWidth = 0.0f;
                     Space = "";
+                    TextHeight += LineHeight;
                 }
 
                 NewString += Words[i] + Space;
             }
-            return NewString;
+            Pages.Add(NewString);
+            return Pages;
         }
 
     }

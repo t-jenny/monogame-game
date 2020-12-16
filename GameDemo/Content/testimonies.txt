@@ -1,0 +1,65 @@
+﻿{
+    "Topics" : [ "attack", "thatday", "princess" ],
+    "Testimonies" : [
+        {
+            "Id" : 0,
+            "CharacterKey" : "blush",
+            "TopicTag" : "thatday",
+            "IsInitial" : true,
+            "FrontPadding" : "Oh dear, I can barely remember what I ate for dinner yesterday.",
+            "Text" : "Hmmm, I remember dinner that day had been delayed for some reason, so I went down to the kitchen to talk to our head chef, Mr. Tomazzi.  When I got there, pots were bubbling, kettles were steaming, but he was nowhere to be seen.  I remember thinking that that was really weird because Mr. Tomazzi is careful never to leave the fire unattended. I also remember hearing the Princess yelling at someone in her room that morning.",
+            "EndPadding" : "She must have been pretty upset because the Princess is not one to raise her voice.",
+            "IdContradict" : -1
+        },
+        {
+            "Id" : 1,
+            "CharacterKey" : "blush",
+            "TopicTag" : "princess",
+            "IsInitial" : true,
+            "FrontPadding" : "",
+            "Text" : "The last time I saw the Princess that day before the attack was earlier near the Science Lab.  There was a loud explosion, which is pretty common from that wing of the palace, and Princess Poppy and Lady Portia rushed out coughing.",
+            "EndPadding" : "",
+            "IdContradict" : -1
+        },
+        {
+            "Id" : 2,
+            "CharacterKey" : "blush",
+            "TopicTag" : "attack",
+            "IsInitial" : true,
+            "FrontPadding" : "",
+            "Text" : "The last time I saw the Princess before the attack was earlier near the Science Lab.  There was a loud explosion, which is pretty common from that wing of the palace, and Princess Poppy and Lady Portia rushed out coughing.",
+            "EndPadding" : "",
+            "IdContradict" : -1
+        },
+        {
+            "Id" : 3,
+            "CharacterKey" : "tomazzi",
+            "TopicTag" : "princess",
+            "IsInitial" : true,
+            "FrontPadding" : "",
+            "Text" : "I don't see the Princess often, but the last time I saw her was 2 days before the attack when she came down to try some cake. I've been working on a new recipe, you see, and the princess loves cake.",
+            "EndPadding" : "",
+            "IdContradict" : -1
+        },
+        {
+            "Id" : 4,
+            "CharacterKey" : "tomazzi",
+            "TopicTag" : "thatday",
+            "IsInitial" : true,
+            "FrontPadding" : "",
+            "Text" : "Dinner was delayed that day because the errand boy knocked a pot out of my hands, and we had to restart the soup! I had to run out because I'd used the last of my special secret ingredient, you see.",
+            "EndPadding" : "",
+            "IdContradict" : -1
+        },
+        {
+            "Id" : 5,
+            "CharacterKey" : "lionel",
+            "TopicTag" : "thatday",
+            "IsInitial" : true,
+            "FrontPadding" : "",
+            "Text" : "I was sick in my room.",
+            "EndPadding" : "",
+            "IdContradict" : -1
+        }
+    ]
+}

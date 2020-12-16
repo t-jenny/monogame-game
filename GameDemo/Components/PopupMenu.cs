@@ -45,7 +45,7 @@ namespace GameDemo.Components
             // Location Menu
             Rectangle MenuRect = new Rectangle((int)Position.X, (int)Position.Y, MenuWidth, MenuHeight);
             spriteBatch.Draw(Menu, MenuRect, Color.White);
-            string WrappedText = DrawingUtils.WrappedString(Font, StaticText, MenuRect, 0.1f);
+            string WrappedText = DrawingUtils.WrappedString(Font, StaticText, MenuRect, 0.1f)[0]; // must be one page
 
             Vector2 TextSize = Font.MeasureString(WrappedText);
             float LineHeight = Font.MeasureString("A").Y;

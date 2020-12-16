@@ -24,6 +24,7 @@ namespace GameDemo.Components
         private SpriteFont Font;
         private Rectangle Rect;
         public string SelectedOption { get; private set; }
+        private MouseState PrevMouseState;
 
         public OptionsList(string[] options, SpriteFont font, Rectangle rect)
         {
@@ -37,6 +38,7 @@ namespace GameDemo.Components
                 Point Coords = new Point(Rect.X + Diff, Rect.Y + LineHeight * i + Diff);
                 Options.Add(new Option(options[i], font, Coords));
             }
+            PrevMouseState = Mouse.GetState();
         }
 
         public void Update()
@@ -46,12 +48,13 @@ namespace GameDemo.Components
 
             foreach (Option Opt in Options)
             {
-                if (Opt.Rect.Contains(MousePoint) && MouseState.LeftButton == ButtonState.Pressed)
+                if (Opt.Rect.Contains(MousePoint) && PrevMouseState.LeftButton == ButtonState.Pressed && MouseState.LeftButton == ButtonState.Released)
                 {
-                    SelectedOption = Opt.Label;
+                    SelectedOption = (SelectedOption == Opt.Label) ? null : Opt.Label;
                 }
             }
 
+            PrevMouseState = MouseState;
         }
 
         public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
