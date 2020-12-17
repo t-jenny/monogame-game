@@ -63,7 +63,7 @@ namespace GameDemo.Components
             spriteBatch.DrawString(Font, Text, ButtonPos, TextCol);
 
             // draw border
-            DrawingUtils.DrawOpenRectangle(spriteBatch, graphics, Rect, Color.Gray);
+            DrawingUtils.DrawOpenRectangle(spriteBatch, graphics, Rect, Color.Gray, 2);
         }
     }
 }

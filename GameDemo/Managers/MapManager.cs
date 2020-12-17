@@ -62,7 +62,8 @@ namespace GameDemo.Map
             Normal,
             Selected,
             Confirmed,
-            ToNotebook
+            ToNotebook,
+            ToCalendar
         }
 
         public void MouseClicked(MouseState mouseState)
@@ -113,6 +114,7 @@ namespace GameDemo.Map
 
             MainCharacter = mainCharacter;
             Content = content;
+
             IsTransitioning = false;
             AddTimeOnReturn = false;
 
@@ -124,7 +126,14 @@ namespace GameDemo.Map
             Notebook = Content.Load<Texture2D>("notebook_icon");
             Textbox = new TextBox(content, "Where do ya wanna go today, " + MainCharacter.Name + "?");
 
-            GState = MapState.Normal;
+            if (MainCharacter.GetDate().DayOfWeek.ToString() == "Monday")
+            {
+                GState = MapState.ToCalendar;
+            }
+            else
+            {
+                GState = MapState.Normal;
+            }
 
             Arial = content.Load<SpriteFont>("Fonts/Arial");
 
@@ -163,25 +172,32 @@ namespace GameDemo.Map
             LocationMenu?.Update(gameTime);
             Textbox.Update(gameTime);
 
-            if (PrevMouseState.LeftButton == ButtonState.Pressed && MouseState.LeftButton == ButtonState.Released)
+            switch (GState)
             {
-                MouseClicked(MouseState);
+                case MapState.ToCalendar:
+                    gameEngine.Pop(false, false);
+                    IsTransitioning = true;
+                    break;
+
+                case MapState.ToNotebook:
+                    gameEngine.Push(new NotebookManager(), true, true);
+                    IsTransitioning = true;
+                    break;
+
+                case MapState.Confirmed:
+                    gameEngine.Push(new LocationManager(SelectedPlaceName), true, true);
+                    IsTransitioning = true;
+                    break;
+
+                default:
+                    if (PrevMouseState.LeftButton == ButtonState.Pressed && MouseState.LeftButton == ButtonState.Released)
+                    {
+                        MouseClicked(MouseState);
+                    }
+                    break;
             }
 
             PrevMouseState = MouseState;
-
-            if (GState == MapState.Confirmed)
-            {
-                gameEngine.Push(new LocationManager(SelectedPlaceName), true, true);
-                IsTransitioning = true;
-            }
-
-            if (GState == MapState.ToNotebook)
-            {
-                gameEngine.Push(new NotebookManager(), true, true);
-                IsTransitioning = true;
-            }
-
         }
 
         public void Draw(GameEngine gameEngine, SpriteBatch spriteBatch, GraphicsDeviceManager graphics)

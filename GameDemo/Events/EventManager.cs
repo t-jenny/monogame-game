@@ -48,25 +48,26 @@ namespace GameDemo.Events
             EventDialogue eventDialogue = AllEventDialogue.AllEvents["eventString"][0];
 
             //Setting up for event to be true (remove later)
-            if (MainCharacter.Relationships.ContainsKey("blush")) {
-                MainCharacter.Relationships["blush"] = 1;
-            }
-            else {
-                MainCharacter.Relationships.Add("blush", 1);
-            }
+            //if (MainCharacter.Relationships.ContainsKey("blush")) {
+            //    MainCharacter.Relationships["blush"] = 1;
+            //}
+            //else {
+            //    MainCharacter.Relationships.Add("blush", 1);
+            //}
 
-            if (MainCharacter.Relationships.ContainsKey("tomazzi"))
-            {
-                MainCharacter.Relationships["tomazzi"] = 1;
-            }
-            else
-            {
-                MainCharacter.Relationships.Add("tomazzi", 1);
-            }
+            //if (MainCharacter.Relationships.ContainsKey("tomazzi"))
+            //{
+            //    MainCharacter.Relationships["tomazzi"] = 1;
+            //}
+            //else
+            //{
+            //    MainCharacter.Relationships.Add("tomazzi", 1);
+            //}
 
-            MainCharacter.Stats = new Dictionary<string, int>();
-            MainCharacter.Stats.Add("intelligence", 1);
-            MainCharacter.Stats.Add("strength", 2);
+            //MainCharacter.Stats = new Dictionary<string, int>();
+            //MainCharacter.Stats.Add("intelligence", 1);
+            //MainCharacter.Stats.Add("strength", 2);
+
             MainCharacter.EventFlags = new HashSet<string>();
             MainCharacter.EventFlags.Add("beginning");
             MainCharacter.EventFlags.Add("running");

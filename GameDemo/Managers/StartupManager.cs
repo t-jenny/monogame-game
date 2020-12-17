@@ -90,7 +90,7 @@ namespace GameDemo.Startup
 
         void LoadGame(GameEngine gameEngine)
         {
-            gameEngine.Push(new MapManager(), true, true);
+            gameEngine.Push(new CalendarManager(), true, true);
 
             Thread.Sleep(3000);
             GState = StartupState.Playing;
@@ -101,7 +101,6 @@ namespace GameDemo.Startup
         {
             content.Unload();
             MainCharacter = mainCharacter;
-            Console.WriteLine(MainCharacter.Name);
             Content = content;
             Arial = content.Load<SpriteFont>("Fonts/Arial");
 

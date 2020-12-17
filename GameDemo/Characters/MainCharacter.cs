@@ -35,13 +35,13 @@ namespace GameDemo.Characters
 
         public DateTime GetDate()
         {
-            DateTime DT = new DateTime(2025, 5, 31, 0, 0, 0);
+            DateTime DT = new DateTime(2025, 6, 2, 0, 0, 0);
             return DT.AddDays(DayOffset);
         }
 
         public string GetDateTimeString()
         {
-            DateTime DT = new DateTime(2025, 5, 31, 0, 0, 0);
+            DateTime DT = new DateTime(2025, 6, 2, 0, 0, 0);
             DateTime CurrentDate = DT.AddDays(DayOffset);
             string DateString = CurrentDate.ToString("dddd, MMMM dd");
             string TimeOfDay = "Morning";

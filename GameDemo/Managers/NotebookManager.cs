@@ -384,7 +384,7 @@ namespace GameDemo.Notebook
 
                 case NotebookState.Testimonies:
                     // Add topics list to lefthand page
-                    spriteBatch.DrawString(JustBreathe25, "Testimonies:", new Vector2(150, 120), Color.Black);
+                    spriteBatch.DrawString(JustBreathe25, "Testimony:", new Vector2(150, 120), Color.Black);
                     spriteBatch.DrawString(JustBreathe25, "Person", new Vector2(150, 120 + JustBreathe25.LineSpacing), Color.Black);
                     spriteBatch.DrawString(JustBreathe25, "Topic", new Vector2(375, 120 + JustBreathe25.LineSpacing), Color.Black);
                     if (TopicOptionsList == null)

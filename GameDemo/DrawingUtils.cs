@@ -52,14 +52,18 @@ namespace GameDemo.Utils
             spriteBatch.Draw(GradTex, rect, color);
         }
 
-        public static void DrawOpenRectangle(SpriteBatch spriteBatch, GraphicsDeviceManager graphics, Rectangle rect, Color color)
+        public static void DrawOpenRectangle(SpriteBatch spriteBatch,
+            GraphicsDeviceManager graphics,
+            Rectangle rect,
+            Color color,
+            int thickness)
         {
             Texture2D border = new Texture2D(graphics.GraphicsDevice, 1, 1);
             border.SetData(new[] { Color.White });
-            spriteBatch.Draw(border, new Rectangle(rect.Left, rect.Top, 2, rect.Height), color);
-            spriteBatch.Draw(border, new Rectangle(rect.Right, rect.Top, 2, rect.Height), color);
-            spriteBatch.Draw(border, new Rectangle(rect.Left, rect.Top, rect.Width, 2), color);
-            spriteBatch.Draw(border, new Rectangle(rect.Left, rect.Bottom, rect.Width + 2, 2), color);
+            spriteBatch.Draw(border, new Rectangle(rect.Left, rect.Top, thickness, rect.Height), color); //left
+            spriteBatch.Draw(border, new Rectangle(rect.Right - thickness, rect.Top, thickness, rect.Height), color); //right
+            spriteBatch.Draw(border, new Rectangle(rect.Left, rect.Top, rect.Width, thickness), color); //top
+            spriteBatch.Draw(border, new Rectangle(rect.Left, rect.Bottom, rect.Width, thickness), color); //bottom
             return;
         }
 
@@ -71,7 +75,8 @@ namespace GameDemo.Utils
             return;
         }
 
-        public static void DrawTextBanner(SpriteBatch spriteBatch, GraphicsDeviceManager graphics,
+        public static void DrawTextBanner(SpriteBatch spriteBatch,
+            GraphicsDeviceManager graphics,
             SpriteFont font,
             string text,
             Color bannerCol,
@@ -82,6 +87,18 @@ namespace GameDemo.Utils
             DrawGradientRectangle(spriteBatch, graphics, BannerRect, bannerCol);
 
             spriteBatch.DrawString(font, text, new Vector2(10.0f, 30.0f), textCol);
+        }
+
+        public static void DrawFadedRectangle(SpriteBatch spriteBatch,
+            GraphicsDeviceManager graphics,
+            Rectangle rect,
+            Color color,
+            float percentage)
+        {
+            color.A *= Convert.ToByte(percentage);
+            Texture2D FullRect = FilledRectangle(graphics, rect, color);
+            spriteBatch.Draw(FullRect, rect, color);
+            return;
         }
 
         public static void DrawShadedTexture(GraphicsDeviceManager graphics,
