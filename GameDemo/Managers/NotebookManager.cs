@@ -82,20 +82,32 @@ namespace GameDemo.Notebook
             File.WriteAllText(path, json);
         }
 
-        private string[] GetOptions()
+        private Dictionary<string, string> GetOptions()
         {
             switch (GState)
             {
                 case NotebookState.Stats:
-                    return new string[] { "My Stats", "Relationships" };
+                    return new Dictionary<string, string> {
+                        { "My Stats", "stats" },
+                        { "Relationships", "relationships" }
+                    };
 
                 case NotebookState.Options:
-                    return new string[] { "Settings", "Save & Quit" };
+                    return new Dictionary<string, string> {
+                        { "Settings", "settings" },
+                        { "Save & Quit", "savequit" }
+                    };
 
                 default:
                     // pull from people known to main character (should be a list not this dict)
-                    string[] Names = MainCharacter.Relationships.Keys.ToArray();
-                    Array.Sort(Names);
+                    Dictionary<string, string> Names = new Dictionary<string, string>();
+                    foreach (string Name in MainCharacter.Relationships.Keys)
+                    {
+                        if (AllChars.AllChars.ContainsKey(Name))
+                        {
+                            Names[AllChars.AllChars[Name].Name] = Name;
+                        }
+                    }
                     return Names;
 
             }
@@ -149,7 +161,7 @@ namespace GameDemo.Notebook
                         GState = NotebookState.Returning;
                     }
 
-                    if (MainOptionsList?.SelectedOption == "Save & Quit")
+                    if (MainOptionsList?.SelectedOption == "savequit")
                     {
                         if (QuitButton != null && MouseClickRect.Intersects(QuitButton.Rect))
                         {
@@ -281,7 +293,8 @@ namespace GameDemo.Notebook
             string Results = "";
             foreach (Testimony Testimony in testimonies)
             {
-                Results += "Name: " + Testimony.CharacterKey + "; Re: " + Testimony.TopicTag + " \n ";
+                Results += "Name: " + AllChars.AllChars[Testimony.CharacterKey].Name + "; ";
+                Results += "Re: " + TestimonyList.Topics[Testimony.TopicTag] + " \n ";
                 Results += Testimony.Text + " \n \n ";
             }
             Rectangle TestimonyRect = new Rectangle((int)(textPos + TextOffset).X, (int)(textPos + TextOffset).Y, 400, 600);
@@ -329,7 +342,7 @@ namespace GameDemo.Notebook
                     spriteBatch.DrawString(JustBreathe25, "Stats:", new Vector2(150, 120), Color.Black);
 
                     // Righthand Page
-                    if (MainOptionsList?.SelectedOption == "My Stats")
+                    if (MainOptionsList?.SelectedOption == "stats")
                     {
                         spriteBatch.DrawString(JustBreathe, "My Stats: ", TextPos, Color.Black);
                         foreach (string Stat in MainCharacter.Stats.Keys)
@@ -339,7 +352,7 @@ namespace GameDemo.Notebook
                             spriteBatch.DrawString(JustBreathe, StatString, TextPos, Color.Black);
                         }
                     }
-                    else if (MainOptionsList?.SelectedOption == "Relationships")
+                    else if (MainOptionsList?.SelectedOption == "relationships")
                     {
                         spriteBatch.DrawString(JustBreathe, "Friendship Levels: ", TextPos, Color.Black);
                         List<string> RelationshipList = MainCharacter.Relationships.Keys.ToList();
@@ -360,7 +373,7 @@ namespace GameDemo.Notebook
                     spriteBatch.DrawString(JustBreathe25, "Options:", new Vector2(150, 120), Color.Black);
 
                     // Righthand Page
-                    if (MainOptionsList?.SelectedOption == "Save & Quit")
+                    if (MainOptionsList?.SelectedOption == "savequit")
                     {
                         if (QuitButton == null)
                         {
@@ -390,7 +403,7 @@ namespace GameDemo.Notebook
                     if (TopicOptionsList == null)
                     {
                         Rectangle TopicOptionsListRect = new Rectangle(375, 120 + 2 * JustBreathe25.LineSpacing, 300, 500);
-                        TopicOptionsList = new OptionsList(TestimonyList.Topics.ToArray(), JustBreathe, TopicOptionsListRect);
+                        TopicOptionsList = new OptionsList(TestimonyList.Topics, JustBreathe, TopicOptionsListRect);
                     }
                     TopicOptionsList.Draw(spriteBatch, graphics);
 

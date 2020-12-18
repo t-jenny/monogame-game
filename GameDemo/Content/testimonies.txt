@@ -1,5 +1,9 @@
 ﻿{
-    "Topics" : [ "attack", "thatday", "princess" ],
+    "Topics" : {
+        "The Attack" : "attack",
+        "That Day" : "thatday",
+        "The Princess" : "princess"
+    },
     "Testimonies" : [
         {
             "Id" : 0,

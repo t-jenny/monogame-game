@@ -1,6 +1,13 @@
 ﻿{
     "Id" : 0,
     "Culprit" : "tomazzi",
+    "CharDict" : {
+        "Ms. Blush" : "blush",
+        "Sir Lionel" : "lionel",
+        "Tomazzi" : "tomazzi",
+        "Peter" : "peter",
+        "The King" : "king"
+    },
     "Suspects" : [ "blush", "lionel", "tomazzi" ],
     "TestimonyOnly" : [ "peter", "king" ],
     "Locations" : [ "castle" ]

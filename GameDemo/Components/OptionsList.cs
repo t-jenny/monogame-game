@@ -11,12 +11,14 @@ namespace GameDemo.Components
     {
         public readonly struct Option
         {
-            public Option(string label, SpriteFont font, Point coords)
+            public Option(string label, string value, SpriteFont font, Point coords)
             {
                 Label = label;
+                Value = value;
                 Rect = new Rectangle(coords, font.MeasureString(label).ToPoint());
             }
             public string Label { get; }
+            public string Value { get; }
             public Rectangle Rect { get; }
 
         }
@@ -24,19 +26,22 @@ namespace GameDemo.Components
         private SpriteFont Font;
         private Rectangle Rect;
         public string SelectedOption { get; private set; }
+        public string SelectedLabel { get; private set; }
         private MouseState PrevMouseState;
 
-        public OptionsList(string[] options, SpriteFont font, Rectangle rect)
+        public OptionsList(Dictionary<string, string> options, SpriteFont font, Rectangle rect)
         {
             Font = font;
             Rect = rect;
             int Diff = 20;
             int LineHeight = (int) font.MeasureString("A").Y;
             Options = new List<Option>();
-            for (int i = 0; i < options.Length; i++)
+
+            int i = 0;
+            foreach (string OptionKey in options.Keys)
             {
-                Point Coords = new Point(Rect.X + Diff, Rect.Y + LineHeight * i + Diff);
-                Options.Add(new Option(options[i], font, Coords));
+                Point Coords = new Point(Rect.X + Diff, Rect.Y + LineHeight * (i++) + Diff);
+                Options.Add(new Option(OptionKey, options[OptionKey], font, Coords));
             }
             PrevMouseState = Mouse.GetState();
         }
@@ -50,7 +55,8 @@ namespace GameDemo.Components
             {
                 if (Opt.Rect.Contains(MousePoint) && PrevMouseState.LeftButton == ButtonState.Pressed && MouseState.LeftButton == ButtonState.Released)
                 {
-                    SelectedOption = (SelectedOption == Opt.Label) ? null : Opt.Label;
+                    SelectedOption = (SelectedOption == Opt.Value) ? null : Opt.Value;
+                    SelectedLabel = (SelectedLabel == Opt.Label) ? null : Opt.Label;
                 }
             }
 
@@ -61,7 +67,7 @@ namespace GameDemo.Components
         {
             foreach (Option Opt in Options)
             {
-                if (Opt.Label == SelectedOption)
+                if (Opt.Value == SelectedOption)
                 {
                     DrawingUtils.DrawUnderline(spriteBatch, graphics, Opt.Rect, Color.Purple);
                 }

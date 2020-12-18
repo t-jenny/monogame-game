@@ -75,10 +75,8 @@ namespace GameDemo.Managers
                         }
                         else MainCharacter.Relationships[PeopleList.SelectedOption]++;
 
-                        Calendar.AddEntry(ActivitiesList.SelectedOption + " with " + PeopleList.SelectedOption);
+                        Calendar.AddEntry(ActivitiesList.SelectedLabel + " with " + PeopleList.SelectedLabel);
                         GState = CalendarState.NextDay;
-
-                        MainCharacter.NextDay(); // increment internal timekeeper for maincharacter
                         Calendar.MoveDay();
                     }
 
@@ -170,6 +168,7 @@ namespace GameDemo.Managers
                 case CalendarState.ToWeekend:
                     gameEngine.Push(new MapManager(), true, true);
                     IsTransitioning = true;
+                    MainCharacter.NextDay(); // increment internal timekeeper for maincharacter
                     break;
 
                 case CalendarState.ToNotebook:
@@ -230,20 +229,28 @@ namespace GameDemo.Managers
 
             if (ActivitiesList == null)
             {
-                string[] Activities = new string[6] { "charm", "courage", "empathy", "intelligence", "strength", "money" };
+                Dictionary<string, string> Activities = new Dictionary<string, string>
+                {
+                    { "Have a tea party", "charm" },
+                    { "Fight a dragon", "courage"},
+                    { "Have a chat", "empathy" },
+                    { "Go to the library", "intelligence" },
+                    { "Pump iron", "strength" },
+                    { "Start a business", "money" }
+                };
                 ActivitiesList = new OptionsList(Activities, JustBreathe,
-                    new Rectangle(ActivityRect.X + 30,
+                    new Rectangle(ActivityRect.X + 10,
                     ActivityRect.Y + 30,
                     ActivityRect.Width / 6,
                     ActivityRect.Height));
             }
             ActivitiesList.Draw(spriteBatch, graphics);
 
-            spriteBatch.DrawString(JustBreathe, "with", ActivityRect.Center.ToVector2(), Color.Navy);
+            spriteBatch.DrawString(JustBreathe, "with", new Vector2(ActivityRect.X + 250, ActivityRect.Y + 100), Color.Navy);
 
             if (PeopleList == null)
             {
-                string[] People = Case.Suspects.Concat(Case.TestimonyOnly).ToArray();
+                Dictionary<string, string> People = Case.CharDict;
                 PeopleList = new OptionsList(People, JustBreathe,
                     new Rectangle(ActivityRect.X + 4 * ActivityRect.Width / 6,
                     ActivityRect.Y + 30,

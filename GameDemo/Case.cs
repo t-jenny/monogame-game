@@ -6,6 +6,7 @@ namespace GameDemo
     {
         public uint Id { get; set; }
         public string Culprit { get; set; }
+        public Dictionary<string, string> CharDict { get; set; }
         public HashSet<string> Suspects { get; set; }
         public HashSet<string> TestimonyOnly { get; set; }
         public HashSet<string> Locations { get; set; }
