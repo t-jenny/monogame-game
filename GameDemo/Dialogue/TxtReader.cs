@@ -4,6 +4,10 @@ using GameDemo.Animations;
 using GameDemo.Characters;
 using GameDemo.Effects;
 using GameDemo.Locations;
+using GameDemo.Utils;
+
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 
 namespace GameDemo.Dialogue

@@ -180,7 +180,7 @@ namespace GameDemo.Map
                     break;
 
                 case MapState.ToNotebook:
-                    gameEngine.Push(new NotebookManager(), true, true);
+                    gameEngine.Push(new NotebookManager(false), true, true);
                     IsTransitioning = true;
                     break;
 

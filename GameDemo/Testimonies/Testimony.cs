@@ -12,6 +12,7 @@ namespace GameDemo.Testimonies
         public string FrontPadding { get; set; }
         public string Text { get; set; }
         public string EndPadding { get; set; }
+        public string SpokenText { get; set; }
         public int IdContradict { get; set; }
     }
 }

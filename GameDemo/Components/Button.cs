@@ -8,7 +8,7 @@ namespace GameDemo.Components
 {
     public class Button
     {
-        private readonly string Text;
+        public readonly string Text;
         private SpriteFont Font;
 
         private bool IsHovered = false;

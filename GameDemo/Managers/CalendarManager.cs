@@ -98,15 +98,28 @@ namespace GameDemo.Managers
             }
         }
 
+        public CalendarManager()
+        {
+            IsTransitioning = false;
+        }
+
         public void Reset(GameEngine gameEngine, MainCharacter mainCharacter, ContentManager content)
         {
+            if (IsTransitioning)
+            {
+                GState = CalendarState.ActivityChoice;
+                Background = new Background(content, "bulletin");
+                IsTransitioning = false;
+                return;
+            }
+
             content.Unload();
+            Background = new Background(content, "bulletin");
             MainCharacter = mainCharacter;
  
             Content = content;
             JustBreathe = Content.Load<SpriteFont>("Fonts/JustBreathe20");
             Arial = Content.Load<SpriteFont>("Fonts/Arial");
-            IsTransitioning = false;
 
             // Load Case Info
             String CasePath = Path.Combine(Content.RootDirectory, "case" + MainCharacter.CurrentCase + ".txt");
@@ -123,8 +136,6 @@ namespace GameDemo.Managers
             Calendar = null;
             Notebook = null;
             GState = CalendarState.ActivityChoice;
-
-            Background = new Background(content, "bulletin");
 
             MouseState = Mouse.GetState();
             PrevMouseState = MouseState;
@@ -172,7 +183,7 @@ namespace GameDemo.Managers
                     break;
 
                 case CalendarState.ToNotebook:
-                    gameEngine.Push(new NotebookManager(), true, true);
+                    gameEngine.Push(new NotebookManager(false), true, true);
                     IsTransitioning = true;
                     break;
 
@@ -198,6 +209,7 @@ namespace GameDemo.Managers
 
         public void Draw(GameEngine gameEngine, SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
+
             Background.Draw(spriteBatch, graphics);
 
             // Banner

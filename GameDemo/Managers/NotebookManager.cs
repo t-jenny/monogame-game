@@ -45,6 +45,9 @@ namespace GameDemo.Notebook
         private Button SaveButton;
         private ConfirmMenu ConfirmQuitMenu;
 
+        private Button SelectTestimonyButton;
+        private ConfirmMenu ConfirmContradictMenu;
+
         //Make this part of notebook page class;
         //private Button NextPageButton;
         //private Button PrevPageButton;
@@ -62,6 +65,7 @@ namespace GameDemo.Notebook
 
         private NotebookState GState;
         private bool IsTransitioning;
+        private bool SeekingTestimony;
 
         enum NotebookState
         {
@@ -72,6 +76,11 @@ namespace GameDemo.Notebook
             Options,
             ClickedQuitGame,
             ConfirmedQuitGame
+        }
+
+        public NotebookManager(bool seekingTestimony)
+        {
+            SeekingTestimony = seekingTestimony;
         }
 
         // from Microsoft Docs
@@ -181,7 +190,7 @@ namespace GameDemo.Notebook
 
         public void Reset(GameEngine gameEngine, MainCharacter mainCharacter, ContentManager content)
         {
-            content.Unload();
+            //content.Unload();
 
             MainCharacter = mainCharacter;
             Content = content;
@@ -294,7 +303,7 @@ namespace GameDemo.Notebook
             foreach (Testimony Testimony in testimonies)
             {
                 Results += "Name: " + AllChars.AllChars[Testimony.CharacterKey].Name + "; ";
-                Results += "Re: " + TestimonyList.Topics[Testimony.TopicTag] + " \n ";
+                Results += "Re: " + Testimony.TopicTag + " \n ";
                 Results += Testimony.Text + " \n \n ";
             }
             Rectangle TestimonyRect = new Rectangle((int)(textPos + TextOffset).X, (int)(textPos + TextOffset).Y, 400, 600);
@@ -306,6 +315,7 @@ namespace GameDemo.Notebook
         public void Draw(GameEngine gameEngine, SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
             // Background
+
             Background.Draw(spriteBatch, graphics);
             int ScreenWidth = graphics.GraphicsDevice.Viewport.Width;
             int ScreenHeight = graphics.GraphicsDevice.Viewport.Height;

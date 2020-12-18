@@ -8,6 +8,7 @@ using GameDemo.Events;
 using GameDemo.Components;
 using GameDemo.Managers;
 using GameDemo.Notebook;
+using GameDemo.Testimonies;
 using GameDemo.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -216,7 +217,7 @@ namespace GameDemo.Locations
             switch (GState)
             {
                 case (LocationState.ConfirmedPerson):
-                    gameEngine.Push(new EventManager(), true, true);
+                    gameEngine.Push(new InterviewManager(SelectedPersonName), true, true);
 
                     // Add an entry for the relationship when you meet a character.
                     if (!MainCharacter.Relationships.ContainsKey(SelectedPersonName))
@@ -227,7 +228,7 @@ namespace GameDemo.Locations
                     break;
 
                 case (LocationState.ToNotebook):
-                    gameEngine.Push(new NotebookManager(), true, true);
+                    gameEngine.Push(new NotebookManager(false), true, true);
                     IsTransitioning = true;
                     break;
 
