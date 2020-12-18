@@ -49,8 +49,6 @@ namespace GameDemo.Notebook
         private ConfirmMenu ConfirmContradictMenu;
 
         //Make this part of notebook page class;
-        //private Button NextPageButton;
-        //private Button PrevPageButton;
         private int PageIndex = 0;
 
         // Text related variables
@@ -75,7 +73,8 @@ namespace GameDemo.Notebook
             Profiles,
             Options,
             ClickedQuitGame,
-            ConfirmedQuitGame
+            ConfirmedQuitGame,
+            SelectedTestimony
         }
 
         public NotebookManager(bool seekingTestimony)
@@ -129,6 +128,17 @@ namespace GameDemo.Notebook
 
             switch (GState)
             {
+                case NotebookState.SelectedTestimony:
+                    if (ConfirmContradictMenu.IsConfirming(MouseClickRect))
+                    {
+                        GState = NotebookState.Returning;
+                    }
+                    if (ConfirmContradictMenu.IsCancelling(MouseClickRect))
+                    {
+                        GState = NotebookState.Testimonies;
+                    }
+                    break;
+
                 case NotebookState.ClickedQuitGame:
                     if (ConfirmQuitMenu.IsConfirming(MouseClickRect))
                     {
@@ -181,6 +191,16 @@ namespace GameDemo.Notebook
                         if (SaveButton != null && MouseClickRect.Intersects(SaveButton.Rect))
                         {
                             SaveGame();
+                        }
+                    }
+
+                    if (SeekingTestimony && SelectTestimonyButton != null)
+                    {
+                        if (MouseClickRect.Intersects(SelectTestimonyButton.Rect))
+                        {
+                            GState = NotebookState.SelectedTestimony;
+                            string Query = "Are you sure you want to contradict?";
+                            ConfirmContradictMenu = new ConfirmMenu(Query, Content, Arial);
                         }
                     }
                     break;
@@ -241,10 +261,12 @@ namespace GameDemo.Notebook
             MainOptionsList?.Update();
             TopicOptionsList?.Update();
 
-            // Game Quit Components
+            // Tab-specific components
             QuitButton?.Update();
             SaveButton?.Update();
+            SelectTestimonyButton?.Update();
             ConfirmQuitMenu?.Update(gameTime);
+            ConfirmContradictMenu?.Update(gameTime);
 
             if (PrevMouseState.LeftButton == ButtonState.Pressed && MouseState.LeftButton == ButtonState.Released)
             {
@@ -410,13 +432,13 @@ namespace GameDemo.Notebook
                     spriteBatch.DrawString(JustBreathe25, "Testimony:", new Vector2(150, 120), Color.Black);
                     spriteBatch.DrawString(JustBreathe25, "Person", new Vector2(150, 120 + JustBreathe25.LineSpacing), Color.Black);
                     spriteBatch.DrawString(JustBreathe25, "Topic", new Vector2(375, 120 + JustBreathe25.LineSpacing), Color.Black);
+
                     if (TopicOptionsList == null)
                     {
                         Rectangle TopicOptionsListRect = new Rectangle(375, 120 + 2 * JustBreathe25.LineSpacing, 300, 500);
                         TopicOptionsList = new OptionsList(TestimonyList.Topics, JustBreathe, TopicOptionsListRect);
                     }
                     TopicOptionsList.Draw(spriteBatch, graphics);
-
 
                     // must select a character and a topic to view testimony
                     if (TopicOptionsList?.SelectedOption != null && MainOptionsList?.SelectedOption != null)
@@ -426,6 +448,12 @@ namespace GameDemo.Notebook
                                                        testimony.CharacterKey == MainOptionsList?.SelectedOption
                                                        select testimony).ToList();
                         DrawTestimonies(spriteBatch, graphics, Testimonies, TextPos);
+
+                        if (SelectTestimonyButton == null)
+                        {
+                            SelectTestimonyButton = new Button("Select", JustBreathe25, TextPos + new Vector2(0, 500));
+                        }
+                        SelectTestimonyButton.Draw(spriteBatch, graphics);
                     }
                     break;
 
@@ -457,6 +485,11 @@ namespace GameDemo.Notebook
             if (GState == NotebookState.ClickedQuitGame && ConfirmQuitMenu != null)
             {
                 ConfirmQuitMenu.Draw(spriteBatch, graphics);
+            }
+
+            if (GState == NotebookState.SelectedTestimony && ConfirmContradictMenu != null)
+            {
+                ConfirmContradictMenu.Draw(spriteBatch, graphics);
             }
 
         }
