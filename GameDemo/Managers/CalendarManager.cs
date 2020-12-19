@@ -183,7 +183,8 @@ namespace GameDemo.Managers
                     break;
 
                 case CalendarState.ToNotebook:
-                    gameEngine.Push(new NotebookManager(false), true, true);
+                    int[] Null = new int[] { -1 };
+                    gameEngine.Push(new NotebookManager(false, ref Null), true, true);
                     IsTransitioning = true;
                     break;
 

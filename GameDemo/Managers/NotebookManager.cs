@@ -64,6 +64,7 @@ namespace GameDemo.Notebook
         private NotebookState GState;
         private bool IsTransitioning;
         private bool SeekingTestimony;
+        private int[] TestimonyId;
 
         enum NotebookState
         {
@@ -77,9 +78,10 @@ namespace GameDemo.Notebook
             SelectedTestimony
         }
 
-        public NotebookManager(bool seekingTestimony)
+        public NotebookManager(bool seekingTestimony, ref int[] testimonyId)
         {
             SeekingTestimony = seekingTestimony;
+            TestimonyId = testimonyId;
         }
 
         // from Microsoft Docs
@@ -427,6 +429,7 @@ namespace GameDemo.Notebook
                     }
                     break;
 
+                case NotebookState.SelectedTestimony:
                 case NotebookState.Testimonies:
                     // Add topics list to lefthand page
                     spriteBatch.DrawString(JustBreathe25, "Testimony:", new Vector2(150, 120), Color.Black);
@@ -447,6 +450,12 @@ namespace GameDemo.Notebook
                                                        where testimony.TopicTag == TopicOptionsList?.SelectedOption &&
                                                        testimony.CharacterKey == MainOptionsList?.SelectedOption
                                                        select testimony).ToList();
+
+                        if (Testimonies.Count > 0)
+                        {
+                            TestimonyId[0] = Testimonies[0].IdContradict;
+                        }
+
                         DrawTestimonies(spriteBatch, graphics, Testimonies, TextPos);
 
                         if (SelectTestimonyButton == null)

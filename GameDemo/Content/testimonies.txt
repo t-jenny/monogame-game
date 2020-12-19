@@ -44,7 +44,7 @@
             "TopicTag" : "princess",
             "IsInitial" : true,
             "FrontPadding" : "",
-            "Text" : "I don't see the Princess often, but the last time I saw her was 2 days before the attack when she came down to try some cake. I've been working on a new recipe, you see, and the princess loves cake.",
+            "Text" : "This contradict's Ms. Blush's comments about that day.",
             "EndPadding" : "",
             "SpokenText" : "",
             "IdContradict" : 0
