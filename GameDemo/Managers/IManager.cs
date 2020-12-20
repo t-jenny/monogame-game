@@ -8,8 +8,8 @@ namespace GameDemo.Managers
 {
     public interface IManager
     {
-        public abstract void Reset(GameEngine gameEngine, MainCharacter mainCharacter, ContentManager contentManager);
-        public abstract void Update(GameEngine gameEngine, GameTime gameTime);
-        public abstract void Draw(GameEngine gameEngine, SpriteBatch spriteBatch, GraphicsDeviceManager graphics);
+        public void Reset(GameEngine gameEngine, MainCharacter mainCharacter, ContentManager contentManager);
+        public void Update(GameEngine gameEngine, GameTime gameTime);
+        public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics);
     }
 }

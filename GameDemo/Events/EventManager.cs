@@ -207,7 +207,7 @@ namespace GameDemo.Events
             return Animation;
         }
 
-        public void Draw(GameEngine gameEngine, SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
             if (CurrentTextObject == null)
             {

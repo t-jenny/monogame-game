@@ -87,7 +87,7 @@ namespace GameDemo.Engine
         public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
             if (StackSize == 0) return;
-            GameStack.Peek().Draw(this, spriteBatch, graphics);
+            GameStack.Peek().Draw(spriteBatch, graphics);
 
             // For fades
             ScreenFader.Draw(spriteBatch, graphics);

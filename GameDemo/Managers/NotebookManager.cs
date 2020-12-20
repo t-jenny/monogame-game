@@ -22,6 +22,7 @@ namespace GameDemo.Notebook
     {
         private MainCharacter MainCharacter;
         private ContentManager Content;
+        private Case Case;
 
         private const string NotebookPath = "notebook";
         private Background Background;
@@ -41,10 +42,10 @@ namespace GameDemo.Notebook
         private TestimonyList TestimonyList;
         private OptionsList TopicOptionsList;
 
+        // Page-Specific Components
         private Button QuitButton;
         private Button SaveButton;
         private ConfirmMenu ConfirmQuitMenu;
-
         private Button SelectTestimonyButton;
         private ConfirmMenu ConfirmContradictMenu;
 
@@ -90,37 +91,6 @@ namespace GameDemo.Notebook
             string path = Path.Combine(Content.RootDirectory, "savedata.txt");
             string json = JsonSerializer.Serialize<MainCharacter>(MainCharacter);
             File.WriteAllText(path, json);
-        }
-
-        private Dictionary<string, string> GetOptions()
-        {
-            switch (GState)
-            {
-                case NotebookState.Stats:
-                    return new Dictionary<string, string> {
-                        { "My Stats", "stats" },
-                        { "Relationships", "relationships" }
-                    };
-
-                case NotebookState.Options:
-                    return new Dictionary<string, string> {
-                        { "Settings", "settings" },
-                        { "Save & Quit", "savequit" }
-                    };
-
-                default:
-                    // pull from people known to main character (should be a list not this dict)
-                    Dictionary<string, string> Names = new Dictionary<string, string>();
-                    foreach (string Name in MainCharacter.Relationships.Keys)
-                    {
-                        if (AllChars.AllChars.ContainsKey(Name))
-                        {
-                            Names[AllChars.AllChars[Name].Name] = Name;
-                        }
-                    }
-                    return Names;
-
-            }
         }
 
         private void MouseClicked(MouseState mouseState)
@@ -212,8 +182,6 @@ namespace GameDemo.Notebook
 
         public void Reset(GameEngine gameEngine, MainCharacter mainCharacter, ContentManager content)
         {
-            //content.Unload();
-
             MainCharacter = mainCharacter;
             Content = content;
 
@@ -221,6 +189,11 @@ namespace GameDemo.Notebook
             String path = Path.Combine(Content.RootDirectory, "characters.txt");
             String CharJSON = File.ReadAllText(path);
             AllChars = JsonSerializer.Deserialize<AllCharacters>(CharJSON);
+
+            // Load Case
+            String CasePath = Path.Combine(Content.RootDirectory, "case" + MainCharacter.CurrentCase + ".txt");
+            String CaseJSON = File.ReadAllText(CasePath);
+            Case = JsonSerializer.Deserialize<Case>(CaseJSON);
 
             // Load Testimonies
             path = Path.Combine(Content.RootDirectory, "testimonies.txt");
@@ -233,10 +206,21 @@ namespace GameDemo.Notebook
             QuitButton = null;
             SaveButton = null;
 
+            int TabOffset = Game1.GetWindowSize().X / 10 - 8;
+            PeopleTab = new ClickableTexture(Content.Load<Texture2D>("tab_people"), new Vector2(TabOffset, TabOffset));
+            StatsTab = new ClickableTexture(Content.Load<Texture2D>("tab_stats"),
+                new Vector2(TabOffset, PeopleTab.Rect.Y + PeopleTab.Rect.Height));
+            TestimonyTab = new ClickableTexture(Content.Load<Texture2D>("tab_testimony"),
+                new Vector2(TabOffset, StatsTab.Rect.Y + StatsTab.Rect.Height));
+            OptionsTab = new ClickableTexture(Content.Load<Texture2D>("tab_options"),
+                new Vector2(TabOffset, TestimonyTab.Rect.Y + TestimonyTab.Rect.Height));
+
             // Always start by viewing stats.
             GState = NotebookState.Stats;
             MainOptionsList = null;
             TopicOptionsList = null;
+
+            ReturnIconRect = new Rectangle(Game1.GetWindowSize().X - 100, 20, 70, 70);
 
             Arial = content.Load<SpriteFont>("Fonts/Arial");
             JustBreathe = content.Load<SpriteFont>("Fonts/JustBreathe20");
@@ -254,16 +238,16 @@ namespace GameDemo.Notebook
             MouseState = Mouse.GetState();
 
             /*** Update Components ***/
-            // Notebook sections
-            PeopleTab?.Update();
-            OptionsTab?.Update();
-            StatsTab?.Update();
-            TestimonyTab?.Update();
+            // Notebook sections (Constant)
+            PeopleTab.Update();
+            OptionsTab.Update();
+            StatsTab.Update();
+            TestimonyTab.Update();
 
             MainOptionsList?.Update();
             TopicOptionsList?.Update();
 
-            // Tab-specific components
+            // Tab-specific components (Variable)
             QuitButton?.Update();
             SaveButton?.Update();
             SelectTestimonyButton?.Update();
@@ -274,7 +258,6 @@ namespace GameDemo.Notebook
             {
                 MouseClicked(MouseState);
             }
-
             PrevMouseState = MouseState;
 
 
@@ -292,6 +275,36 @@ namespace GameDemo.Notebook
 
         }
 
+        private Dictionary<string, string> GetOptions()
+        {
+            switch (GState)
+            {
+                case NotebookState.Stats:
+                    return new Dictionary<string, string> {
+                        { "My Stats", "stats" },
+                        { "Relationships", "relationships" }
+                    };
+
+                case NotebookState.Options:
+                    return new Dictionary<string, string> {
+                        { "Settings", "settings" },
+                        { "Save & Quit", "savequit" }
+                    };
+
+                default:
+                    // pull from people known to main character (should be a list not this dict)
+                    Dictionary<string, string> Names = new Dictionary<string, string>();
+                    foreach (string Name in MainCharacter.Relationships.Keys)
+                    {
+                        if (AllChars.AllChars.ContainsKey(Name))
+                        {
+                            Names[AllChars.AllChars[Name].Name] = Name;
+                        }
+                    }
+                    return Names;
+            }
+        }
+
         private void DrawCharacterEntry(SpriteBatch spriteBatch, GraphicsDeviceManager graphics, Character character, Vector2 textPos)
         {
             if (MainOptionsList?.SelectedOption == null) return;
@@ -306,6 +319,7 @@ namespace GameDemo.Notebook
 
             spriteBatch.DrawString(JustBreathe, "Occupation: " + character.Occupation,
                 textPos += 2.5f * TextOffset - new Vector2(PicRect.Width + 5.0f, 0.0f), Color.Black);
+
             // Character Description:
             spriteBatch.DrawString(JustBreathe, "Description: ", textPos += 2.0f * TextOffset, Color.Black);
             Point DescBoxSize = new Point(400 - (int)Indent.X, 300);
@@ -336,23 +350,14 @@ namespace GameDemo.Notebook
             spriteBatch.DrawString(JustBreathe, ResultsPages[PageIndex], textPos, Color.Black);
         }
 
-        public void Draw(GameEngine gameEngine, SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
             // Background
-
             Background.Draw(spriteBatch, graphics);
-            int ScreenWidth = graphics.GraphicsDevice.Viewport.Width;
-            int ScreenHeight = graphics.GraphicsDevice.Viewport.Height;
 
             // Banner with Date
             string DateString = MainCharacter.GetDateTimeString();
             DrawingUtils.DrawTextBanner(spriteBatch, graphics, Arial, DateString, Color.Red, Color.Black);
-
-            // Return-to-world icon
-            if (ReturnIconRect.IsEmpty)
-            {
-                ReturnIconRect = new Rectangle(ScreenWidth - 100, 20, 70, 70);
-            }
             spriteBatch.Draw(ReturnIcon, ReturnIconRect, Color.White);
 
             // Draw MainMainOptionsList (Lefthand Page)
@@ -364,7 +369,7 @@ namespace GameDemo.Notebook
             MainOptionsList.Draw(spriteBatch, graphics);
 
             /***** Draw notebook info (make this more modular *****/
-            Vector2 TextPos = new Vector2(1.1f * ScreenWidth / 2, 120);
+            Vector2 TextPos = new Vector2(1.1f * Game1.GetWindowSize().X / 2, 120);
 
             TextPos += TextOffset;
 
@@ -376,28 +381,20 @@ namespace GameDemo.Notebook
                     spriteBatch.DrawString(JustBreathe25, "Stats:", new Vector2(150, 120), Color.Black);
 
                     // Righthand Page
-                    if (MainOptionsList?.SelectedOption == "stats")
+                    Rectangle StatTableRect = new Rectangle((TextPos + TextOffset).ToPoint(), new Point(200, 252));
+                    if (MainOptionsList.SelectedOption == "stats")
                     {
                         spriteBatch.DrawString(JustBreathe, "My Stats: ", TextPos, Color.Black);
-                        foreach (string Stat in MainCharacter.Stats.Keys)
-                        {
-                            TextPos += TextOffset;
-                            string StatString = Stat + ": " + MainCharacter.Stats[Stat];
-                            spriteBatch.DrawString(JustBreathe, StatString, TextPos, Color.Black);
-                        }
+                        string[] Aspects = new string[6] { "charm", "courage", "empathy", "intelligence", "strength", "money" };
+                        InfoTable StatTable = new InfoTable(MainCharacter.Stats, Aspects, StatTableRect, JustBreathe);
+                        StatTable.Draw(spriteBatch, graphics);
                     }
-                    else if (MainOptionsList?.SelectedOption == "relationships")
+                    else if (MainOptionsList.SelectedOption == "relationships")
                     {
                         spriteBatch.DrawString(JustBreathe, "Friendship Levels: ", TextPos, Color.Black);
-                        List<string> RelationshipList = MainCharacter.Relationships.Keys.ToList();
-                        RelationshipList.Sort();
-
-                        foreach (string CharName in RelationshipList)
-                        {
-                            TextPos += TextOffset;
-                            string RelString = CharName + ": " + MainCharacter.Relationships[CharName];
-                            spriteBatch.DrawString(JustBreathe, RelString, TextPos, Color.Black);
-                        }
+                        string[] People = Case.Suspects.Concat(Case.TestimonyOnly).ToArray();
+                        InfoTable RelTable = new InfoTable(MainCharacter.Relationships, People, StatTableRect, JustBreathe);
+                        RelTable.Draw(spriteBatch, graphics);
                     }
                     break;
 
@@ -407,7 +404,7 @@ namespace GameDemo.Notebook
                     spriteBatch.DrawString(JustBreathe25, "Options:", new Vector2(150, 120), Color.Black);
 
                     // Righthand Page
-                    if (MainOptionsList?.SelectedOption == "savequit")
+                    if (MainOptionsList.SelectedOption == "savequit")
                     {
                         if (QuitButton == null)
                         {
@@ -423,7 +420,7 @@ namespace GameDemo.Notebook
                     // Lefthand Page
                     spriteBatch.DrawString(JustBreathe25, "People:", new Vector2(150, 120), Color.Black);
 
-                    if (MainOptionsList?.SelectedOption != null)
+                    if (MainOptionsList.SelectedOption != null)
                     {
                         DrawCharacterEntry(spriteBatch, graphics, AllChars.AllChars[MainOptionsList.SelectedOption], TextPos);
                     }
@@ -444,7 +441,7 @@ namespace GameDemo.Notebook
                     TopicOptionsList.Draw(spriteBatch, graphics);
 
                     // must select a character and a topic to view testimony
-                    if (TopicOptionsList?.SelectedOption != null && MainOptionsList?.SelectedOption != null)
+                    if (TopicOptionsList.SelectedOption != null && MainOptionsList?.SelectedOption != null)
                     {
                         List<Testimony> Testimonies = (from testimony in TestimonyList.Testimonies
                                                        where testimony.TopicTag == TopicOptionsList?.SelectedOption &&
@@ -458,11 +455,11 @@ namespace GameDemo.Notebook
 
                         DrawTestimonies(spriteBatch, graphics, Testimonies, TextPos);
 
-                        if (SelectTestimonyButton == null)
+                        if (SeekingTestimony)
                         {
                             SelectTestimonyButton = new Button("Select", JustBreathe25, TextPos + new Vector2(0, 500));
+                            SelectTestimonyButton.Draw(spriteBatch, graphics);
                         }
-                        SelectTestimonyButton.Draw(spriteBatch, graphics);
                     }
                     break;
 
@@ -473,30 +470,18 @@ namespace GameDemo.Notebook
             /***** End Notebook Page placeholder *****/
 
             // Draw Notebook Tabs
-            if (PeopleTab == null)
-            {
-                PeopleTab = new ClickableTexture(Content.Load<Texture2D>("tab_people"),
-                    new Vector2(120, 120));
-                StatsTab = new ClickableTexture(Content.Load<Texture2D>("tab_stats"),
-                    new Vector2(120, PeopleTab.Rect.Y + PeopleTab.Rect.Height));
-                TestimonyTab = new ClickableTexture(Content.Load<Texture2D>("tab_testimony"),
-                    new Vector2(120, StatsTab.Rect.Y + StatsTab.Rect.Height));
-                OptionsTab = new ClickableTexture(Content.Load<Texture2D>("tab_options"),
-                    new Vector2(120, TestimonyTab.Rect.Y + TestimonyTab.Rect.Height));
-            }
             OptionsTab.Draw(spriteBatch, graphics);
             StatsTab.Draw(spriteBatch, graphics);
             PeopleTab.Draw(spriteBatch, graphics);
             TestimonyTab.Draw(spriteBatch, graphics);
 
-
             // Confirm Menu if quitting the game
-            if (GState == NotebookState.ClickedQuitGame && ConfirmQuitMenu != null)
+            if (GState == NotebookState.ClickedQuitGame)
             {
                 ConfirmQuitMenu.Draw(spriteBatch, graphics);
             }
 
-            if (GState == NotebookState.SelectedTestimony && ConfirmContradictMenu != null)
+            if (GState == NotebookState.SelectedTestimony)
             {
                 ConfirmContradictMenu.Draw(spriteBatch, graphics);
             }

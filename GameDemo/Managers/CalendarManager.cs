@@ -29,6 +29,7 @@ namespace GameDemo.Managers
 
         private Button ConfirmButton;
         private OptionsList ActivitiesList;
+        private Rectangle ActivityRect;
         private OptionsList PeopleList;
         private ClickableTexture Notebook;
         private Calendar Calendar;
@@ -112,6 +113,7 @@ namespace GameDemo.Managers
                 IsTransitioning = false;
                 return;
             }
+            Point WindowSize = Game1.GetWindowSize();
 
             content.Unload();
             Background = new Background(content, "bulletin");
@@ -127,14 +129,34 @@ namespace GameDemo.Managers
             Case = JsonSerializer.Deserialize<Case>(CaseJSON);
             ThisMonday = MainCharacter.GetDate();
 
+            ActivityRect = new Rectangle(WindowSize.X / 2, WindowSize.Y / 2, 500, 300);
+
+            // eventually pull from Activity list json.
+            Dictionary<string, string> Activities = new Dictionary<string, string>
+                {
+                    { "Have a tea party", "charm" },
+                    { "Fight a dragon", "courage"},
+                    { "Have a chat", "empathy" },
+                    { "Go to the library", "intelligence" },
+                    { "Pump iron", "strength" },
+                    { "Start a business", "money" }
+                };
+            ActivitiesList = new OptionsList(Activities, JustBreathe,
+                new Rectangle(ActivityRect.X + 10,
+                ActivityRect.Y + 30,
+                ActivityRect.Width / 6,
+                ActivityRect.Height));
+
+            PeopleList = new OptionsList(Case.CharDict, JustBreathe,
+                new Rectangle(ActivityRect.X + 4 * ActivityRect.Width / 6,
+                ActivityRect.Y + 30,
+                ActivityRect.Width / 6,
+                ActivityRect.Height));
+
             // important to reset these components to null when the manager is reloaded
             ConfirmButton = null;
-            ActivitiesList = null;
-            PeopleList = null;
-            StatsTable = null;
-            RelTable = null;
-            Calendar = null;
-            Notebook = null;
+            Calendar = new Calendar(new Rectangle(110, 150, 960, 200), JustBreathe, ThisMonday);
+            Notebook = new ClickableTexture(Content.Load<Texture2D>("notebook_icon"), new Vector2(WindowSize.X - 100, 20));
             GState = CalendarState.ActivityChoice;
 
             MouseState = Mouse.GetState();
@@ -179,7 +201,6 @@ namespace GameDemo.Managers
                 case CalendarState.ToWeekend:
                     gameEngine.Push(new MapManager(), true, true);
                     IsTransitioning = true;
-                    MainCharacter.NextDay(); // increment internal timekeeper for maincharacter
                     break;
 
                 case CalendarState.ToNotebook:
@@ -199,16 +220,18 @@ namespace GameDemo.Managers
                     if (PeopleList?.SelectedOption != null && ActivitiesList?.SelectedOption != null)
                     {
                         GState = CalendarState.ConfirmActivity;
+                        ConfirmButton = new Button("Go!", JustBreathe,
+                            new Vector2(ActivityRect.X + ActivityRect.Width / 2,
+                            ActivityRect.Y + ActivityRect.Height - 50));
                     }
                     break;
 
                 default:
                     break;
             }
-
         }
 
-        public void Draw(GameEngine gameEngine, SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
 
             Background.Draw(spriteBatch, graphics);
@@ -217,79 +240,31 @@ namespace GameDemo.Managers
             string WeekString = "Week of " + ThisMonday.ToString("M/d");
 
             DrawingUtils.DrawTextBanner(spriteBatch, graphics, Arial, WeekString, Color.Red, Color.Black);
-            // Initialize Notebook Icon
-            if (Notebook == null)
-            {
-                Notebook = new ClickableTexture(Content.Load<Texture2D>("notebook_icon"),
-                    new Vector2(graphics.GraphicsDevice.Viewport.Width - 100, 20));
-            }
             Notebook.Draw(spriteBatch, graphics);
 
             // create calendar
-            if (Calendar == null)
-            {
-                Calendar = new Calendar(new Rectangle(110, 150, 960, 200), JustBreathe, ThisMonday);
-            }
             Calendar.Draw(spriteBatch, graphics);
 
             // Confirm activity to move on to the next day
-            Rectangle ActivityRect = new Rectangle(600, 400, 500, 300);
             DrawingUtils.DrawFilledRectangle(spriteBatch, graphics, ActivityRect, Color.Beige);
             DrawingUtils.DrawOpenRectangle(spriteBatch, graphics, ActivityRect, Color.DarkSlateBlue, 3);
 
             // Formulate Activity - "Today I will [blank] with [blank]"
             spriteBatch.DrawString(JustBreathe, "Today I will ...", new Vector2(ActivityRect.X, ActivityRect.Y), Color.Navy);
-
-            if (ActivitiesList == null)
-            {
-                Dictionary<string, string> Activities = new Dictionary<string, string>
-                {
-                    { "Have a tea party", "charm" },
-                    { "Fight a dragon", "courage"},
-                    { "Have a chat", "empathy" },
-                    { "Go to the library", "intelligence" },
-                    { "Pump iron", "strength" },
-                    { "Start a business", "money" }
-                };
-                ActivitiesList = new OptionsList(Activities, JustBreathe,
-                    new Rectangle(ActivityRect.X + 10,
-                    ActivityRect.Y + 30,
-                    ActivityRect.Width / 6,
-                    ActivityRect.Height));
-            }
             ActivitiesList.Draw(spriteBatch, graphics);
-
             spriteBatch.DrawString(JustBreathe, "with", new Vector2(ActivityRect.X + 250, ActivityRect.Y + 100), Color.Navy);
-
-            if (PeopleList == null)
-            {
-                Dictionary<string, string> People = Case.CharDict;
-                PeopleList = new OptionsList(People, JustBreathe,
-                    new Rectangle(ActivityRect.X + 4 * ActivityRect.Width / 6,
-                    ActivityRect.Y + 30,
-                    ActivityRect.Width / 6,
-                    ActivityRect.Height));
-            }
             PeopleList.Draw(spriteBatch, graphics);
 
-            // Add table for current Main Character stats
-            if (StatsTable == null)
-            {
-                string[] Aspects = new string[6] { "charm", "courage", "empathy", "intelligence", "strength", "money" };
-                StatsTable = new InfoTable(MainCharacter.Stats, Aspects, new Rectangle(110, 400, 200, 252), JustBreathe);
-                string[] People = Case.Suspects.Concat(Case.TestimonyOnly).ToArray();
-                RelTable = new InfoTable(MainCharacter.Relationships, People, new Rectangle(350, 400, 200, 252), JustBreathe);
-            }
+            // Add tables for current Main Character stats (need to find a different way to update them live 
+            string[] Aspects = new string[6] { "charm", "courage", "empathy", "intelligence", "strength", "money" };
+            StatsTable = new InfoTable(MainCharacter.Stats, Aspects, new Rectangle(110, 400, 200, 252), JustBreathe);
+            string[] People = Case.Suspects.Concat(Case.TestimonyOnly).ToArray();
+            RelTable = new InfoTable(MainCharacter.Relationships, People, new Rectangle(350, 400, 200, 252), JustBreathe);
             StatsTable.Draw(spriteBatch, graphics);
             RelTable.Draw(spriteBatch, graphics);
 
             if (GState == CalendarState.ConfirmActivity)
             {
-                if (ConfirmButton == null)
-                {
-                    ConfirmButton = new Button("Go!", JustBreathe,
-                        new Vector2(ActivityRect.X + ActivityRect.Width / 2, ActivityRect.Y + ActivityRect.Height - 50));
-                }
                 ConfirmButton.Draw(spriteBatch, graphics);
             }
         }

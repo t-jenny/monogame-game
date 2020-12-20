@@ -147,6 +147,7 @@ namespace GameDemo.Locations
             MainCharacter = mainCharacter;
             Content = content;
             IsTransitioning = false;
+            Point WindowSize = Game1.GetWindowSize();
 
             // Load Characters
             String CharPath = Path.Combine(Content.RootDirectory, "characters.txt");
@@ -164,7 +165,9 @@ namespace GameDemo.Locations
             Greetings = new Dictionary<string, string>();
 
             Notebook = Content.Load<Texture2D>("notebook_icon");
+            NotebookRect = new Rectangle(WindowSize.X - 100, 20, 70, 70);
             MapIcon = Content.Load<Texture2D>("map-icon");
+            MapIconRect = new Rectangle(WindowSize.X - 200, 20, 70, 70);
             GState = LocationState.Normal;
 
             Arial = content.Load<SpriteFont>("Fonts/Arial");
@@ -173,7 +176,7 @@ namespace GameDemo.Locations
             if (BGImagePath == "Castle")
             {
                 int NumSuspects = Case.Suspects.Count;
-                Vector2 CharPos = new Vector2(200, 400); // may want to customize position at a given location later
+                Vector2 CharPos = new Vector2(WindowSize.X / 6, WindowSize.Y / 2); // may want to customize position at a given location later
                 foreach (string Suspect in Case.Suspects)
                 {
                     Greetings[Suspect] = CharList.AllChars[Suspect].Greetings[0];
@@ -181,7 +184,7 @@ namespace GameDemo.Locations
                     CharPics[Suspect] = new ClickableTexture(CharTexture, CharPos);
                     if (!SpokenWith.ContainsKey(Suspect)) SpokenWith[Suspect] = false;
 
-                    CharPos.X += 900 / NumSuspects;
+                    CharPos.X += 0.75f * WindowSize.X / NumSuspects;
                 }  
             }
             /***** End Replace *****/
@@ -193,19 +196,12 @@ namespace GameDemo.Locations
         public void Update(GameEngine gameEngine, GameTime gameTime)
         {
             if (IsTransitioning) return;
+
             MouseState = Mouse.GetState();
 
             /*** Update components ***/
             SpeechMenu?.Update(gameTime);
             ConfirmMenu?.Update(gameTime);
-
-            if (GState == LocationState.Normal)
-            {
-                foreach (string CharName in CharPics.Keys)
-                {
-                    CharPics[CharName].Update();
-                }
-            }
 
             if (PrevMouseState.LeftButton == ButtonState.Pressed && MouseState.LeftButton == ButtonState.Released)
             {
@@ -216,7 +212,14 @@ namespace GameDemo.Locations
 
             switch (GState)
             {
-                case (LocationState.ConfirmedPerson):
+                case LocationState.Normal:
+                    foreach (string CharName in CharPics.Keys)
+                    {
+                        CharPics[CharName].Update();
+                    }
+                    break;
+
+                case LocationState.ConfirmedPerson:
                     gameEngine.Push(new InterviewManager(SelectedPersonName), true, true);
 
                     // Add an entry for the relationship when you meet a character.
@@ -227,13 +230,13 @@ namespace GameDemo.Locations
                     IsTransitioning = true;
                     break;
 
-                case (LocationState.ToNotebook):
+                case LocationState.ToNotebook:
                     int[] Null = new int[] { -1 };
                     gameEngine.Push(new NotebookManager(false, ref Null), true, true);
                     IsTransitioning = true;
                     break;
 
-                case (LocationState.ConfirmedReturn):
+                case LocationState.ConfirmedReturn:
                     gameEngine.Pop(true, true);
                     IsTransitioning = true;
                     break;
@@ -244,7 +247,7 @@ namespace GameDemo.Locations
 
         }
 
-        public void Draw(GameEngine gameEngine, SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
             // Background
             Background.Draw(spriteBatch, graphics);
@@ -252,18 +255,7 @@ namespace GameDemo.Locations
             // Banner
             String DateString = MainCharacter.GetDateTimeString() + " - " + BGImagePath;
             DrawingUtils.DrawTextBanner(spriteBatch, graphics, Arial, DateString, Color.Red, Color.Black);
-
-            // Banner Icons
-            if (NotebookRect.IsEmpty)
-            {
-                NotebookRect = new Rectangle(graphics.GraphicsDevice.Viewport.Width - 100, 20, 70, 70);
-            }
             spriteBatch.Draw(Notebook, NotebookRect, Color.White);
-
-            if (MapIconRect.IsEmpty)
-            {
-                MapIconRect = new Rectangle(graphics.GraphicsDevice.Viewport.Width - 200, 20, 70, 70);
-            }
             spriteBatch.Draw(MapIcon, MapIconRect, Color.White);
 
             // Draw Characters

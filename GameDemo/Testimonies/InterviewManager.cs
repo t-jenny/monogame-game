@@ -80,7 +80,7 @@ namespace GameDemo.Testimonies
             {
                 if (TestimonyId > -1 && TestimonyId == IdContradict[0])
                 {
-                    string Text = "%ost/gumshoe\nShucks, you got me! @redgeworth #disgusted\n+n: 100";
+                    string Text = "Shucks, you got me! @redgeworth #disgusted\n+n: 100";
                     TxtReader = new TxtReader(MainCharacter, Content, Text);
                     IsContradicted = true;
                 }
@@ -305,7 +305,7 @@ namespace GameDemo.Testimonies
             return Animation;
         }
 
-        public void Draw(GameEngine gameEngine, SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
             Background.Draw(spriteBatch, graphics);
             // Banner

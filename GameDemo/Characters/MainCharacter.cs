@@ -10,6 +10,8 @@ namespace GameDemo.Characters
         public int CurrentCase { get; set; } = 0;
         public Dictionary<string, int> Stats { get; set; }
         public Dictionary<string, int> Relationships { get; set; }
+        public List<Tuple<string, string>> Interviews { get; set; } // maybe make fixed length?
+
         public HashSet<string> EventFlags { get; set; }
         public HashSet<string> Journal { get; set; }
         public HashSet<string> Inventory { get; set; }

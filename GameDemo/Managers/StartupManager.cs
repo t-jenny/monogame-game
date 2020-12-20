@@ -100,21 +100,30 @@ namespace GameDemo.Startup
         public void Reset(GameEngine gameEngine, MainCharacter mainCharacter, ContentManager content)
         {
             content.Unload();
+
             MainCharacter = mainCharacter;
             Content = content;
             Arial = content.Load<SpriteFont>("Fonts/Arial");
 
-            /* Should go in StartMenuManager */
+            // Initialize buttons
             StartButtonImg = Content.Load<Texture2D>("start");
             ExitButtonImg = Content.Load<Texture2D>("exit");
+            LoadingTxt = Content.Load<Texture2D>("loading");
+
+            float StartX = (Game1.GetWindowSize().X / 2) - (StartButtonImg.Width / 2);
+            float StartY = Game1.GetWindowSize().Y / 3;
+            float ExitX = (Game1.GetWindowSize().X / 2) - (ExitButtonImg.Width / 2);
+            float ExitY = 2 * Game1.GetWindowSize().Y / 3;
+            float LoadingX = (Game1.GetWindowSize().X / 2) - (LoadingTxt.Width / 2);
+            float LoadingY = (Game1.GetWindowSize().Y / 2) - (LoadingTxt.Height / 2);
+
+            StartButton = new ClickableTexture(StartButtonImg, new Vector2(StartX, StartY));
+            ExitButton = new ClickableTexture(ExitButtonImg, new Vector2(ExitX, ExitY));
+            LoadingTxtPos = new Vector2(LoadingX, LoadingY);
 
             // important to reset these components to null when the manager is reloaded
-            StartButton = null;
-            ExitButton = null;
             KeyboardInputMenu = null;
-            CountdownTimer = null; // remove later
 
-            LoadingTxt = Content.Load<Texture2D>("loading");
             GState = StartupState.StartMenu;
 
             MouseState = Mouse.GetState();
@@ -138,7 +147,6 @@ namespace GameDemo.Startup
                 ExitButton?.Update();
             }
             KeyboardInputMenu?.Update(gameTime);
-            CountdownTimer?.Update(gameTime);
 
             MouseState = Mouse.GetState();
             if (PrevMouseState.LeftButton == ButtonState.Pressed && MouseState.LeftButton == ButtonState.Released)
@@ -151,38 +159,15 @@ namespace GameDemo.Startup
             if (GState == StartupState.Playing && IsLoading)
             {
                 LoadGame(gameEngine);
-
                 IsLoading = false;
             }
         }
 
-        public void Draw(GameEngine gameEngine, SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
-        {
-            // Start Button, Exit Button, and Loading Text
-            if (StartButton == null)
-            {
-                float StartX = (graphics.GraphicsDevice.Viewport.Width / 2) - (StartButtonImg.Width / 2);
-                float StartY = graphics.GraphicsDevice.Viewport.Height / 3;
-                float ExitX = (graphics.GraphicsDevice.Viewport.Width / 2) - (ExitButtonImg.Width / 2);
-                float ExitY = 2 * graphics.GraphicsDevice.Viewport.Height / 3;
-                float LoadingX = (graphics.GraphicsDevice.Viewport.Width / 2) - (LoadingTxt.Width / 2);
-                float LoadingY = (graphics.GraphicsDevice.Viewport.Height / 2) - (LoadingTxt.Height / 2);
-
-                StartButton = new ClickableTexture(StartButtonImg, new Vector2(StartX, StartY));
-                ExitButton = new ClickableTexture(ExitButtonImg, new Vector2(ExitX, ExitY));
-                LoadingTxtPos = new Vector2(LoadingX, LoadingY);
-
-                // countdown timer - remove later
-                float CountdownX = 0.0f;
-                float CountdownY = 0.0f;
-                CountdownTimer = new CountdownTimer(Arial, 1, 0, new Vector2(CountdownX, CountdownY));
-            }
-
-            
+        public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        {   
             if (GState != StartupState.Loading) {
                 StartButton.Draw(spriteBatch, graphics);
                 ExitButton.Draw(spriteBatch, graphics);
-                CountdownTimer.Draw(spriteBatch); // remove later
                 if (GState == StartupState.EnterName && KeyboardInputMenu != null)
                 {
                     KeyboardInputMenu.Draw(spriteBatch, graphics);
@@ -193,6 +178,5 @@ namespace GameDemo.Startup
                 spriteBatch.Draw(LoadingTxt, LoadingTxtPos, Color.YellowGreen);
             }
         }
-
     }
 }

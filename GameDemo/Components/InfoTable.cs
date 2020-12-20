@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using GameDemo.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,14 +9,18 @@ namespace GameDemo.Components
 {
     public class InfoTable
     {
-        private Dictionary<string, int> InfoDict;
+        private Dictionary<string, string> InfoDict;
         private readonly string[] Aspects;
         private Rectangle Rect;
         private SpriteFont Font;
 
         public InfoTable(Dictionary<string, int> dict, string[] aspects, Rectangle rect, SpriteFont font)
         {
-            InfoDict = dict;
+            InfoDict = new Dictionary<string, string>();
+            foreach (string Key in dict.Keys)
+            {
+                InfoDict[Key] = dict[Key].ToString();
+            }
             Aspects = aspects;
             Rect = rect;
             Font = font;
@@ -36,7 +41,7 @@ namespace GameDemo.Components
                 DrawingUtils.DrawOpenRectangle(spriteBatch, graphics, ValueRect, Color.Black, 2);
                 if (InfoDict.ContainsKey(Aspects[i]))
                 {
-                    spriteBatch.DrawString(Font, InfoDict[Aspects[i]].ToString(),
+                    spriteBatch.DrawString(Font, InfoDict[Aspects[i]],
                         new Vector2(ValueRect.X + 5.0f, ValueRect.Y + 5.0f), Color.Black);
                 }
                 StatRect.Y += StatRect.Height;

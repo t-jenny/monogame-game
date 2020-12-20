@@ -159,6 +159,8 @@ namespace GameDemo.Map
                 LocationBoxes.Add(Name, LocBox);
             }
 
+            NotebookRect = new Rectangle(Game1.GetWindowSize().X - 100, 20, 70, 70);
+
             MouseState = Mouse.GetState();
             PrevMouseState = MouseState;
         }
@@ -201,7 +203,7 @@ namespace GameDemo.Map
             PrevMouseState = MouseState;
         }
 
-        public void Draw(GameEngine gameEngine, SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
             // Background
             Background.Draw(spriteBatch, graphics);
@@ -210,12 +212,6 @@ namespace GameDemo.Map
             string DateString = MainCharacter.GetDateTimeString();
             DateString += " - Carpe Diem!";
             DrawingUtils.DrawTextBanner(spriteBatch, graphics, Arial, DateString, Color.Red, Color.Black);
-
-            // Notebook Icon
-            if (NotebookRect.IsEmpty)
-            {
-                NotebookRect = new Rectangle(graphics.GraphicsDevice.Viewport.Width - 100, 20, 70, 70);
-            }
             spriteBatch.Draw(Notebook, NotebookRect, Color.White);
 
             // Place Labels
@@ -232,7 +228,7 @@ namespace GameDemo.Map
             Textbox.Draw(spriteBatch, graphics);
 
             // Location Info Menu if place is clicked
-            if (GState == MapState.Selected && LocationMenu != null) {
+            if (GState == MapState.Selected) {
                 LocationMenu.Draw(spriteBatch, graphics);
             }
         }

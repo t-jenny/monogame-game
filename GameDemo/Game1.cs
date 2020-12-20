@@ -25,6 +25,7 @@ namespace GameDemo
         private static bool IsQuitting = false;
 
         private static GameEngine MainEngine = null;
+        private static Point WindowSize;
 
         public Game1()
         {
@@ -37,10 +38,10 @@ namespace GameDemo
 
         protected override void Initialize()
         {
-
             Graphics.PreferredBackBufferWidth = DEFAULT_WIDTH;
             Graphics.PreferredBackBufferHeight = DEFAULT_HEIGHT;
             Graphics.ApplyChanges();
+            WindowSize = new Point(Graphics.GraphicsDevice.Viewport.Width, Graphics.GraphicsDevice.Viewport.Height);
 
             String path = Path.Combine(Content.RootDirectory, "savedata.txt");
             String LoadDataJSON = File.ReadAllText(path);
@@ -87,6 +88,11 @@ namespace GameDemo
         public static void QuitGame()
         {
             IsQuitting = true;
+        }
+
+        public static Point GetWindowSize()
+        {
+            return WindowSize;
         }
 
     }
