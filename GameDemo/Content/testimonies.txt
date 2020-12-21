@@ -2,7 +2,8 @@
     "Topics" : {
         "The Attack" : "attack",
         "That Day" : "thatday",
-        "The Princess" : "princess"
+        "The Princess" : "princess",
+        "Shucks" : "shucks"
     },
     "Testimonies" : [
         {
@@ -14,7 +15,8 @@
             "Text" : "Hmmm, I remember dinner that day had been delayed for some reason, so I went down to the kitchen to talk to our head chef, Mr. Tomazzi.  When I got there, pots were bubbling, kettles were steaming, but he was nowhere to be seen.  I remember thinking that that was really weird because Mr. Tomazzi is careful never to leave the fire unattended. I also remember hearing the Princess yelling at someone in her room that morning.",
             "EndPadding" : "She must have been pretty upset because the Princess is not one to raise her voice.",
             "SpokenText" : "%ost/gumshoe\nSo can you tell me about that day? @lphoenix #talking\nHmmm, I remember dinner that day had been delayed for @redgeworth #disgusted\nsome reason, so I went down to the kitchen to talk to our @redgeworth #standing\nhead chef, Mr. Tomazzi. @redgeworth #disgusted\nWhen I got there, pots were bubbling, @redgeworth #standing\nkettles were steaming, but he was nowhere to be seen. @redgeworth #disgusted\nI remember thinking that that was really weird @redgeworth #standing\nbecause Mr. Tomazzi is careful never to leave the fire unattended. @redgeworth #disgusted\nI also remember hearing the Princess yelling at @redgeworth #disgusted\nsomeone in her room that morning. @redgeworth #standing\nI see, ok, thanks! @lphoenix #talking\n+n: 0",
-            "IdContradict" : 2
+            "IdContradict" : 2,
+            "PrevId" : -1
         },
         {
             "Id" : 1,
@@ -25,7 +27,8 @@
             "Text" : "The last time I saw the Princess that day before the attack was earlier near the Science Lab.  There was a loud explosion, which is pretty common from that wing of the palace, and Princess Poppy and Lady Portia rushed out coughing.",
             "EndPadding" : "",
             "SpokenText" : "",
-            "IdContradict" : -1
+            "IdContradict" : -1,
+            "PrevId" : -1
         },
         {
             "Id" : 2,
@@ -36,7 +39,8 @@
             "Text" : "At the time of the attack, I was coming from the kitchen to inform Princess Poppy that dinner was delayed when I found Lady Portia in the East Corridor holding the unconscious Princess.",
             "EndPadding" : "",
             "SpokenText" : "",
-            "IdContradict" : -1
+            "IdContradict" : -1,
+            "PrevId" : -1
         },
         {
             "Id" : 3,
@@ -44,10 +48,11 @@
             "TopicTag" : "princess",
             "IsInitial" : true,
             "FrontPadding" : "",
-            "Text" : "This contradict's Ms. Blush's comments about that day.",
+            "Text" : "This testimony contradicts Ms. Blush's comments about that day.",
             "EndPadding" : "",
-            "SpokenText" : "",
-            "IdContradict" : 0
+            "SpokenText" : "%ost/gumshoe\nSo can you tell me about the princess? @lphoenix #talking\nAll I know is this testimony contradicts Ms. Blush's comments @redgeworth #standing\nabout that day. @redgeworth #standing\n+n: 0",
+            "IdContradict" : 0,
+            "PrevId" : -1
         },
         {
             "Id" : 4,
@@ -58,7 +63,8 @@
             "Text" : "Dinner was delayed that day because the errand boy knocked a pot out of my hands, and we had to restart the soup! I had to run out because I'd used the last of my special secret ingredient, you see.",
             "EndPadding" : "",
             "SpokenText" : "",
-            "IdContradict" : -1
+            "IdContradict" : -1,
+            "PrevId" : -1
         },
         {
             "Id" : 5,
@@ -69,7 +75,20 @@
             "Text" : "I was sick in my room.",
             "EndPadding" : "",
             "SpokenText" : "",
-            "IdContradict" : -1
+            "IdContradict" : -1,
+            "PrevId" : -1
+        },
+        {
+            "Id" : 6,
+            "CharacterKey" : "blush",
+            "TopicTag" : "shucks",
+            "IsInitial" : false,
+            "FrontPadding" : "",
+            "Text" : "Shucks, you got me! I guess I'm guilty.",
+            "EndPadding" : "",
+            "SpokenText" : "Shucks, you got me! I guess I'm guilty. @redgeworth #disgusted\n+n: 0",
+            "IdContradict" : -1,
+            "PrevId" : 0
         }
     ]
 }

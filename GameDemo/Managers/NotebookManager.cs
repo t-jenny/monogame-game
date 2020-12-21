@@ -197,6 +197,12 @@ namespace GameDemo.Notebook
             string DateString = MainCharacter.GetDateTimeString();
             DrawingUtils.DrawTextBanner(spriteBatch, graphics, Arial, DateString, Color.Red, Color.Black);
             spriteBatch.Draw(ReturnIcon, ReturnIconRect, Color.White);
+            if (SeekingTestimony)
+            {
+                Rectangle InstructionRect = new Rectangle(Game1.GetWindowSize().X / 2, 20, Game1.GetWindowSize().X / 4, (int) TextOffset.Y * 2);
+                DrawingUtils.DrawFilledRectangle(spriteBatch, graphics, InstructionRect, Color.Beige);
+                spriteBatch.DrawString(JustBreathe, "Select a testimony", new Vector2(InstructionRect.X + 10, InstructionRect.Y + 10), Color.Black);
+            }
 
             // Notebook Pages
             DrawLeftPage(spriteBatch, graphics);
@@ -350,7 +356,13 @@ namespace GameDemo.Notebook
 
                     if (TopicOptionsList == null)
                     {
-                        TopicOptionsList = new OptionsList(TestimonyList.Topics, JustBreathe, (TextPosLeft += TextOffset).ToPoint());
+                        HashSet<string> TopicTags = (from testimony in TestimonyList.Testimonies
+                                               where MainCharacter.TestimonyIds.Contains(testimony.Id)
+                                               select testimony.TopicTag).ToHashSet();
+                        Dictionary<string, string> Topics = (from topic in TestimonyList.Topics
+                                                             where TopicTags.Contains(topic.Value)
+                                                             select topic).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                        TopicOptionsList = new OptionsList(Topics, JustBreathe, (TextPosLeft += TextOffset).ToPoint());
                     }
                     TopicOptionsList.Draw(spriteBatch, graphics);
                     break;
@@ -409,12 +421,13 @@ namespace GameDemo.Notebook
                 case NotebookState.Testimonies:
                 case NotebookState.SelectedTestimony:
 
-                    // must select a character and a topic to view testimony
+                    // must select a character and a topic to view testimony. Only previously heard testimonies will appear
                     if (TopicOptionsList.SelectedOption != null && MainOptionsList?.SelectedOption != null)
                     {
                         List<Testimony> Testimonies = (from testimony in TestimonyList.Testimonies
-                                                       where testimony.TopicTag == TopicOptionsList?.SelectedOption &&
-                                                       testimony.CharacterKey == MainOptionsList?.SelectedOption
+                                                       where testimony.TopicTag == TopicOptionsList.SelectedOption &&
+                                                       testimony.CharacterKey == MainOptionsList.SelectedOption &&
+                                                       MainCharacter.TestimonyIds.Contains(testimony.Id)
                                                        select testimony).ToList();
 
                         if (Testimonies.Count > 0)
@@ -426,8 +439,11 @@ namespace GameDemo.Notebook
 
                         if (SeekingTestimony)
                         {
-                            SelectTestimonyButton = new Button("Select", JustBreathe25,
-                                TextPosRight + new Vector2(0, OpenNotebookRect.Height - 50));
+                            if (SelectTestimonyButton == null)
+                            {
+                                SelectTestimonyButton = new Button("Select", JustBreathe25,
+                                    TextPosRight + new Vector2(0, OpenNotebookRect.Height - 50)); 
+                            }
                             SelectTestimonyButton.Draw(spriteBatch, graphics);
                         }
                     }

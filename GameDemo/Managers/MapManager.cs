@@ -126,14 +126,7 @@ namespace GameDemo.Map
             Notebook = Content.Load<Texture2D>("notebook_icon");
             Textbox = new TextBox(content, "Where do ya wanna go today, " + MainCharacter.Name + "?");
 
-            if (MainCharacter.GetDate().DayOfWeek.ToString() == "Monday")
-            {
-                GState = MapState.ToCalendar;
-            }
-            else
-            {
-                GState = MapState.Normal;
-            }
+            GState = MapState.Normal;
 
             Arial = content.Load<SpriteFont>("Fonts/Arial");
 

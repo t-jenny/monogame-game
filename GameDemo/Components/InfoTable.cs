@@ -44,6 +44,11 @@ namespace GameDemo.Components
                     spriteBatch.DrawString(Font, InfoDict[Aspects[i]],
                         new Vector2(ValueRect.X + 5.0f, ValueRect.Y + 5.0f), Color.Black);
                 }
+                else
+                {
+                    spriteBatch.DrawString(Font, "0",
+                        new Vector2(ValueRect.X + 5.0f, ValueRect.Y + 5.0f), Color.Black);
+                }
                 StatRect.Y += StatRect.Height;
                 ValueRect.Y += ValueRect.Height;
             }

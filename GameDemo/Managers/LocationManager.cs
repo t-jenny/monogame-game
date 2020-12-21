@@ -19,7 +19,6 @@ namespace GameDemo.Locations
 {
     public class SpeechMenu : PopupMenu
     {
-
         public SpeechMenu(string greeting, Rectangle person, ContentManager content, SpriteFont font) : base(content, font)
         {
             StaticText = greeting;
@@ -44,8 +43,10 @@ namespace GameDemo.Locations
         private Rectangle NotebookRect;
         private Texture2D MapIcon;
         private Rectangle MapIconRect;
+        private Rectangle IntervieweeListRect;
 
         private SpriteFont Arial;
+        private AllCharacters CharList;
 
         private MouseState MouseState;
         private MouseState PrevMouseState;
@@ -55,8 +56,11 @@ namespace GameDemo.Locations
         private string SelectedPersonName;
         private Dictionary<string, ClickableTexture> CharPics;
         private Dictionary<string, string> Greetings;
-        private Dictionary<string, bool> SpokenWith;
+        private List<string> Interviewees;
         private bool IsTransitioning;
+
+        private Vector2 TextOffset;
+        private const int MaxInterviewees = 3;
 
         private SpeechMenu SpeechMenu;
         private ConfirmMenu ConfirmMenu;
@@ -71,77 +75,22 @@ namespace GameDemo.Locations
             ConfirmedReturn
         }
 
-        private void MouseClicked(MouseState mouseState)
-        {
-            Point MouseClick = new Point(mouseState.X, mouseState.Y);
-            Rectangle MouseClickRect = new Rectangle(MouseClick, new Point(10, 10));
-
-            switch (GState)
-            {
-                // If nothing selected, check whether location was selected
-                case LocationState.Normal:
-                    foreach (string CharName in CharPics.Keys)
-                    {
-                        if (MouseClickRect.Intersects(CharPics[CharName].Rect))
-                        {
-                            GState = LocationState.ClickedPerson;
-                            SpeechMenu = new SpeechMenu(Greetings[CharName], CharPics[CharName].Rect, Content, Arial);
-                            if (SpokenWith[CharName]) SpeechMenu.DisableButton(SpeechMenu.ConfirmButtonText);
-                            SelectedPersonName = CharName;
-                        }
-                    }
-                    if (MouseClickRect.Intersects(NotebookRect))
-                    {
-                        GState = LocationState.ToNotebook;
-                    }
-                    if (MouseClickRect.Intersects(MapIconRect))
-                    {
-                        GState = LocationState.ClickedReturn;
-                        string query = "Are you sure you're done exploring for now?";
-                        ConfirmMenu = new ConfirmMenu(query, Content, Arial);
-                    }
-                    break;
-
-                case LocationState.ClickedPerson:
-                    if (SpeechMenu.IsCancelling(MouseClickRect))
-                    {
-                        GState = LocationState.Normal;
-                        SpeechMenu = null;
-                    }
-                    else if (SpeechMenu.IsConfirming(MouseClickRect))
-                    {
-                        GState = LocationState.ConfirmedPerson;
-                        SpokenWith[SelectedPersonName] = true;
-                        SpeechMenu = null;
-                    }
-                    break;
-
-                case LocationState.ClickedReturn:
-                    if (ConfirmMenu.IsCancelling(MouseClickRect))
-                    {
-                        GState = LocationState.Normal;
-                        ConfirmMenu = null;
-                    }
-                    else if (ConfirmMenu.IsConfirming(MouseClickRect))
-                    {
-                        GState = LocationState.ConfirmedReturn;
-                        ConfirmMenu = null;
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
         public LocationManager(string pathName)
         {
             BGImagePath = pathName;
-            SpokenWith = new Dictionary<string, bool>(); 
+            Interviewees = new List<string>();
         }
 
         public void Reset(GameEngine gameEngine, MainCharacter mainCharacter, ContentManager content)
         {
+            if (Interviewees.Count == MaxInterviewees)
+            {
+                GState = LocationState.ConfirmedReturn;
+            }
+            else
+            {
+                GState = LocationState.Normal;
+            }
             content.Unload();
 
             MainCharacter = mainCharacter;
@@ -152,7 +101,7 @@ namespace GameDemo.Locations
             // Load Characters
             String CharPath = Path.Combine(Content.RootDirectory, "characters.txt");
             String CharJSON = File.ReadAllText(CharPath);
-            AllCharacters CharList = JsonSerializer.Deserialize<AllCharacters>(CharJSON);
+            CharList = JsonSerializer.Deserialize<AllCharacters>(CharJSON);
 
             // Load Case Info
             String CasePath = Path.Combine(Content.RootDirectory, "case" + MainCharacter.CurrentCase + ".txt");
@@ -168,26 +117,22 @@ namespace GameDemo.Locations
             NotebookRect = new Rectangle(WindowSize.X - 100, 20, 70, 70);
             MapIcon = Content.Load<Texture2D>("map-icon");
             MapIconRect = new Rectangle(WindowSize.X - 200, 20, 70, 70);
-            GState = LocationState.Normal;
 
             Arial = content.Load<SpriteFont>("Fonts/Arial");
             SpeechMenu = null;
 
-            if (BGImagePath == "Castle")
+            int NumSuspects = Case.Suspects.Count;
+            Vector2 CharPos = new Vector2(WindowSize.X / 6, WindowSize.Y / 3); // may want to customize position at a given location later
+            foreach (string Suspect in Case.Suspects)
             {
-                int NumSuspects = Case.Suspects.Count;
-                Vector2 CharPos = new Vector2(WindowSize.X / 6, WindowSize.Y / 2); // may want to customize position at a given location later
-                foreach (string Suspect in Case.Suspects)
-                {
-                    Greetings[Suspect] = CharList.AllChars[Suspect].Greetings[0];
-                    Texture2D CharTexture = Content.Load<Texture2D>(CharList.AllChars[Suspect].ImagePath);
-                    CharPics[Suspect] = new ClickableTexture(CharTexture, CharPos);
-                    if (!SpokenWith.ContainsKey(Suspect)) SpokenWith[Suspect] = false;
-
-                    CharPos.X += 0.75f * WindowSize.X / NumSuspects;
-                }  
+                Greetings[Suspect] = CharList.AllChars[Suspect].Greetings[0];
+                Texture2D CharTexture = Content.Load<Texture2D>(CharList.AllChars[Suspect].ImagePath);
+                CharPics[Suspect] = new ClickableTexture(CharTexture, CharPos);
+                CharPos.X += 0.75f * WindowSize.X / NumSuspects;
             }
-            /***** End Replace *****/
+            IntervieweeListRect = new Rectangle(WindowSize.X / 4, 2 * WindowSize.Y / 3, WindowSize.X / 2, WindowSize.Y / 4);
+
+            TextOffset = new Vector2(0, Arial.MeasureString("A").Y);
 
             MouseState = Mouse.GetState();
             PrevMouseState = MouseState;
@@ -264,6 +209,18 @@ namespace GameDemo.Locations
                 CharPics[CharName].Draw(spriteBatch, graphics);
             }
 
+            // Draw Interviewee List
+            DrawingUtils.DrawFilledRectangle(spriteBatch, graphics, IntervieweeListRect, Color.Beige);
+            DrawingUtils.DrawOpenRectangle(spriteBatch, graphics, IntervieweeListRect, Color.Maroon, 3);
+            Vector2 TextPos = new Vector2(IntervieweeListRect.X + 10, IntervieweeListRect.Y + 10);
+            for (int i = 0; i < MaxInterviewees; i++)
+            {
+                string Name = "";
+                if (Interviewees.Count > i) Name = CharList.AllChars[Interviewees[i]].Name;
+                spriteBatch.DrawString(Arial, (i + 1) + ". " + Name, TextPos, Color.Black) ;
+                TextPos += TextOffset;
+            }
+
             // Speech Menu if place is clicked
             if (GState == LocationState.ClickedPerson && SpeechMenu != null)
             {
@@ -274,6 +231,68 @@ namespace GameDemo.Locations
             if (GState == LocationState.ClickedReturn && ConfirmMenu != null)
             {
                 ConfirmMenu.Draw(spriteBatch, graphics);
+            }
+        }
+
+        private void MouseClicked(MouseState mouseState)
+        {
+            Point MouseClick = new Point(mouseState.X, mouseState.Y);
+            Rectangle MouseClickRect = new Rectangle(MouseClick, new Point(10, 10));
+
+            switch (GState)
+            {
+                // If nothing selected, check whether location was selected
+                case LocationState.Normal:
+                    foreach (string CharName in CharPics.Keys)
+                    {
+                        if (MouseClickRect.Intersects(CharPics[CharName].Rect))
+                        {
+                            GState = LocationState.ClickedPerson;
+                            SpeechMenu = new SpeechMenu(Greetings[CharName], CharPics[CharName].Rect, Content, Arial);
+                            SelectedPersonName = CharName;
+                        }
+                    }
+                    if (MouseClickRect.Intersects(NotebookRect))
+                    {
+                        GState = LocationState.ToNotebook;
+                    }
+                    if (MouseClickRect.Intersects(MapIconRect))
+                    {
+                        GState = LocationState.ClickedReturn;
+                        string query = "Are you sure you're done exploring for now?";
+                        ConfirmMenu = new ConfirmMenu(query, Content, Arial);
+                    }
+                    break;
+
+                case LocationState.ClickedPerson:
+                    if (SpeechMenu.IsCancelling(MouseClickRect))
+                    {
+                        GState = LocationState.Normal;
+                        SpeechMenu = null;
+                    }
+                    else if (SpeechMenu.IsConfirming(MouseClickRect))
+                    {
+                        GState = LocationState.ConfirmedPerson;
+                        Interviewees.Add(SelectedPersonName);
+                        SpeechMenu = null;
+                    }
+                    break;
+
+                case LocationState.ClickedReturn:
+                    if (ConfirmMenu.IsCancelling(MouseClickRect))
+                    {
+                        GState = LocationState.Normal;
+                        ConfirmMenu = null;
+                    }
+                    else if (ConfirmMenu.IsConfirming(MouseClickRect))
+                    {
+                        GState = LocationState.ConfirmedReturn;
+                        ConfirmMenu = null;
+                    }
+                    break;
+
+                default:
+                    break;
             }
         }
     }

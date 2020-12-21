@@ -10,7 +10,7 @@ namespace GameDemo.Characters
         public int CurrentCase { get; set; } = 0;
         public Dictionary<string, int> Stats { get; set; }
         public Dictionary<string, int> Relationships { get; set; }
-        public List<Tuple<string, string>> Interviews { get; set; } // maybe make fixed length?
+        public HashSet<int> TestimonyIds { get; set; }
 
         public HashSet<string> EventFlags { get; set; }
         public HashSet<string> Journal { get; set; }
@@ -23,6 +23,7 @@ namespace GameDemo.Characters
             EventFlags = new HashSet<string>();
             Journal = new HashSet<string>();
             Inventory = new HashSet<string>();
+            TestimonyIds = new HashSet<int>();
         }
 
         public void NextTimeBlock()

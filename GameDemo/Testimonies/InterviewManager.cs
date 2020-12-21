@@ -76,12 +76,21 @@ namespace GameDemo.Testimonies
             {
                 if (TestimonyId > -1 && TestimonyId == IdContradict[0])
                 {
-                    string Text = "Shucks, you got me! @redgeworth #disgusted\n+n: 100";
+                    Testimony NextTestimony = (from testimony in TestimonyList.Testimonies
+                                               where testimony.PrevId == TestimonyId
+                                               select testimony).ToList()[0];
+                    string Text = NextTestimony.SpokenText;
                     TxtReader = new TxtReader(MainCharacter, Content, Text);
+                    TestimonyId = NextTestimony.Id;
                     IsContradicted = true;
                 }
+                else if (IdContradict[0] > -1)
+                {  
+                    string Text = "%ost/gumshoe\nExcuse me, what are you suggesting?? @redgeworth #disgusted\n+n: 100";
+                    TxtReader = new TxtReader(MainCharacter, Content, Text);
+                }
                 GState = InterviewState.PlayText;
-                Background = new Background(content, "witnessempty");
+                Background = new Background(Content, "witnessempty");
                 IsTransitioning = false;
                 return;
             }
@@ -98,7 +107,8 @@ namespace GameDemo.Testimonies
 
             IsTransitioning = false;
             Arial = Content.Load<SpriteFont>("Fonts/Arial");
-            ContradictButton = null;
+            ContradictButton = new ClickableTexture(Content.Load<Texture2D>("notebook_icon"),
+                new Vector2(Game1.GetWindowSize().X - 100, 20));
             TopicButtons = new List<Button>();
 
             this.EndOfLine = false;
@@ -110,10 +120,17 @@ namespace GameDemo.Testimonies
             TestimonyList = JsonSerializer.Deserialize<TestimonyList>(TestimonyJSON);
 
             Vector2 TopicPos = new Vector2(500, 450);
-            foreach (string Topic in TestimonyList.Topics.Keys)
+            HashSet<string> TopicTags = (from testimony in TestimonyList.Testimonies
+                                         where testimony.IsInitial ||
+                                         (MainCharacter.TestimonyIds.Contains(testimony.Id) && testimony.CharacterKey == CharacterKey)
+                                         select testimony.TopicTag).ToHashSet();
+            Dictionary<string, string> Topics = (from topic in TestimonyList.Topics
+                                                 where TopicTags.Contains(topic.Value)
+                                                 select topic).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            foreach (string Topic in Topics.Keys)
             {
                 TopicButtons.Add(new Button(Topic, Arial, TopicPos));
-               TopicPos.Y += 75;
+                TopicPos.Y += 75;
             }
             TopicButtons.Add(new Button("Bye!", Arial, TopicPos));
 
@@ -222,6 +239,8 @@ namespace GameDemo.Testimonies
             {
                 GState = (!IsContradicted) ? InterviewState.TopicChoice : InterviewState.Exiting;
                 TxtReader = null;
+                // if MainCharacter had not heard this testimony, add to notebook
+                MainCharacter.TestimonyIds.Add(TestimonyId);
             }
             else
             {
@@ -269,19 +288,16 @@ namespace GameDemo.Testimonies
                     {
                         List<Testimony> Testimony = (from testimony in TestimonyList.Testimonies
                                                where testimony.TopicTag == SelectedTopic &&
-                                               testimony.CharacterKey == CharacterKey
+                                               testimony.CharacterKey == CharacterKey &&
+                                               (testimony.IsInitial || MainCharacter.TestimonyIds.Contains(testimony.Id))
                                                select testimony).ToList();
 
                         string Text = "%ost/gumshoe\nCan I talk to you about something? @lphoenix #talking\nI don't have any information. @redgeworth #disgusted\nOk no problem. @lphoenix #talking\n+n: 100";
                         TestimonyId = -1;
 
-                        if (Testimony.Count > 0)
-                        {
-                            TestimonyId = Testimony[0].Id;
-                        }
-
                         if (Testimony.Count > 0 && !Testimony[0].SpokenText.Equals(string.Empty)) {
                             Text = Testimony[0].SpokenText;
+                            TestimonyId = Testimony[0].Id;
                         }
 
                         TxtReader = new TxtReader(MainCharacter, Content, Text);
@@ -338,11 +354,7 @@ namespace GameDemo.Testimonies
                     return;
                 }
 
-                if (ContradictButton == null)
-                {
-                    ContradictButton = new ClickableTexture(Content.Load<Texture2D>("notebook_icon"),
-                        new Vector2(graphics.GraphicsDevice.Viewport.Width - 100, 20));
-                }
+                // Contradict icon is just notebook icon for now
                 ContradictButton.Draw(spriteBatch, graphics);
 
                 if (PriorCharacterAnimation != null)
