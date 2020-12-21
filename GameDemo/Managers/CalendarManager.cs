@@ -53,52 +53,6 @@ namespace GameDemo.Managers
             ToNotebook
         }
 
-        /* MouseClick Handler for Start Menu */
-        private void MouseClicked(int x, int y)
-        {
-            Rectangle mouseClickRect = new Rectangle(x, y, 10, 10);
-
-            switch (GState)
-            {
-                case CalendarState.ConfirmActivity:
-                    if (mouseClickRect.Intersects(ConfirmButton.Rect))
-                    {
-                        // Later on there will be more complicated effects, keeping basic
-                        if (!MainCharacter.Stats.ContainsKey(ActivitiesList.SelectedOption))
-                        {
-                            MainCharacter.Stats[ActivitiesList.SelectedOption] = 1;
-                        }
-                        else MainCharacter.Stats[ActivitiesList.SelectedOption]++;
-
-                        if (!MainCharacter.Relationships.ContainsKey(PeopleList.SelectedOption))
-                        {
-                            MainCharacter.Relationships[PeopleList.SelectedOption] = 1;
-                        }
-                        else MainCharacter.Relationships[PeopleList.SelectedOption]++;
-
-                        Calendar.AddEntry(ActivitiesList.SelectedLabel + " with " + PeopleList.SelectedLabel);
-                        GState = CalendarState.NextDay;
-                        Calendar.MoveDay();
-                    }
-
-                    if (mouseClickRect.Intersects(Notebook.Rect))
-                    {
-                        GState = CalendarState.ToNotebook;
-                    }
-                    break;
-
-                case CalendarState.ActivityChoice:
-                    if (mouseClickRect.Intersects(Notebook.Rect))
-                    {
-                        GState = CalendarState.ToNotebook;
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
         public CalendarManager()
         {
             IsTransitioning = false;
@@ -142,16 +96,10 @@ namespace GameDemo.Managers
                     { "Start a business", "money" }
                 };
             ActivitiesList = new OptionsList(Activities, JustBreathe,
-                new Rectangle(ActivityRect.X + 10,
-                ActivityRect.Y + 30,
-                ActivityRect.Width / 6,
-                ActivityRect.Height));
+                new Point(ActivityRect.X + 10, ActivityRect.Y + 30));
 
             PeopleList = new OptionsList(Case.CharDict, JustBreathe,
-                new Rectangle(ActivityRect.X + 4 * ActivityRect.Width / 6,
-                ActivityRect.Y + 30,
-                ActivityRect.Width / 6,
-                ActivityRect.Height));
+                new Point(ActivityRect.X + 4 * ActivityRect.Width / 6, ActivityRect.Y + 30));
 
             // important to reset these components to null when the manager is reloaded
             ConfirmButton = null;
@@ -266,6 +214,52 @@ namespace GameDemo.Managers
             if (GState == CalendarState.ConfirmActivity)
             {
                 ConfirmButton.Draw(spriteBatch, graphics);
+            }
+        }
+
+        /* MouseClick Handler */
+        private void MouseClicked(int x, int y)
+        {
+            Rectangle mouseClickRect = new Rectangle(x, y, 10, 10);
+
+            switch (GState)
+            {
+                case CalendarState.ConfirmActivity:
+                    if (mouseClickRect.Intersects(ConfirmButton.Rect))
+                    {
+                        // Later on there will be more complicated effects, keeping basic
+                        if (!MainCharacter.Stats.ContainsKey(ActivitiesList.SelectedOption))
+                        {
+                            MainCharacter.Stats[ActivitiesList.SelectedOption] = 1;
+                        }
+                        else MainCharacter.Stats[ActivitiesList.SelectedOption]++;
+
+                        if (!MainCharacter.Relationships.ContainsKey(PeopleList.SelectedOption))
+                        {
+                            MainCharacter.Relationships[PeopleList.SelectedOption] = 1;
+                        }
+                        else MainCharacter.Relationships[PeopleList.SelectedOption]++;
+
+                        Calendar.AddEntry(ActivitiesList.SelectedLabel + " with " + PeopleList.SelectedLabel);
+                        GState = CalendarState.NextDay;
+                        Calendar.MoveDay();
+                    }
+
+                    if (mouseClickRect.Intersects(Notebook.Rect))
+                    {
+                        GState = CalendarState.ToNotebook;
+                    }
+                    break;
+
+                case CalendarState.ActivityChoice:
+                    if (mouseClickRect.Intersects(Notebook.Rect))
+                    {
+                        GState = CalendarState.ToNotebook;
+                    }
+                    break;
+
+                default:
+                    break;
             }
         }
 

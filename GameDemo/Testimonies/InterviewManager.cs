@@ -42,9 +42,7 @@ namespace GameDemo.Testimonies
         private CharacterAnimation DefaultAnimation;
 
         private SpriteFont Arial;
-        private SpriteFont JustBreathe;
         private Background Background;
-        private EventDialogue EventDialogue;
         private LineOfDialogue Dialogue;
         private ClickableTexture ContradictButton;
         private List<Button> TopicButtons;
@@ -53,8 +51,6 @@ namespace GameDemo.Testimonies
         private int[] IdContradict = new int[] { -1 }; // Id of contradicting testimony from notebook
         private int TestimonyId; // Id of current selected Testimony
         private bool IsContradicted;
-
-        //private Button NextButton;
 
         private InterviewState GState;
         bool IsTransitioning;
@@ -102,7 +98,6 @@ namespace GameDemo.Testimonies
 
             IsTransitioning = false;
             Arial = Content.Load<SpriteFont>("Fonts/Arial");
-            JustBreathe = Content.Load<SpriteFont>("Fonts/JustBreathe20");
             ContradictButton = null;
             TopicButtons = new List<Button>();
 
@@ -113,6 +108,14 @@ namespace GameDemo.Testimonies
             String path = Path.Combine(Content.RootDirectory, "testimonies.txt");
             String TestimonyJSON = File.ReadAllText(path);
             TestimonyList = JsonSerializer.Deserialize<TestimonyList>(TestimonyJSON);
+
+            Vector2 TopicPos = new Vector2(500, 450);
+            foreach (string Topic in TestimonyList.Topics.Keys)
+            {
+                TopicButtons.Add(new Button(Topic, Arial, TopicPos));
+               TopicPos.Y += 75;
+            }
+            TopicButtons.Add(new Button("Bye!", Arial, TopicPos));
 
         }
 
@@ -305,7 +308,7 @@ namespace GameDemo.Testimonies
             return Animation;
         }
 
-        public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        public void Draw(@SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
             Background.Draw(spriteBatch, graphics);
             // Banner
@@ -322,16 +325,6 @@ namespace GameDemo.Testimonies
                 Texture2D Thought = Content.Load<Texture2D>("thought");
                 spriteBatch.Draw(Thought, new Rectangle(350, 300, 500, 500), Color.White);
 
-                Vector2 TopicPos = new Vector2(500, 450);
-                if (TopicButtons.Count == 0)
-                {
-                    foreach (string Topic in TestimonyList.Topics.Keys)
-                    {
-                        TopicButtons.Add(new Button(Topic, Arial, TopicPos));
-                        TopicPos.Y += 75;
-                    }
-                    TopicButtons.Add(new Button("Bye!", Arial, TopicPos));
-                }
                 foreach (Button TopicButton in TopicButtons)
                 {
                     TopicButton.Draw(spriteBatch, graphics);

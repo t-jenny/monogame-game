@@ -24,15 +24,15 @@ namespace GameDemo.Components
         }
         private List<Option> Options;
         private SpriteFont Font;
-        private Rectangle Rect;
+        private Point Position;
         public string SelectedOption { get; private set; }
         public string SelectedLabel { get; private set; }
         private MouseState PrevMouseState;
 
-        public OptionsList(Dictionary<string, string> options, SpriteFont font, Rectangle rect)
+        public OptionsList(Dictionary<string, string> options, SpriteFont font, Point position)
         {
             Font = font;
-            Rect = rect;
+            Position = position;
             int Diff = 20;
             int LineHeight = (int) font.MeasureString("A").Y;
             Options = new List<Option>();
@@ -40,7 +40,7 @@ namespace GameDemo.Components
             int i = 0;
             foreach (string OptionKey in options.Keys)
             {
-                Point Coords = new Point(Rect.X + Diff, Rect.Y + LineHeight * (i++) + Diff);
+                Point Coords = new Point(Position.X + Diff, Position.Y + LineHeight * (i++) + Diff);
                 Options.Add(new Option(OptionKey, options[OptionKey], font, Coords));
             }
             PrevMouseState = Mouse.GetState();
