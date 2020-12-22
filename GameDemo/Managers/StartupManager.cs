@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Threading; // for loading
 using GameDemo.Engine;
-using GameDemo.Map;
-using GameDemo.Locations;
 using GameDemo.Managers;
+using GameDemo.Events;
 using GameDemo.Characters;
 using GameDemo.Components;
 using Microsoft.Xna.Framework;
@@ -24,7 +23,6 @@ namespace GameDemo.Startup
         private Texture2D ExitButtonImg;
         private ClickableTexture StartButton;
         private ClickableTexture ExitButton;
-        private CountdownTimer CountdownTimer; // Added to test CountdownTimer
 
         private Texture2D LoadingTxt;
         private Vector2 LoadingTxtPos;
@@ -56,6 +54,7 @@ namespace GameDemo.Startup
                     if (ClickedPlay && MainCharacter.Name == null)
                     {
                         GState = StartupState.EnterName;
+                        // We don't want this long term, just to test KeyboardInputMenu
                         string Query = "Hi, what's your name?";
                         KeyboardInputMenu = new KeyboardInputMenu(Query, Content, Arial);
                     }
@@ -90,6 +89,7 @@ namespace GameDemo.Startup
 
         void LoadGame(GameEngine gameEngine)
         {
+            gameEngine.Push(new EventManager(), true, true);
             gameEngine.Push(new CalendarManager(), true, true);
 
             Thread.Sleep(3000);

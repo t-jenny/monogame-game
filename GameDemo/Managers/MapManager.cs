@@ -190,6 +190,13 @@ namespace GameDemo.Map
                     {
                         MouseClicked(MouseState);
                     }
+                    // Restart Game if you reach sunday (for now)
+                    if (MainCharacter.GetDate().DayOfWeek == DayOfWeek.Sunday)
+                    {
+                        gameEngine.PopAll(true, true);
+                        MainCharacter.ResetTime();
+                        IsTransitioning = true;
+                    }
                     break;
             }
 

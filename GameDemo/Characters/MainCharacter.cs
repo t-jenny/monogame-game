@@ -36,6 +36,16 @@ namespace GameDemo.Characters
             DayOffset += 1.0;
         }
 
+        public void ToWeekend()
+        {
+            DayOffset += 5.0;
+        }
+
+        public void ResetTime()
+        {
+            DayOffset = 0.0;
+        }
+
         public DateTime GetDate()
         {
             DateTime DT = new DateTime(2025, 6, 2, 0, 0, 0);

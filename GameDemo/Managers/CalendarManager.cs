@@ -67,24 +67,28 @@ namespace GameDemo.Managers
                 IsTransitioning = false;
                 return;
             }
-            Point WindowSize = Game1.GetWindowSize();
 
+            Point WindowSize = Game1.GetWindowSize();
             content.Unload();
+
+            // Common to all Modes
             Background = new Background(content, "bulletin");
             MainCharacter = mainCharacter;
- 
             Content = content;
             JustBreathe = Content.Load<SpriteFont>("Fonts/JustBreathe20");
             Arial = Content.Load<SpriteFont>("Fonts/Arial");
+            GState = CalendarState.ActivityChoice;
+            MouseState = Mouse.GetState();
+            PrevMouseState = MouseState;
 
-            // Load Case Info
+            // Load Case Info (will want to create method for this)
             String CasePath = Path.Combine(Content.RootDirectory, "case" + MainCharacter.CurrentCase + ".txt");
             String CaseJSON = File.ReadAllText(CasePath);
             Case = JsonSerializer.Deserialize<Case>(CaseJSON);
+
             ThisMonday = MainCharacter.GetDate();
 
             ActivityRect = new Rectangle(WindowSize.X / 2, WindowSize.Y / 2, 500, 300);
-
             // eventually pull from Activity list json.
             Dictionary<string, string> Activities = new Dictionary<string, string>
                 {
@@ -97,39 +101,30 @@ namespace GameDemo.Managers
                 };
             ActivitiesList = new OptionsList(Activities, JustBreathe,
                 new Point(ActivityRect.X + 10, ActivityRect.Y + 30));
-
             PeopleList = new OptionsList(Case.CharDict, JustBreathe,
                 new Point(ActivityRect.X + 4 * ActivityRect.Width / 6, ActivityRect.Y + 30));
 
-            // important to reset these components to null when the manager is reloaded
             ConfirmButton = null;
             Calendar = new Calendar(new Rectangle(110, 150, 960, 200), JustBreathe, ThisMonday);
             Notebook = new ClickableTexture(Content.Load<Texture2D>("notebook_icon"), new Vector2(WindowSize.X - 100, 20));
-            GState = CalendarState.ActivityChoice;
-
-            MouseState = Mouse.GetState();
-            PrevMouseState = MouseState;
         }
 
         public void Update(GameEngine gameEngine, GameTime gameTime)
         {
-            if (IsTransitioning) return;
-
-            /*** Update Components ***/
-            if (GState == CalendarState.ActivityChoice || GState == CalendarState.ConfirmActivity)
+            if (IsTransitioning)
             {
-                ConfirmButton?.Update();
-                PeopleList?.Update();
-                ActivitiesList?.Update();
+                return;
             }
+
+            // Update Dynamic Components
+            PeopleList?.Update();
+            ActivitiesList?.Update();
 
             MouseState = Mouse.GetState();
             if (PrevMouseState.LeftButton == ButtonState.Pressed && MouseState.LeftButton == ButtonState.Released)
             {
                 MouseClicked(MouseState.X, MouseState.Y);
             }
-
-            PrevMouseState = MouseState;
 
             switch(GState)
             {
@@ -148,6 +143,7 @@ namespace GameDemo.Managers
 
                 case CalendarState.ToWeekend:
                     gameEngine.Push(new MapManager(), true, true);
+                    MainCharacter.ToWeekend();
                     IsTransitioning = true;
                     break;
 
@@ -158,6 +154,7 @@ namespace GameDemo.Managers
                     break;
 
                 case CalendarState.ConfirmActivity:
+                    ConfirmButton?.Update();
                     if (PeopleList?.SelectedOption == null || ActivitiesList?.SelectedOption == null)
                     {
                         GState = CalendarState.ActivityChoice;
@@ -177,6 +174,7 @@ namespace GameDemo.Managers
                 default:
                     break;
             }
+            PrevMouseState = MouseState;
         }
 
         public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)

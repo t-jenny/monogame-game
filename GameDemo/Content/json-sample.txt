@@ -35,6 +35,24 @@
         ],
         "Text": "*witnessempty\n%ost/gumshoe\nOh here he comes!\n@redgeworth\nAcchoo! @lphoenix #sneezing\nUrgh! @redgeworth #disgusted %sfx/smack\nUrgh sorry I'm not feeling well. @lphoenix #talking\nAm I feverish? @lphoenix #talking\nWhat did I do to deserve this? @redgeworth #stressed\nI think I have snot on my face @redgeworth #stressed\nI'm sorry! @lphoenix #talking\n+n: Phoenix is sick./He needs a tissue.\n+s: intelligence 1/strength 1\n+r: blush 1/tomazzi 1"
       }
+    ],
+    "eventString3": [
+      {
+        "EventName": "eventName",
+        "RequiredStats": {
+          "intelligence": 1,
+          "strength": 2
+        },
+        "RequiredRelationships": {
+          "blush": 1,
+          "tomazzi": 1
+        },
+        "RequiredFlags": [
+          "beginning",
+          "running"
+        ],
+        "Text": "*witnessempty\n%ost/gumshoe\nOh here he comes!\n@redgeworth\nAcchoo! @lphoenix #sneezing\nUrgh! @redgeworth #disgusted %sfx/smack\nUrgh sorry I'm not feeling well. @lphoenix #talking\nAm I feverish? @lphoenix #talking\nWhat did I do to deserve this? @redgeworth #stressed\nI think I have snot on my face @redgeworth #stressed\nAnyway, did you hear about this new untitled game? @redgeworth #standing\nNo? @lphoenix #talking\nJenny wants us to play all the parts while they finish casting. @redgeworth #standing\nWell that sounds exhausting! @lphoenix #sneezing\nYeah I know. But the pay is good. @redgeworth #disgusted\nOk, now I'm interested. How does the game work? @lphoenix #talking\nWell, it's a detective game. @redgeworth #standing\nI guess someone has tried to murder a princess? @redgeworth #disgusted\nThe player spends time interviewing and chillin' with suspects @redgeworth #standing\nto figure out whodunnit. @redgeworth #standing\nFirst you plan who you're gonna hang with during the week@redgeworth #disgusted\nThen you question the suspects at the castle. @redgeworth #standing\nIf you point out contradictions, you get more testimony. @redgeworth #disgusted\nAlright alright, let's play it. @lphoenix #sneezing\nBut you only have one day to get it right. @redgeworth #standing\n+n: Phoenix is sick./He needs a tissue.\n+s: intelligence 1/strength 1\n+r: blush 1/tomazzi 1"
+      }
     ]
   }
 }

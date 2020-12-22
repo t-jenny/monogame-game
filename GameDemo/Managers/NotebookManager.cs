@@ -88,30 +88,36 @@ namespace GameDemo.Notebook
 
         public void Reset(GameEngine gameEngine, MainCharacter mainCharacter, ContentManager content)
         {
+            // Commmon to all Modes
             MainCharacter = mainCharacter;
             Content = content;
+            Background = new Background(content, NotebookPath);
+            MouseState = Mouse.GetState();
+            PrevMouseState = MouseState;
+            GState = NotebookState.Stats;
+            Arial = content.Load<SpriteFont>("Fonts/Arial");
+            JustBreathe = content.Load<SpriteFont>("Fonts/JustBreathe20");
+            JustBreathe25 = content.Load<SpriteFont>("Fonts/JustBreathe25");
 
-            // Load Characters
+            // Load Characters (convert to method)
             String path = Path.Combine(Content.RootDirectory, "characters.txt");
             String CharJSON = File.ReadAllText(path);
             AllChars = JsonSerializer.Deserialize<AllCharacters>(CharJSON);
 
-            // Load Case
+            // Load Case (convert to method)
             String CasePath = Path.Combine(Content.RootDirectory, "case" + MainCharacter.CurrentCase + ".txt");
             String CaseJSON = File.ReadAllText(CasePath);
             Case = JsonSerializer.Deserialize<Case>(CaseJSON);
 
-            // Load Testimonies
+            // Load Testimonies (convert to method)
             path = Path.Combine(Content.RootDirectory, "testimonies.txt");
             String TestimonyJSON = File.ReadAllText(path);
             TestimonyList = JsonSerializer.Deserialize<TestimonyList>(TestimonyJSON);
 
             // Always start by viewing stats.
-            GState = NotebookState.Stats;
             Point WindowSize = Game1.GetWindowSize();
 
             // Fixed Visual Elements
-            Background = new Background(content, NotebookPath);
             ReturnIcon = Content.Load<Texture2D>("return-icon");
             ReturnIconRect = new Rectangle(WindowSize.X - 100, 20, 70, 70);
 
@@ -130,20 +136,16 @@ namespace GameDemo.Notebook
             QuitButton = null;
             SaveButton = null;
 
-            // Fonts and Text
-            Arial = content.Load<SpriteFont>("Fonts/Arial");
-            JustBreathe = content.Load<SpriteFont>("Fonts/JustBreathe20");
-            JustBreathe25 = content.Load<SpriteFont>("Fonts/JustBreathe25");
+            // Text Spacing
             TextOffset = new Vector2(0.0f, JustBreathe.MeasureString("A").Y + 0.5f);
             Indent = new Vector2(Arial.MeasureString("A").X, 0.0f);
 
+            // Represents bounds of open notebook
             OpenNotebookRect = new Rectangle((int) (0.12f * WindowSize.X),
                 (int) (0.15f * WindowSize.Y + TextOffset.Y),
                 (int) (0.75f * WindowSize.X),
                 (int) (0.71f * WindowSize.Y));
 
-            MouseState = Mouse.GetState();
-            PrevMouseState = MouseState;
         }
 
         public void Update(GameEngine gameEngine, GameTime gameTime)
@@ -171,8 +173,6 @@ namespace GameDemo.Notebook
             {
                 MouseClicked(MouseState);
             }
-            PrevMouseState = MouseState;
-
 
             if (GState == NotebookState.Returning)
             {
@@ -185,6 +185,8 @@ namespace GameDemo.Notebook
                 gameEngine.PopAll(true, true);
                 IsTransitioning = true;
             }
+
+            PrevMouseState = MouseState;
 
         }
 

@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text.Json;
 using System.Collections.Generic;
 
-using GameDemo.Animations;
 using GameDemo.Characters;
 using GameDemo.Components;
-using GameDemo.Dialogue;
 using GameDemo.Engine;
-using GameDemo.Events;
 using GameDemo.Locations;
 using GameDemo.Notebook;
 using GameDemo.Managers;
@@ -24,26 +21,15 @@ namespace GameDemo.Testimonies
 {
     public class InterviewManager : IManager
     {
-        private const double DESATURATION_PERCENT = 0.85;
-
-        private bool EndOfLine;
-        private bool TextEnd;
-
         private MainCharacter MainCharacter;
         private string CharacterKey;
         private TestimonyList TestimonyList;
         private ContentManager Content;
-        private TxtReader TxtReader;
-        private ButtonState PreviousButtonState;
+        private EventScript EventScript;
         private MouseState MouseState;
         private MouseState PrevMouseState;
-        private ITextObject CurrentTextObject;
-        private CharacterAnimation PriorCharacterAnimation;
-        private CharacterAnimation DefaultAnimation;
-
         private SpriteFont Arial;
         private Background Background;
-        private LineOfDialogue Dialogue;
         private ClickableTexture ContradictButton;
         private List<Button> TopicButtons;
 
@@ -53,7 +39,7 @@ namespace GameDemo.Testimonies
         private bool IsContradicted;
 
         private InterviewState GState;
-        bool IsTransitioning;
+        private bool IsTransitioning;
 
         enum InterviewState
         {
@@ -80,17 +66,19 @@ namespace GameDemo.Testimonies
                                                where testimony.PrevId == TestimonyId
                                                select testimony).ToList()[0];
                     string Text = NextTestimony.SpokenText;
-                    TxtReader = new TxtReader(MainCharacter, Content, Text);
+                    EventScript = new EventScript(MainCharacter, Content, Text);
                     TestimonyId = NextTestimony.Id;
                     IsContradicted = true;
                 }
                 else if (IdContradict[0] > -1)
-                {  
+                {
+                    Console.WriteLine("hello");
                     string Text = "%ost/gumshoe\nExcuse me, what are you suggesting?? @redgeworth #disgusted\n+n: 100";
-                    TxtReader = new TxtReader(MainCharacter, Content, Text);
+                    EventScript = new EventScript(MainCharacter, Content, Text);
+                    IdContradict[0] = -1;
                 }
                 GState = InterviewState.PlayText;
-                Background = new Background(Content, "witnessempty");
+                Background = new Background(Content, "castle");
                 IsTransitioning = false;
                 return;
             }
@@ -100,25 +88,22 @@ namespace GameDemo.Testimonies
             }
 
             content.Unload();
-            Background = new Background(content, "witnessempty");
 
-            this.MainCharacter = mainCharacter;
-            this.Content = content;
-
+            // Common to all Modes
+            Background = new Background(content, "castle");
+            MainCharacter = mainCharacter;
+            Content = content;
             IsTransitioning = false;
             Arial = Content.Load<SpriteFont>("Fonts/Arial");
-            ContradictButton = new ClickableTexture(Content.Load<Texture2D>("notebook_icon"),
-                new Vector2(Game1.GetWindowSize().X - 100, 20));
-            TopicButtons = new List<Button>();
-
-            this.EndOfLine = false;
-            this.TextEnd = false;
 
             // Load Testimonies
             String path = Path.Combine(Content.RootDirectory, "testimonies.txt");
             String TestimonyJSON = File.ReadAllText(path);
             TestimonyList = JsonSerializer.Deserialize<TestimonyList>(TestimonyJSON);
 
+            ContradictButton = new ClickableTexture(Content.Load<Texture2D>("notebook_icon"),
+                new Vector2(Game1.GetWindowSize().X - 100, 20));
+            TopicButtons = new List<Button>();
             Vector2 TopicPos = new Vector2(500, 450);
             HashSet<string> TopicTags = (from testimony in TestimonyList.Testimonies
                                          where testimony.IsInitial ||
@@ -127,6 +112,7 @@ namespace GameDemo.Testimonies
             Dictionary<string, string> Topics = (from topic in TestimonyList.Topics
                                                  where TopicTags.Contains(topic.Value)
                                                  select topic).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
             foreach (string Topic in Topics.Keys)
             {
                 TopicButtons.Add(new Button(Topic, Arial, TopicPos));
@@ -145,7 +131,6 @@ namespace GameDemo.Testimonies
                 case InterviewState.TopicChoice:
                     foreach (Button Button in TopicButtons)
                     {
-                        // Don't add this to button list
                         if (mouseClickRect.Intersects(Button.Rect) && Button.Text == "Bye!")
                         {
                             GState = InterviewState.Exiting;
@@ -154,6 +139,21 @@ namespace GameDemo.Testimonies
                         {
                             GState = InterviewState.PlayText;
                             SelectedTopic = TestimonyList.Topics[Button.Text];
+                            List<Testimony> Testimony = (from testimony in TestimonyList.Testimonies
+                                                         where testimony.TopicTag == SelectedTopic &&
+                                                         testimony.CharacterKey == CharacterKey &&
+                                                         (testimony.IsInitial || MainCharacter.TestimonyIds.Contains(testimony.Id))
+                                                         select testimony).ToList();
+
+                            string Text = "%ost/gumshoe\nCan I talk to you about something? @lphoenix #talking\nI don't have any information. @redgeworth #disgusted\nOk no problem. @lphoenix #talking\n+n: 100";
+                            TestimonyId = -1;
+
+                            if (Testimony.Count > 0 && !Testimony[0].SpokenText.Equals(string.Empty))
+                            {
+                                Text = Testimony[0].SpokenText;
+                                TestimonyId = Testimony[0].Id;
+                            }
+                            EventScript = new EventScript(MainCharacter, Content, Text);
                         }
                     }
                     break;
@@ -162,92 +162,12 @@ namespace GameDemo.Testimonies
                     if (mouseClickRect.Intersects(ContradictButton.Rect))
                     {
                         GState = InterviewState.Contradiction;
-                        TxtReader = null;
                     }
                     break;
 
                 default:
                     break;
             }
-        }
-
-        public void HandleText(GameTime gameTime)
-        {
-
-            if (CurrentTextObject == null)
-            {
-                CurrentTextObject = TxtReader.NextTxtObject();
-            }
-
-            if (Dialogue != null)
-            {
-                EndOfLine = Dialogue.Complete();
-            }
-
-            switch (CurrentTextObject.GetType().Name)
-            {
-                case "Background":
-                    Background = (Background)CurrentTextObject;
-                    PriorCharacterAnimation = null;
-                    CurrentTextObject = TxtReader.NextTxtObject();
-                    break;
-
-                case "CharacterAnimation":
-                    CharacterAnimation CurrentAnimation = (CharacterAnimation)CurrentTextObject;
-                    DefaultAnimation = CurrentAnimation;
-                    CurrentTextObject = TxtReader.NextTxtObject();
-                    break;
-
-                case "LineOfDialogue":
-                    Dialogue = (LineOfDialogue)CurrentTextObject;
-                    if (DefaultAnimation != null)
-                    {
-                        Dialogue.SetSecondAnimation(DefaultAnimation, DESATURATION_PERCENT);
-                    }
-
-                    if (PreviousButtonState == ButtonState.Pressed && Mouse.GetState().LeftButton == ButtonState.Released && EndOfLine)
-                    {
-                        CharacterAnimation CurrentCharacter = Dialogue.CharacterAnimation;
-                        CurrentTextObject = TxtReader.NextTxtObject();
-                        EndOfLine = false;
-
-                        CharacterAnimation NextCharacter = null;
-
-                        if (CurrentTextObject != null)
-                        {
-                            NextCharacter = CurrentCharacterAnimation();
-                        }
-
-                        if (CurrentCharacter != null && NextCharacter != null
-                            && !NextCharacter.CharacterName.Equals(CurrentCharacter.CharacterName))
-                        {
-                            PriorCharacterAnimation = CurrentCharacter;
-                            DefaultAnimation = null;
-                        }
-                    }
-
-                    break;
-
-                default:
-                    CurrentTextObject = TxtReader.NextTxtObject();
-                    break;
-            }
-
-            TextEnd = TxtReader.IsEmpty();
-
-            if (TextEnd) // Player should actively choose to end testimony
-            {
-                GState = (!IsContradicted) ? InterviewState.TopicChoice : InterviewState.Exiting;
-                TxtReader = null;
-                // if MainCharacter had not heard this testimony, add to notebook
-                MainCharacter.TestimonyIds.Add(TestimonyId);
-            }
-            else
-            {
-                CurrentTextObject.Update(gameTime);
-                PreviousButtonState = Mouse.GetState().LeftButton;
-            }
-
         }
 
         public void Update(GameEngine gameEngine, GameTime gameTime)
@@ -284,49 +204,26 @@ namespace GameDemo.Testimonies
 
                 case InterviewState.PlayText:
                     ContradictButton?.Update();
-                    if (TxtReader == null)
+                    EventScript.Update(gameTime);
+                    if (EventScript.IsFinished())
                     {
-                        List<Testimony> Testimony = (from testimony in TestimonyList.Testimonies
-                                               where testimony.TopicTag == SelectedTopic &&
-                                               testimony.CharacterKey == CharacterKey &&
-                                               (testimony.IsInitial || MainCharacter.TestimonyIds.Contains(testimony.Id))
-                                               select testimony).ToList();
-
-                        string Text = "%ost/gumshoe\nCan I talk to you about something? @lphoenix #talking\nI don't have any information. @redgeworth #disgusted\nOk no problem. @lphoenix #talking\n+n: 100";
-                        TestimonyId = -1;
-
-                        if (Testimony.Count > 0 && !Testimony[0].SpokenText.Equals(string.Empty)) {
-                            Text = Testimony[0].SpokenText;
-                            TestimonyId = Testimony[0].Id;
-                        }
-
-                        TxtReader = new TxtReader(MainCharacter, Content, Text);
+                        GState = (!IsContradicted) ? InterviewState.TopicChoice : InterviewState.Exiting;
+                        EventScript = null;
+                        MainCharacter.TestimonyIds.Add(TestimonyId);
                     }
-                    HandleText(gameTime);
                     break;
 
                 default:
                     break;
+
             }
             PrevMouseState = MouseState;
         }
 
-        private CharacterAnimation CurrentCharacterAnimation()
-        {
-            CharacterAnimation Animation = null;
-
-            if (CurrentTextObject.GetType().Name.Equals("LineOfDialogue"))
-            {
-                LineOfDialogue Dialogue = (LineOfDialogue)CurrentTextObject;
-                Animation = Dialogue.CharacterAnimation;
-            }
-
-            return Animation;
-        }
-
-        public void Draw(@SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
             Background.Draw(spriteBatch, graphics);
+
             // Banner
             string DayString = MainCharacter.GetDateTimeString();
             DrawingUtils.DrawTextBanner(spriteBatch, graphics, Arial, DayString, Color.Red, Color.Black);
@@ -349,28 +246,9 @@ namespace GameDemo.Testimonies
 
             if (GState == InterviewState.PlayText)
             {
-                if (CurrentTextObject == null)
-                {
-                    return;
-                }
-
                 // Contradict icon is just notebook icon for now
                 ContradictButton.Draw(spriteBatch, graphics);
-
-                if (PriorCharacterAnimation != null)
-                {
-                    if (!PriorCharacterAnimation.Desaturated)
-                    {
-                        PriorCharacterAnimation.Desaturate(graphics, DESATURATION_PERCENT);
-                    }
-
-                    PriorCharacterAnimation.Draw(spriteBatch, graphics);
-                }
-
-                if (!CurrentTextObject.GetType().Name.Equals("CharacterAnimation"))
-                {
-                    CurrentTextObject.Draw(spriteBatch, graphics);
-                }
+                EventScript.Draw(spriteBatch, graphics);
             }
         }
     }
